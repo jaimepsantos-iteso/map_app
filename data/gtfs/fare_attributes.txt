@@ -1,0 +1,6 @@
+fare_id,price,currency_type,payment_method,transfers,agency_id
+MM_1,9.5,MXN,1,2,MM
+ME_1,9.5,MXN,1,0,ME
+MT_1,9.5,MXN,1,2,MT
+ST_1,9.5,MXN,1,2,ST
+BUS_1,9.5,MXN,1,2,BUS

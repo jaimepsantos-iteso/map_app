@@ -1,0 +1,990 @@
+trip_id,route_id,service_id,trip_headsign,direction_id,shape_id
+C01_route_1_0000001_16500,C01,D,Centro Metropolitano,0,C01_r1
+C01_route_2_0000001_21120,C01,D,San Juan de Ocotan,1,C01_r2
+C01_trip_1,C01,LS,Centro Metropolitano,0,C01_r1
+C01_trip_2,C01,LS,San Juan de Ocotan,1,C01_r2
+C02_route_1_0000001_15600,C02,D,Centro Metropolitano,0,C02_r1
+C02_route_2_0000001_20280,C02,D,Mision de los Viñedos,1,C02_r2
+C02_trip_1,C02,LS,Centro Metropolitano,0,C02_r1
+C02_trip_2,C02,LS,Mision de los Viñedos,1,C02_r2
+C03_route_1_0000001_15600,C03,D,El Fresno,0,C03_r1
+C03_route_1_1111110_18000,C03,LS,El Fresno,0,C03_r1
+C03_route_2_0000001_23100,C03,D,Santa Cruz del Valle,1,C03_r2
+C03_route_2_1111110_22140,C03,LS,Santa Cruz del Valle,1,C03_r2
+C04_route_1_0000001_16200,C04,D,Centro Metropolitano,0,C04_r1
+C04_route_2_0000001_19440,C04,D,Huentitan El Bajo,1,C04_r2
+C04_trip_1,C04,LS,Centro Metropolitano,0,C04_r1
+C04_trip_2,C04,LS,Huentitan El Bajo,1,C04_r2
+C05_route_1_0000001_17400,C05,D,Centro Metropolitano,0,C05_r1
+C05_route_2_0000001_20640,C05,D,San Pedrito,1,C05_r2
+C05_trip_1,C05,LS,Centro Metropolitano,0,C05_r1
+C05_trip_2,C05,LS,San Pedrito,1,C05_r2
+C06_route_1_0000001_17400,C06,D,Centro Metropolitano,0,C06_r1
+C06_route_2_0000001_22440,C06,D,La Cofradia,1,C06_r2
+C06_route_2_1111110_81180,C06,LS,La Cofradia,1,C06_r2
+C06_route_2_1111110_81180_2,C06,LS,La Cofradia,1,C06_r2
+C06_trip_1,C06,LS,Centro Metropolitano,0,C06_r1
+C06_trip_1_2,C06,LS,Centro Metropolitano,0,C06_r1
+C07-V1_route_1_0000001_17100,C07-V1,D,Centro Metropolitano,0,C07-V1_r1
+C07-V1_route_2_0000001_21780,C07-V1,D,Mirador del Rey,1,C07-V1_r2
+C07-V1_trip_1,C07-V1,LS,Centro Metropolitano,0,C07-V1_r1
+C07-V1_trip_2,C07-V1,LS,Mirador del Rey,1,C07-V1_r2
+C07-V2_route_1_0000001_16800,C07-V2,D,Centro Metropolitano,0,C07-V2_r1
+C07-V2_route_2_0000001_21720,C07-V2,D,Mision Acueducto,1,C07-V2_r2
+C07-V2_trip_1,C07-V2,LS,Centro Metropolitano,0,C07-V2_r1
+C07-V2_trip_2,C07-V2,LS,Mision Acueducto,1,C07-V2_r2
+C08_route_1_0000011_23040,C08,SD,Centro Metropolitano,0,C08_r1
+C08_route_2_0000011_19800,C08,SD,Huentitan,1,C08_r2
+C08_trip_1,C08,LV,Centro Metropolitano,0,C08_r1
+C08_trip_2,C08,LV,Huentitan,1,C08_r2
+C09_route_1_0000001_16200,C09,D,Plaza Centro Sur,0,C09_r1
+C09_route_2_0000001_19560,C09,D,Abedules,1,C09_r2
+C09_trip_1,C09,LS,Plaza Centro Sur,0,C09_r1
+C09_trip_2,C09,LS,Abedules,1,C09_r2
+C100_route_1_0000001_18600,C100,D,Plaza Centro Sur,0,C100_r1
+C100_route_2_0000001_23340,C100,D,La Fortuna,1,C100_r2
+C100_trip_1,C100,LS,Plaza Centro Sur,0,C100_r1
+C100_trip_2,C100,LS,La Fortuna,1,C100_r2
+C101_route_1_0000001_16500,C101,D,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C101_r1
+C101_route_2_0000001_16200,C101,D,Cabecera Municipal de Tlajomulco de Zuñiga,1,C101_r2
+C101_trip_1,C101,LS,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C101_r1
+C101_trip_2,C101,LS,Cabecera Municipal de Tlajomulco de Zuñiga,1,C101_r2
+C102_route_1_0000001_16380,C102,D,Barrio Nuevo,0,C102_r1
+C102_route_2_0000001_16200,C102,D,Cabecera Municipal de Tlajomulco de Zuñiga,1,C102_r2
+C102_trip_1,C102,LS,Barrio Nuevo,0,C102_r1
+C102_trip_2,C102,LS,Cabecera Municipal de Tlajomulco de Zuñiga,1,C102_r2
+C103_route_1_0000001_15960,C103,D,Plaza Centro Sur,0,C103_r1
+C103_route_2_0000001_16200,C103,D,Cabecera Municipal de Tlajomulco de Zuñiga,1,C103_r2
+C103_trip_1,C103,LS,Plaza Centro Sur,0,C103_r1
+C103_trip_2,C103,LS,Cabecera Municipal de Tlajomulco de Zuñiga,1,C103_r2
+C104_route_1_0000001_20220,C104,D,Centro Metropolitano,0,C104_r1
+C104_trip_1,C104,LS,Centro Metropolitano,0,C104_r1
+C105_route_1_0000001_18120,C105,D,Central de Autobuses,0,C105_r1
+C105_route_2_0000001_18000,C105,D,Senderos de Santiago,1,C105_r2
+C105_trip_1,C105,LS,Central de Autobuses,0,C105_r1
+C105_trip_2,C105,LS,Senderos de Santiago,1,C105_r2
+C106_route_1_0000001_18660,C106,D,Central de Autobuses,0,C106_r1
+C106_route_2_0000001_18000,C106,D,Vistas del Pedregal,1,C106_r2
+C106_trip_1,C106,LS,Central de Autobuses,0,C106_r1
+C106_trip_2,C106,LS,Vistas del Pedregal,1,C106_r2
+C107_route_1_0000001_18000,C107,D,Los Pinos,0,C107_r1
+C107_route_2_0000001_22860,C107,D,Panoramica de Huentitan,1,C107_r2
+C107_trip_1,C107,LS,Los Pinos,0,C107_r1
+C107_trip_2,C107,LS,Panoramica de Huentitan,1,C107_r2
+C108_trip_1,C108,LD,Plaza del Sol,0,C108_r1
+C109_route_1_0000001_21540,C109,D,Centro Metropolitano,0,C109_r1
+C109_route_2_0000001_21180,C109,D,La Gloria del Colli,1,C109_r2
+C109_trip_1,C109,LS,Centro Metropolitano,0,C109_r1
+C109_trip_2,C109,LS,La Gloria del Colli,1,C109_r2
+C10_route_1_0000001_16800,C10,D,Plaza Centro Sur,0,C10_r1
+C10_route_2_0000001_19800,C10,D,Villas de San Sebastian,1,C10_r2
+C10_trip_1,C10,LS,Plaza Centro Sur,0,C10_r1
+C10_trip_2,C10,LS,Villas de San Sebastian,1,C10_r2
+C110-V1_route_1_0000001_18480,C110-V1,D,Estacion Juarez Tren Electrico Urbano,0,C110-V1_r1
+C110-V1_route_2_0000001_18600,C110-V1,D,Jardines de Nuevo Mexico,1,C110-V1_r2
+C110-V1_trip_1,C110-V1,LS,Estacion Juarez Tren Electrico Urbano,0,C110-V1_r1
+C110-V1_trip_2,C110-V1,LS,Jardines de Nuevo Mexico,1,C110-V1_r2
+C110-V2_route_1_0000001_19920,C110-V2,D,Centro Metropolitano,0,C110-V2_r1
+C110-V2_route_2_0000001_19800,C110-V2,D,La Primavera,1,C110-V2_r2
+C110-V2_trip_1,C110-V2,LS,Centro Metropolitano,0,C110-V2_r1
+C110-V2_trip_2,C110-V2,LS,La Primavera,1,C110-V2_r2
+C111-V1_route_1_0000001_15900,C111-V1,D,Centro Metropolitano,0,C111-V1_r1
+C111-V1_route_2_0000001_24300,C111-V1,D,Colinas del Roble,1,C111-V1_r2
+C111-V1_trip_1,C111-V1,LS,Centro Metropolitano,0,C111-V1_r1
+C111-V1_trip_2,C111-V1,LS,Colinas del Roble,1,C111-V1_r2
+C111-V2_route_1_0000001_16800,C111-V2,D,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C111-V2_r1
+C111-V2_route_2_0000001_20700,C111-V2,D,Lomas del Sur,1,C111-V2_r2
+C111-V2_trip_1,C111-V2,LS,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C111-V2_r1
+C111-V2_trip_2,C111-V2,LS,Lomas del Sur,1,C111-V2_r2
+C111-V3_route_1_0000001_15600,C111-V3,D,Centro Metropolitano,0,C111-V3_r1
+C111-V3_route_2_0000001_15900,C111-V3,D,Chulavista,1,C111-V3_r2
+C111-V3_trip_1,C111-V3,LS,Centro Metropolitano,0,C111-V3_r1
+C111-V3_trip_2,C111-V3,LS,Chulavista,1,C111-V3_r2
+C112_route_1_0000001_16200,C112,D,Mercado de Abastos,0,C112_r1
+C112_route_2_0000001_21060,C112,D,El Refugio,1,C112_r2
+C112_trip_1,C112,LS,Mercado de Abastos,0,C112_r1
+C112_trip_2,C112,LS,El Refugio,1,C112_r2
+C113-V1_trip_1,C113-V1,LD,Estacion Tesoro Tren Electrico Urbano,0,C113-V1_r1
+C113-V1_trip_2,C113-V1,LD,Chulavista,1,C113-V1_r2
+C113-V2_trip_1,C113-V2,LD,Estacion Tesoro Tren Electrico Urbano,0,C113-V2_r1
+C113-V2_trip_2,C113-V2,LD,Chulavista,1,C113-V2_r2
+C114-V1_route_1_0000001_16200,C114-V1,D,Plaza Centro Sur,0,C114-V1_r1
+C114-V1_route_2_0000001_19740,C114-V1,D,Valle de los Encinos,1,C114-V1_r2
+C114-V1_trip_1,C114-V1,LS,Plaza Centro Sur,0,C114-V1_r1
+C114-V1_trip_2,C114-V1,LS,Valle de los Encinos,1,C114-V1_r2
+C114-V2_route_1_0000001_16200,C114-V2,D,Plaza Centro Sur,0,C114-V2_r1
+C114-V2_route_2_0000001_20460,C114-V2,D,Valle de los Encinos,1,C114-V2_r2
+C114-V2_trip_1,C114-V2,LS,Plaza Centro Sur,0,C114-V2_r1
+C114-V2_trip_2,C114-V2,LS,Valle de los Encinos,1,C114-V2_r2
+C115_trip_1,C115,LD,Col. Moderna,0,C115_r1
+C115_trip_2,C115,LD,Valle de la Misericordia,1,C115_r2
+C116-A_route_1_0000001_20340,C116-A,D,La Huizachera,0,C116-A_r1
+C116-A_route_2_0000001_19800,C116-A,D,Infonavit La Mesa,1,C116-A_r2
+C116-A_trip_1,C116-A,LS,La Huizachera,0,C116-A_r1
+C116-A_trip_2,C116-A,LS,Infonavit La Mesa,1,C116-A_r2
+C116-B_route_1_0000001_20340,C116-B,D,La Huizachera,0,C116-B_r1
+C116-B_route_2_0000001_19800,C116-B,D,Infonavit La Mesa,1,C116-B_r2
+C116-B_trip_1,C116-B,LS,La Huizachera,0,C116-B_r1
+C116-B_trip_2,C116-B,LS,Infonavit La Mesa,1,C116-B_r2
+C117_route_1_0000001_16200,C117,D,Estacionamiento Zoologico,0,C117_r1
+C117_route_2_0000001_22980,C117,D,Valle de los Molinos,1,C117_r2
+C117_trip_1,C117,LS,Estacionamiento Zoologico,0,C117_r1
+C117_trip_2,C117,LS,Valle de los Molinos,1,C117_r2
+C118_route_1_0000001_11400,C118,D,Centro Metropolitano,0,C118_r1
+C118_route_2_0000001_16440,C118,D,Quintas del Valle,1,C118_r2
+C118_trip_1,C118,LS,Centro Metropolitano,0,C118_r1
+C118_trip_2,C118,LS,Quintas del Valle,1,C118_r2
+C120_route_1_0000001_18120,C120,D,Volcan del Colli,0,C120_r1
+C120_route_2_0000001_18000,C120,D,Jalisco II Seccion,1,C120_r2
+C120_trip_1,C120,LS,Volcan del Colli,0,C120_r1
+C120_trip_2,C120,LS,Jalisco II Seccion,1,C120_r2
+C121-B_route_1_0000001_17700,C121-B,D,La Minerva,0,C121-B_r1
+C121-B_route_2_0000001_22200,C121-B,D,Villas de Nuevo Mexico,1,C121-B_r2
+C121-B_trip_1,C121-B,LS,La Minerva,0,C121-B_r1
+C121-B_trip_2,C121-B,LS,Villas de Nuevo Mexico,1,C121-B_r2
+C122_route_1_0000001_16320,C122,D,Agustin Yañez/La Florida,0,C122_r1
+C122_route_2_0000001_16200,C122,D,La Cofradia,1,C122_r2
+C122_trip_1,C122,LS,Agustin Yañez/La Florida,0,C122_r1
+C122_trip_2,C122,LS,La Cofradia,1,C122_r2
+C123-V1_route_1_0000001_17520,C123-V1,D,Santa Ana Tepetitlan,0,C123-V1_r1
+C123-V1_route_2_0000001_16200,C123-V1,D,Huentitan El Alto,1,C123-V1_r2
+C123-V1_trip_1,C123-V1,LS,Santa Ana Tepetitlan,0,C123-V1_r1
+C123-V1_trip_2,C123-V1,LS,Huentitan El Alto,1,C123-V1_r2
+C123-V2_route_1_0000001_16260,C123-V2,D,Santa Ana Tepetitlan,0,C123-V2_r1
+C123-V2_route_2_0000001_16200,C123-V2,D,Huentitan El Alto,1,C123-V2_r2
+C123-V2_trip_1,C123-V2,LS,Santa Ana Tepetitlan,0,C123-V2_r1
+C123-V2_trip_2,C123-V2,LS,Huentitan El Alto,1,C123-V2_r2
+C124_route_1_0000011_17220,C124,SD,Colinas de Huentitan,0,C124_r1
+C124_route_2_0000011_17040,C124,SD,12 de Diciembre,1,C124_r2
+C124_trip_1,C124,LV,Colinas de Huentitan,0,C124_r1
+C124_trip_2,C124,LV,12 de Diciembre,1,C124_r2
+C125-V1_route_1_0000001_16380,C125-V1,D,Antigua Central Camionera,0,C125-V1_r1
+C125-V1_route_2_0000001_16200,C125-V1,D,Valle de los Emperadores,1,C125-V1_r2
+C125-V1_trip_1,C125-V1,LS,Antigua Central Camionera,0,C125-V1_r1
+C125-V1_trip_2,C125-V1,LS,Valle de los Emperadores,1,C125-V1_r2
+C125-V2_route_1_0000001_16380,C125-V2,D,Antigua Central Camionera,0,C125-V2_r1
+C125-V2_route_2_0000001_16200,C125-V2,D,Valle de los Emperadores,1,C125-V2_r2
+C125-V2_trip_1,C125-V2,LS,Antigua Central Camionera,0,C125-V2_r1
+C125-V2_trip_2,C125-V2,LS,Valle de los Emperadores,1,C125-V2_r2
+C126-V1_route_1_0000001_16200,C126-V1,D,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C126-V1_r1
+C126-V1_route_2_0000001_16200,C126-V1,D,La Noria,1,C126-V1_r2
+C126-V1_trip_1,C126-V1,LS,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C126-V1_r1
+C126-V1_trip_2,C126-V1,LS,La Noria,1,C126-V1_r2
+C127-V1_route_1_0000001_19800,C127-V1,D,Centro Metropolitano,0,C127-V1_r1
+C127-V1_route_2_0000001_26160,C127-V1,D,Los Abedules,1,C127-V1_r2
+C127-V1_trip_1,C127-V1,LS,Centro Metropolitano,0,C127-V1_r1
+C127-V1_trip_2,C127-V1,LS,Los Abedules,1,C127-V1_r2
+C128A-V1_route_1_0000001_19800,C128A-V1,D,Antigua Central Camionera,0,C128A-V1_r1
+C128A-V1_route_2_0000001_24660,C128A-V1,D,Balcones de Santa Anita,1,C128A-V1_r2
+C128A-V1_trip_1,C128A-V1,LS,Antigua Central Camionera,0,C128A-V1_r1
+C128A-V1_trip_2,C128A-V1,LS,Balcones de Santa Anita,1,C128A-V1_r2
+C128_route_1_0000001_19800,C128,D,Antigua Central Camionera,0,C128_r1
+C128_route_2_0000001_26100,C128,D,La Fortuna,1,C128_r2
+C128_trip_1,C128,LS,Antigua Central Camionera,0,C128_r1
+C128_trip_2,C128,LS,La Fortuna,1,C128_r2
+C129_route_1_0000001_15900,C129,D,Antigua Central Camionera,0,C129_r1
+C129_route_2_0000001_16200,C129,D,Cofradia de la Luz,1,C129_r2
+C129_trip_1,C129,LS,Antigua Central Camionera,0,C129_r1
+C129_trip_2,C129,LS,Cofradia de la Luz,1,C129_r2
+C12-V1_route_1_0000001_17100,C12-V1,D,Plaza Centro Sur,0,C12-V1_r1
+C12-V1_route_2_0000001_24300,C12-V1,D,San Sebastian el Grande,1,C12-V1_r2
+C12-V1_trip_1,C12-V1,LS,Plaza Centro Sur,0,C12-V1_r1
+C12-V1_trip_2,C12-V1,LS,San Sebastian el Grande,1,C12-V1_r2
+C130_route_1_0000001_15300,C130,D,Antigua Central Camionera,0,C130_r1
+C130_route_2_0000001_20880,C130,D,La Noria,1,C130_r2
+C130_trip_1,C130,LS,Antigua Central Camionera,0,C130_r1
+C130_trip_2,C130,LS,La Noria,1,C130_r2
+C131-V1_trip_1,C131-V1,LD,Santa Cruz de las Flores,0,C131-V1_r1
+C131-V1_trip_2,C131-V1,LD,Tlajomulco de Zuñiga,1,C131-V1_r2
+C131-V2_trip_1,C131-V2,LD,La Noria,0,C131-V2_r1
+C131-V2_trip_2,C131-V2,LD,Tlajomulco de Zuñiga,1,C131-V2_r2
+C132_route_1_0000001_19800,C132,D,Chulavista,0,C132_r1
+C132_route_2_0000001_24660,C132,D,Hacienda de los Eucaliptos,1,C132_r2
+C132_trip_1,C132,LS,Chulavista,0,C132_r1
+C132_trip_2,C132,LS,Hacienda de los Eucaliptos,1,C132_r2
+C133-V1_route_1_1111111_19800,C133-V1,LD,Plaza Centro Sur,0,C133-V1_r1
+C133-V1_trip_2,C133-V1,LD,Plaza Encinares,1,C133-V1_r2
+C133-V2_trip_1,C133-V2,LD,Plaza Centro Sur,0,C133-V2_r1
+C133-V2_trip_2,C133-V2,LD,Plaza Outlet,1,C133-V2_r2
+C134_route_1_0000001_19800,C134,D,Plaza del Sol,0,C134_r1
+C134_route_2_0000001_24240,C134,D,Los Ocotes,1,C134_r2
+C134_trip_1,C134,LS,Plaza del Sol,0,C134_r1
+C134_trip_2,C134,LS,Los Ocotes,1,C134_r2
+C135_trip_1,C135,LD,Fraccionamiento Rincon del Valle,0,C135_r1
+C135_trip_2,C135,LD,Jardines de Santa Ana,1,C135_r2
+C136_route_1_0000001_16200,C136,D,Plaza Patria,0,C136_r1
+C136_route_2_0000001_20700,C136,D,Valle de la Providencia,1,C136_r2
+C136_trip_1,C136,LS,Plaza Patria,0,C136_r1
+C136_trip_2,C136,LS,Valle de la Providencia,1,C136_r2
+C138_trip_1,C138,LD,San Juan de Dios,0,C138_r1
+C138_trip_2,C138,LD,Lomas de Independencia,1,C138_r2
+C13-V1_route_1_0000001_19800,C13-V1,D,Centro Metropolitano,0,C13-V1_r1
+C13-V1_route_2_0000001_22200,C13-V1,D,Col. Jalisco IV Seccion,1,C13-V1_r2
+C13-V1_trip_1,C13-V1,LS,Centro Metropolitano,0,C13-V1_r1
+C13-V1_trip_2,C13-V1,LS,Col. Jalisco IV Seccion,1,C13-V1_r2
+C13-V2_route_1_0000001_18000,C13-V2,D,Panteon Guadalajara,0,C13-V2_r1
+C13-V2_route_2_0000001_20520,C13-V2,D,Col. Jalisco IV Seccion,1,C13-V2_r2
+C13-V2_trip_1,C13-V2,LS,Panteon Guadalajara,0,C13-V2_r1
+C13-V2_trip_2,C13-V2,LS,Col. Jalisco IV Seccion,1,C13-V2_r2
+C13-V3_route_1_0000001_18000,C13-V3,D,Tetlan,0,C13-V3_r1
+C13-V3_route_2_0000001_21960,C13-V3,D,Col. Jalisco IV Seccion,1,C13-V3_r2
+C13-V3_trip_1,C13-V3,LS,Tetlan,0,C13-V3_r1
+C13-V3_trip_2,C13-V3,LS,Col. Jalisco IV Seccion,1,C13-V3_r2
+C14-V1_route_1_0000001_15720,C14-V1,D,Centro Metropolitano,0,C14-V1_r1
+C14-V1_route_2_0000001_15600,C14-V1,D,Tlajomulco de Zuñiga,1,C14-V1_r2
+C14-V1_trip_1,C14-V1,LS,Centro Metropolitano,0,C14-V1_r1
+C14-V1_trip_2,C14-V1,LS,Tlajomulco de Zuñiga,1,C14-V1_r2
+C14-V2_route_1_0000001_15720,C14-V2,D,Plaza Centro Sur,0,C14-V2_r1
+C14-V2_route_2_0000001_15600,C14-V2,D,Tlajomulco de Zuñiga,1,C14-V2_r2
+C14-V2_trip_1,C14-V2,LS,Plaza Centro Sur,0,C14-V2_r1
+C14-V2_trip_2,C14-V2,LS,Tlajomulco de Zuñiga,1,C14-V2_r2
+C15_route_1_0000001_16200,C15,D,Centro Metropolitano,0,C15_r1
+C15_route_2_0000001_16440,C15,D,Cima Serena,1,C15_r2
+C15_trip_1,C15,LS,Centro Metropolitano,0,C15_r1
+C15_trip_2,C15,LS,Cima Serena,1,C15_r2
+C16_route_1_0000001_27060,C16,D,Centro Metropolitano,0,C16_r1
+C16_route_1_0000010_71400,C16,S,Centro Metropolitano,0,C16_r1
+C16_route_1_0000010_71400_2,C16,S,Centro Metropolitano,0,C16_r1
+C16_route_2_0000001_31140,C16,D,Oblatos,1,C16_r2
+C16_route_2_0000010_63120,C16,S,Oblatos,1,C16_r2
+C16_trip_1,C16,LV,Centro Metropolitano,0,C16_r1
+C16_trip_2,C16,LV,Oblatos,1,C16_r2
+C17_route_1_0000001_15900,C17,D,Loma Bonita Ejidal,0,C17_r1
+C17_route_1_1111110_20100,C17,LS,Loma Bonita Ejidal,0,C17_r1
+C17_route_2_0000001_15660,C17,D,Lomas de  Camichines,1,C17_r2
+C17_trip_2,C17,LS,Lomas de  Camichines,1,C17_r2
+C18_route_1_0000001_18000,C18,D,Centro Metropolitano,0,C18_r1
+C18_route_2_0000001_21300,C18,D,Francisco Villa,1,C18_r2
+C18_trip_1,C18,LS,Centro Metropolitano,0,C18_r1
+C18_trip_2,C18,LS,Francisco Villa,1,C18_r2
+C19_route_1_0000001_16200,C19,D,Centro Metropolitano,0,C19_r1
+C19_route_2_0000001_21180,C19,D,Mision de los Viñedos,1,C19_r2
+C19_trip_1,C19,LS,Centro Metropolitano,0,C19_r1
+C19_trip_2,C19,LS,Mision de los Viñedos,1,C19_r2
+C20-V1_route_1_0000001_16200,C20-V1,D,Centro Metropolitano,0,C20-V1_r1
+C20-V1_route_2_0000001_22080,C20-V1,D,Mision de los Viñedos,1,C20-V1_r2
+C20-V1_trip_1,C20-V1,LS,Centro Metropolitano,0,C20-V1_r1
+C20-V1_trip_2,C20-V1,LS,Mision de los Viñedos,1,C20-V1_r2
+C20-V2_route_1_0000001_18000,C20-V2,D,Col. Olimpica,0,C20-V2_r1
+C20-V2_route_2_0000001_20460,C20-V2,D,Loma Dorada Delegacion A,1,C20-V2_r2
+C20-V2_trip_1,C20-V2,LS,Col. Olimpica,0,C20-V2_r1
+C20-V2_trip_2,C20-V2,LS,Loma Dorada Delegacion A,1,C20-V2_r2
+C21_route_1_0000001_77160,C21,D,Centro Metropolitano,0,C21_r1
+C21_route_1_0000001_77160_2,C21,D,Centro Metropolitano,0,C21_r1
+C21_route_1_0000010_66540,C21,S,Centro Metropolitano,0,C21_r1
+C21_route_2_0000001_24720,C21,D,Oblatos,1,C21_r2
+C21_route_2_0000010_30360,C21,S,Oblatos,1,C21_r2
+C21_trip_1,C21,LV,Centro Metropolitano,0,C21_r1
+C21_trip_2,C21,LV,Oblatos,1,C21_r2
+C22_trip_1,C22,LD,Centro Metropolitano,0,C22_r1
+C22_trip_2,C22,LD,Colinas de Huentitan,1,C22_r2
+C23_route_1_0000001_21000,C23,D,Estacion El Refugio Linea 1 Tren Electrico Urbano,0,C23_r1
+C23_route_2_0000001_24000,C23,D,Colinas de Huentitan,1,C23_r2
+C23_trip_1,C23,LS,Estacion El Refugio Linea 1 Tren Electrico Urbano,0,C23_r1
+C23_trip_2,C23,LS,Colinas de Huentitan,1,C23_r2
+C25_trip_1,C25,LD,Plaza Centro Sur,0,C25_r1
+C25_trip_2,C25,LD,Arcos de San Sebastian,1,C25_r2
+C26_trip_1,C26,LD,Panteon Guadalajara,0,C26_r1
+C26_trip_2,C26,LD,Ciudad Granja,1,C26_r2
+C27_trip_1,C27,LD,Hospital Civil de Guadalajara,0,C27_r1
+C27_trip_2,C27,LD,Mirador de la Reina,1,C27_r2
+C28_route_1_0000001_22140,C28,D,Antigua Central Camionera,0,C28_r1
+C28_route_2_0000001_18000,C28,D,Senderos de Santiago,1,C28_r2
+C28_trip_1,C28,LS,Antigua Central Camionera,0,C28_r1
+C28_trip_2,C28,LS,Senderos de Santiago,1,C28_r2
+C29-V1_route_1_0000001_19800,C29-V1,D,Modulos de la Central de Autobuses,0,C29-V1_r1
+C29-V1_route_1_0000001_19800_2,C29-V1,D,Modulos de la Central de Autobuses,0,C29-V1_r1
+C29-V1_route_1_1111110_76740,C29-V1,LS,Modulos de la Central de Autobuses,0,C29-V1_r1
+C29-V1_route_1_1111110_76740_2,C29-V1,LS,Modulos de la Central de Autobuses,0,C29-V1_r1
+C29-V1_route_1_1111110_76740_3,C29-V1,LS,Modulos de la Central de Autobuses,0,C29-V1_r1
+C29-V1_route_2_0000001_78060,C29-V1,D,Col. Jalisco,1,C29-V1_r2
+C29-V1_route_2_0000001_78060_2,C29-V1,D,Col. Jalisco,1,C29-V1_r2
+C29-V1_route_2_1111110_78600,C29-V1,LS,Col. Jalisco,1,C29-V1_r2
+C29-V1_route_2_1111110_78600_2,C29-V1,LS,Col. Jalisco,1,C29-V1_r2
+C29-V1_route_2_1111110_78600_3,C29-V1,LS,Col. Jalisco,1,C29-V1_r2
+C29-V2_trip_1,C29-V2,LD,Modulos de la Central de Autobuses,0,C29-V2_r1
+C29-V2_trip_2,C29-V2,LD,Mision de los Viñedos,1,C29-V2_r2
+C30_route_1_0000001_18300,C30,D,Modulos de la Central de Autobuses,0,C30_r1
+C30_route_2_0000001_18420,C30,D,Lomas del Rio Verde,1,C30_r2
+C30_trip_1,C30,LS,Modulos de la Central de Autobuses,0,C30_r1
+C30_trip_2,C30,LS,Lomas del Rio Verde,1,C30_r2
+C31_route_1_0000001_20280,C31,D,Centro Metropolitano,0,C31_r1
+C31_route_2_0000001_20100,C31,D,Cerro de la Reina,1,C31_r2
+C31_trip_1,C31,LS,Centro Metropolitano,0,C31_r1
+C31_trip_2,C31,LS,Cerro de la Reina,1,C31_r2
+C32-V1_route_1_0000001_20520,C32-V1,D,San Juan de Dios,0,C32-V1_r1
+C32-V1_route_2_0000001_17400,C32-V1,D,Camichines II,1,C32-V1_r2
+C32-V1_trip_1,C32-V1,LS,San Juan de Dios,0,C32-V1_r1
+C32-V1_trip_2,C32-V1,LS,Camichines II,1,C32-V1_r2
+C32-V2_route_1_0000001_20520,C32-V2,D,San Juan de Dios,0,C32-V2_r1
+C32-V2_route_2_0000001_17400,C32-V2,D,Camichines II,1,C32-V2_r2
+C32-V2_trip_1,C32-V2,LS,San Juan de Dios,0,C32-V2_r1
+C32-V2_trip_2,C32-V2,LS,Camichines II,1,C32-V2_r2
+C33_route_1_0000001_17340,C33,D,Ferrocarril,0,C33_r1
+C33_route_2_0000001_18000,C33,D,Auditorio,1,C33_r2
+C33_trip_1,C33,LS,Ferrocarril,0,C33_r1
+C33_trip_2,C33,LS,Auditorio,1,C33_r2
+C34_route_1_0000001_58800,C34,D,Col. Americana,0,C34_r1
+C34_route_1_1111110_73980,C34,LS,Col. Americana,0,C34_r1
+C34_route_2_0000001_68040,C34,D,El Mirador,1,C34_r2
+C34_route_2_1111110_57900,C34,LS,El Mirador,1,C34_r2
+C35_route_1_0000001_17340,C35,D,Estacion Tetlan Linea 2 Tren Electrico Urbano,0,C35_r1
+C35_route_2_0000001_18000,C35,D,Las Palmas,1,C35_r2
+C35_trip_1,C35,LS,Estacion Tetlan Linea 2 Tren Electrico Urbano,0,C35_r1
+C35_trip_2,C35,LS,Las Palmas,1,C35_r2
+C36_route_1_0000001_15300,C36,D,Hospicio Cabañas,0,C36_r1
+C36_route_2_0000001_20640,C36,D,Jardines de la Reina,1,C36_r2
+C36_trip_1,C36,LS,Hospicio Cabañas,0,C36_r1
+C36_trip_2,C36,LS,Jardines de la Reina,1,C36_r2
+C37-V1_route_1_0000001_79260,C37-V1,D,Estacion Tetlan Linea 2 Tren Electrico Urbano,0,C37-V1_r1
+C37-V1_route_2_0000001_18000,C37-V1,D,Las Palmas,1,C37-V1_r2
+C37-V1_route_2_0000001_18000_2,C37-V1,D,Las Palmas,1,C37-V1_r2
+C37-V1_trip_1,C37-V1,LS,Estacion Tetlan Linea 2 Tren Electrico Urbano,0,C37-V1_r1
+C37-V1_trip_2,C37-V1,LS,Las Palmas,1,C37-V1_r2
+C37-V2_route_1_0000001_23460,C37-V2,D,Hospicio Cabañas,0,C37-V2_r1
+C37-V2_route_1_0000001_23460_2,C37-V2,D,Hospicio Cabañas,0,C37-V2_r1
+C37-V2_route_2_0000001_73800,C37-V2,D,Emiliano Zapata,1,C37-V2_r2
+C37-V2_route_2_0000001_73800_2,C37-V2,D,Emiliano Zapata,1,C37-V2_r2
+C37-V2_trip_1,C37-V2,LS,Hospicio Cabañas,0,C37-V2_r1
+C37-V2_trip_2,C37-V2,LS,Emiliano Zapata,1,C37-V2_r2
+C38-V1_trip_1,C38-V1,LD,Centro Universitario de las Ciencias Exactas e Ingenierias,0,C38-V1_r1
+C38-V1_trip_2,C38-V1,LD,La Punta,1,C38-V1_r2
+C38-V2_trip_1,C38-V2,LD,Centro Universitario de las Ciencias Exactas e Ingenierias,0,C38-V2_r1
+C38-V2_trip_2,C38-V2,LD,CU Tonala,1,C38-V2_r2
+C39-V1_trip_1,C39-V1,LD,San Juan de Dios,0,C39-V1_r1
+C39-V1_trip_2,C39-V1,LD,La Punta,1,C39-V1_r2
+C39-V2_trip_1,C39-V2,LD,Centro Medico de Occidente,0,C39-V2_r1
+C39-V2_trip_2,C39-V2,LD,La Punta,1,C39-V2_r2
+C40_route_1_0000001_16200,C40,D,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C40_r1
+C40_route_2_0000001_19620,C40,D,Chulavista,1,C40_r2
+C40_trip_1,C40,LS,Estacion Periferico Sur Linea 1 Tren Electrico Urbano,0,C40_r1
+C40_trip_2,C40,LS,Chulavista,1,C40_r2
+C41-V1_route_1_0000001_16440,C41-V1,D,Central de Autobuses,0,C41-V1_r1
+C41-V1_route_2_0000001_16200,C41-V1,D,Chulavista,1,C41-V1_r2
+C41-V1_trip_1,C41-V1,LS,Central de Autobuses,0,C41-V1_r1
+C41-V1_trip_2,C41-V1,LS,Chulavista,1,C41-V1_r2
+C41-V2_route_1_0000001_16440,C41-V2,D,Central de Autobuses,0,C41-V2_r1
+C41-V2_route_2_0000001_16200,C41-V2,D,Chulavista,1,C41-V2_r2
+C41-V2_trip_1,C41-V2,LS,Central de Autobuses,0,C41-V2_r1
+C41-V2_trip_2,C41-V2,LS,Chulavista,1,C41-V2_r2
+C42_route_1_0000001_20160,C42,D,Parque Agua Azul,0,C42_r1
+C42_route_1_0000010_19560,C42,S,Parque Agua Azul,0,C42_r1
+C42_route_1_1111100_21000,C42,LV,Parque Agua Azul,0,C42_r1
+C42_route_1_1111100_21000_2,C42,LV,Parque Agua Azul,0,C42_r1
+C42_route_2_0000001_24660,C42,D,El Briseño,1,C42_r2
+C42_route_2_0000010_24660,C42,S,El Briseño,1,C42_r2
+C42_route_2_1111100_65700,C42,LV,El Briseño,1,C42_r2
+C42_route_2_1111100_65700_2,C42,LV,El Briseño,1,C42_r2
+C42_trip_1,C42,LV,Parque Agua Azul,0,C42_r1
+C43-V1_route_1_0000001_17400,C43-V1,D,Rancho Nuevo,0,C43-V1_r1
+C43-V1_route_1_1111110_69240,C43-V1,LS,Rancho Nuevo,0,C43-V1_r1
+C43-V1_route_2_0000001_21120,C43-V1,D,Gran Terraza Belenes,1,C43-V1_r2
+C43-V1_route_2_1111110_47040,C43-V1,LS,Gran Terraza Belenes,1,C43-V1_r2
+C43-V1_route_2_1111110_47040_2,C43-V1,LS,Gran Terraza Belenes,1,C43-V1_r2
+C43-V2_route_1_0000001_17400,C43-V2,D,Centro Metropolitano,0,C43-V2_r1
+C43-V2_route_2_0000001_21540,C43-V2,D,Mirador de la Cañada,1,C43-V2_r2
+C43-V2_trip_1,C43-V2,LS,Centro Metropolitano,0,C43-V2_r1
+C43-V2_trip_2,C43-V2,LS,Mirador de la Cañada,1,C43-V2_r2
+C43-V3_route_1_0000001_17400,C43-V3,D,Centro Metropolitano,0,C43-V3_r1
+C43-V3_route_2_0000001_21300,C43-V3,D,Mirador de la Cañada,1,C43-V3_r2
+C43-V3_trip_1,C43-V3,LS,Centro Metropolitano,0,C43-V3_r1
+C43-V3_trip_2,C43-V3,LS,Mirador de la Cañada,1,C43-V3_r2
+C44_route_1_0000001_20400,C44,D,Plaza Patria,0,C44_r1
+C44_route_2_0000001_23340,C44,D,Las Cabañitas,1,C44_r2
+C44_trip_1,C44,LS,Plaza Patria,0,C44_r1
+C44_trip_2,C44,LS,Las Cabañitas,1,C44_r2
+C45-V1_route_1_0000011_20400,C45-V1,SD,Atemajac del Valle,0,C45-V1_r1
+C45-V1_route_2_0000011_22020,C45-V1,SD,Bosques de Centinela II,1,C45-V1_r2
+C45-V1_trip_1,C45-V1,LV,Atemajac del Valle,0,C45-V1_r1
+C45-V1_trip_2,C45-V1,LV,Bosques de Centinela II,1,C45-V1_r2
+C45-V2_route_1_0000011_20400,C45-V2,SD,Atemajac del Valle,0,C45-V2_r1
+C45-V2_route_2_0000011_21960,C45-V2,SD,Vistas de la Centinela,1,C45-V2_r2
+C45-V2_trip_1,C45-V2,LV,Atemajac del Valle,0,C45-V2_r1
+C45-V2_trip_2,C45-V2,LV,Vistas de la Centinela,1,C45-V2_r2
+C46-V1_route_1_0000001_18600,C46-V1,D,Estacion Patria Sur Tren Electrico Urbano Linea 1,0,C46-V1_r1
+C46-V1_route_2_0000001_18600,C46-V1,D,Altamira,1,C46-V1_r2
+C46-V1_trip_1,C46-V1,LS,Estacion Patria Sur Tren Electrico Urbano Linea 1,0,C46-V1_r1
+C46-V1_trip_2,C46-V1,LS,Altamira,1,C46-V1_r2
+C46-V2_route_1_0000001_18600,C46-V2,D,Estacion Patria Sur Tren Electrico Urbano Linea 1,0,C46-V2_r1
+C46-V2_route_2_0000001_18600,C46-V2,D,Urbiquintas,1,C46-V2_r2
+C46-V2_trip_1,C46-V2,LS,Estacion Patria Sur Tren Electrico Urbano Linea 1,0,C46-V2_r1
+C46-V2_trip_2,C46-V2,LS,Urbiquintas,1,C46-V2_r2
+C47-V1_route_1_0000001_18000,C47-V1,D,Centro Metropolitano,0,C47-V1_r1
+C47-V1_route_2_0000001_21360,C47-V1,D,El Vergel,1,C47-V1_r2
+C47-V1_trip_1,C47-V1,LS,Centro Metropolitano,0,C47-V1_r1
+C47-V1_trip_2,C47-V1,LS,El Vergel,1,C47-V1_r2
+C47-V2_route_1_0000001_18000,C47-V2,D,Centro Metropolitano,0,C47-V2_r1
+C47-V2_route_2_0000001_22440,C47-V2,D,Las Pintitas,1,C47-V2_r2
+C47-V2_trip_1,C47-V2,LS,Centro Metropolitano,0,C47-V2_r1
+C47-V2_trip_2,C47-V2,LS,Las Pintitas,1,C47-V2_r2
+C48_route_1_0000001_18000,C48,D,Centro Metropolitano,0,C48_r1
+C48_route_2_0000001_20520,C48,D,El Tapatio,1,C48_r2
+C48_trip_1,C48,LS,Centro Metropolitano,0,C48_r1
+C48_trip_2,C48,LS,El Tapatio,1,C48_r2
+C49-V1_route_1_0000001_77520,C49-V1,D,Plaza del Sol,0,C49-V1_r1
+C49-V1_route_1_1111110_69960,C49-V1,LS,Plaza del Sol,0,C49-V1_r1
+C49-V1_route_2_0000001_80100,C49-V1,D,Miravalle,1,C49-V1_r2
+C49-V1_route_2_1111110_76800,C49-V1,LS,Miravalle,1,C49-V1_r2
+C49-V2_route_1_0000001_77520,C49-V2,D,Plaza del Sol,0,C49-V2_r1
+C49-V2_route_1_1111110_73320,C49-V2,LS,Plaza del Sol,0,C49-V2_r1
+C49-V2_route_2_0000001_21780,C49-V2,D,Miravalle,1,C49-V2_r2
+C49-V2_trip_2,C49-V2,LS,Miravalle,1,C49-V2_r2
+C50-V1_route_1_0000001_18720,C50-V1,D,Miravalle,0,C50-V1_r1
+C50-V1_route_1_1111110_19680,C50-V1,LS,Miravalle,0,C50-V1_r1
+C50-V1_route_2_0000001_23640,C50-V1,D,Chulavista,1,C50-V1_r2
+C50-V1_route_2_1111110_23640,C50-V1,LS,Chulavista,1,C50-V1_r2
+C50-V2_route_1_0000001_19800,C50-V2,D,Miravalle,0,C50-V2_r1
+C50-V2_route_1_1111110_19680,C50-V2,LS,Miravalle,0,C50-V2_r1
+C50-V2_route_2_0000001_22680,C50-V2,D,Real del Sol,1,C50-V2_r2
+C50-V2_trip_1,C50-V2,LS,Miravalle,0,C50-V2_r1
+C50-V2_trip_2,C50-V2,LS,Real del Sol,1,C50-V2_r2
+C51-V2_route_1_0000001_18720,C51-V2,D,Plaza del Sol,0,C51-V2_r1
+C51-V2_route_2_0000001_22560,C51-V2,D,Miravalle,1,C51-V2_r2
+C51-V2_trip_1,C51-V2,LS,Plaza del Sol,0,C51-V2_r1
+C51-V2_trip_2,C51-V2,LS,Miravalle,1,C51-V2_r2
+C53_route_1_0000001_18000,C53,D,Loma Dorada,0,C53_r1
+C53_route_2_0000001_25500,C53,D,Residencial Poniente,1,C53_r2
+C53_trip_1,C53,LS,Loma Dorada,0,C53_r1
+C53_trip_2,C53,LS,Residencial Poniente,1,C53_r2
+C54_route_1_0000001_18000,C54,D,Av. Central Guillermo Gonzalez Camarena y Circuito Federalistas,0,C54_r1
+C54_route_2_0000001_25500,C54,D,Loma Dorada,1,C54_r2
+C54_trip_1,C54,LS,Av. Central Guillermo Gonzalez Camarena y Circuito Federalistas,0,C54_r1
+C54_trip_2,C54,LS,Loma Dorada,1,C54_r2
+C58-V1_route_1_1111111_23040,C58-V1,LD,Centro Metropolitano,0,C58-V1_r1
+C58-V1_route_2_1111111_28860,C58-V1,LD,Jauja,1,C58-V1_r2
+C58-V2_route_1_1111111_23040,C58-V2,LD,Centro Metropolitano,0,C58-V2_r1
+C58-V2_route_2_1111111_28860,C58-V2,LD,Centro Universitario de Tonala,1,C58-V2_r2
+C60_trip_1,C60,LS,Centro Metropolitano,0,C60_r1
+C60_trip_2,C60,LS,San Juan,1,C60_r2
+C61_trip_1,C61,LD,Centro Metropolitano,0,C61_r1
+C61_trip_2,C61,LD,Santibañez,1,C61_r2
+C62_route_1_0000001_17100,C62,D,Centro Metropolitano,0,C62_r1
+C62_route_2_0000001_21060,C62,D,Las Puertas,1,C62_r2
+C62_trip_1,C62,LS,Centro Metropolitano,0,C62_r1
+C62_trip_2,C62,LS,Las Puertas,1,C62_r2
+C64_trip_1,C64,LD,Santa Maria del Pueblito,0,C64_r1
+C64_trip_2,C64,LD,Basilio Vadillo,1,C64_r2
+C65_trip_1,C65,LD,Santa Maria del Pueblito,0,C65_r1
+C65_trip_2,C65,LD,Basilio Vadillo,1,C65_r2
+C66-V1_route_1_0000001_16200,C66-V1,D,Hacienda del Tepeyac,0,C66-V1_r1
+C66-V1_route_2_0000001_21780,C66-V1,D,Heliodoro Hernandez Loza,1,C66-V1_r2
+C66-V1_trip_1,C66-V1,LS,Hacienda del Tepeyac,0,C66-V1_r1
+C66-V1_trip_2,C66-V1,LS,Heliodoro Hernandez Loza,1,C66-V1_r2
+C66-V2_route_1_0000001_16200,C66-V2,D,Centro Metropolitano,0,C66-V2_r1
+C66-V2_route_2_0000001_21180,C66-V2,D,Jardines de la Cruz,1,C66-V2_r2
+C66-V2_trip_1,C66-V2,LS,Centro Metropolitano,0,C66-V2_r1
+C66-V2_trip_2,C66-V2,LS,Jardines de la Cruz,1,C66-V2_r2
+C67-V1_trip_1,C67-V1,LD,Centro Metropolitano,0,C67-V1_r1
+C67-V1_trip_2,C67-V1,LD,Chulavista,1,C67-V1_r2
+C67-V2_trip_1,C67-V2,LD,Centro Metropolitano,0,C67-V2_r1
+C67-V2_trip_2,C67-V2,LD,Chulavista,1,C67-V2_r2
+C69_route_1_0000001_18000,C69,D,Centro Metropolitano,0,C69_r1
+C69_route_2_0000001_22380,C69,D,Lomas del Paraiso II,1,C69_r2
+C69_trip_1,C69,LS,Centro Metropolitano,0,C69_r1
+C69_trip_2,C69,LS,Lomas del Paraiso II,1,C69_r2
+C70_route_1_0000001_18000,C70,D,Plaza Mexico,0,C70_r1
+C70_route_2_0000001_22020,C70,D,1ro de Mayo,1,C70_r2
+C70_trip_1,C70,LS,Plaza Mexico,0,C70_r1
+C70_trip_2,C70,LS,1ro de Mayo,1,C70_r2
+C71_route_1_0000001_18900,C71,D,Jardines Universidad,0,C71_r1
+C71_route_2_0000001_24120,C71,D,Paseos del Valle,1,C71_r2
+C71_trip_1,C71,LS,Jardines Universidad,0,C71_r1
+C71_trip_2,C71,LS,Paseos del Valle,1,C71_r2
+C73_route_1_0000001_17520,C73,D,Bosques del Centinela,0,C73_r1
+C73_route_2_0000001_17400,C73,D,Col. Indigena,1,C73_r2
+C73_trip_1,C73,LS,Bosques del Centinela,0,C73_r1
+C73_trip_2,C73,LS,Col. Indigena,1,C73_r2
+C74_trip_1,C74,LD,Centro Metropolitano,0,C74_r1
+C74_trip_2,C74,LD,Lomas de la Primavera,1,C74_r2
+C75_route_1_0000001_18300,C75,D,Modulos de la Central de Autobuses,0,C75_r1
+C75_route_2_0000001_18180,C75,D,Circunvalacion Oblatos,1,C75_r2
+C75_trip_1,C75,LS,Modulos de la Central de Autobuses,0,C75_r1
+C75_trip_2,C75,LS,Circunvalacion Oblatos,1,C75_r2
+C76-V1_route_1_0000001_18060,C76-V1,D,Col. del Fresno,0,C76-V1_r1
+C76-V1_route_2_0000001_18000,C76-V1,D,Fresnos II,1,C76-V1_r2
+C76-V1_trip_1,C76-V1,LS,Col. del Fresno,0,C76-V1_r1
+C76-V1_trip_2,C76-V1,LS,Fresnos II,1,C76-V1_r2
+C76-V2_route_1_0000001_18060,C76-V2,D,Col. del Fresno,0,C76-V2_r1
+C76-V2_route_2_0000001_18000,C76-V2,D,Fresnos II,1,C76-V2_r2
+C76-V2_trip_1,C76-V2,LS,Col. del Fresno,0,C76-V2_r1
+C76-V2_trip_2,C76-V2,LS,Fresnos II,1,C76-V2_r2
+C77_route_1_0000001_15900,C77,D,Estacion Tesoro Tren Electrico Urbano,0,C77_r1
+C77_route_2_0000001_19200,C77,D,Los Cantaros,1,C77_r2
+C77_trip_1,C77,LS,Estacion Tesoro Tren Electrico Urbano,0,C77_r1
+C77_trip_2,C77,LS,Los Cantaros,1,C77_r2
+C78-V1_route_1_0000001_21720,C78-V1,D,Plaza del Sol,0,C78-V1_r1
+C78-V1_route_2_0000001_21600,C78-V1,D,La Tijera,1,C78-V1_r2
+C78-V1_trip_1,C78-V1,LS,Plaza del Sol,0,C78-V1_r1
+C78-V1_trip_2,C78-V1,LS,La Tijera,1,C78-V1_r2
+C79_route_1_0000001_19260,C79,D,Antemajac del Valle,0,C79_r1
+C79_route_2_0000001_19320,C79,D,Miramar,1,C79_r2
+C79_trip_1,C79,LS,Antemajac del Valle,0,C79_r1
+C79_trip_2,C79,LS,Miramar,1,C79_r2
+C80-V1_trip_1,C80-V1,LD,La Fortuna,0,C80-V1_r1
+C80-V1_trip_2,C80-V1,LD,San Juan de Ocotan,1,C80-V1_r2
+C80-V2_trip_1,C80-V2,LD,La Fortuna,0,C80-V2_r1
+C80-V2_trip_2,C80-V2,LD,San Juan de Ocotan,1,C80-V2_r2
+C83_route_1_0000001_18000,C83,D,Centro Metropolitano,0,C83_r1
+C83_route_2_0000001_21660,C83,D,Las Liebres,1,C83_r2
+C83_trip_1,C83,LS,Centro Metropolitano,0,C83_r1
+C83_trip_2,C83,LS,Las Liebres,1,C83_r2
+C85_route_1_0000001_18780,C85,D,La Normal,0,C85_r1
+C85_route_2_0000001_21600,C85,D,Parque Real,1,C85_r2
+C85_trip_1,C85,LS,La Normal,0,C85_r1
+C85_trip_2,C85,LS,Parque Real,1,C85_r2
+C86_route_1_0000001_17400,C86,D,Centro Metropolitano,0,C86_r1
+C86_route_2_0000001_21600,C86,D,Col. del Carmen,1,C86_r2
+C86_trip_1,C86,LS,Centro Metropolitano,0,C86_r1
+C86_trip_2,C86,LS,Col. del Carmen,1,C86_r2
+C88-V2_trip_1,C88-V2,LD,Unidad Republica,0,C88-V2_r1
+C88-V2_trip_2,C88-V2,LD,Mirador del Bosque,1,C88-V2_r2
+C89_trip_1,C89,LD,Unidad Republica,0,C89_r1
+C89_trip_2,C89,LD,Copala,1,C89_r2
+C90_trip_1,C90,LD,La Normal,0,C90_r1
+C90_trip_2,C90,LD,San Francisco de Ixcatan,1,C90_r2
+C92_trip_1,C92,LD,La Normal,0,C92_r1
+C92_trip_2,C92,LD,Los Camachos,1,C92_r2
+C93_trip_1,C93,LD,Matatlan,0,C93_r1
+C93_trip_2,C93,LD,San Joaquin,1,C93_r2
+C94_trip_1,C94,LD,La Normal,0,C94_r1
+C94_trip_2,C94,LD,El Tempisque,1,C94_r2
+C95_trip_1,C95,LD,Unidad Republica,0,C95_r1
+C95_trip_2,C95,LD,Los Molinos,1,C95_r2
+C96-V2_route_1_0000001_20820,C96-V2,D,Analco,0,C96-V2_r1
+C96-V2_route_2_0000001_16980,C96-V2,D,Col. Sin Nombre,1,C96-V2_r2
+C96-V2_trip_1,C96-V2,LS,Analco,0,C96-V2_r1
+C96-V2_trip_2,C96-V2,LS,Col. Sin Nombre,1,C96-V2_r2
+C97-V1_route_1_0000001_16200,C97-V1,D,Centro Metropolitano,0,C97-V1_r1
+C97-V1_route_2_0000001_22020,C97-V1,D,El Quince,1,C97-V1_r2
+C97-V1_trip_1,C97-V1,LS,Centro Metropolitano,0,C97-V1_r1
+C97-V1_trip_2,C97-V1,LS,El Quince,1,C97-V1_r2
+C97-V2_route_1_0000001_16200,C97-V2,D,Centro Metropolitano,0,C97-V2_r1
+C97-V2_route_2_0000001_22140,C97-V2,D,El Quince,1,C97-V2_r2
+C97-V2_trip_1,C97-V2,LS,Centro Metropolitano,0,C97-V2_r1
+C97-V2_trip_2,C97-V2,LS,El Quince,1,C97-V2_r2
+C99_route_1_0000001_18600,C99,D,Las Fuentes,0,C99_r1
+C99_route_2_0000001_24240,C99,D,Hacienda Santa Fe,1,C99_r2
+C99_trip_1,C99,LS,Las Fuentes,0,C99_r1
+C99_trip_2,C99,LS,Hacienda Santa Fe,1,C99_r2
+T01_r1_t1,T01,LS,Plaza del Sol,0,T01_r1
+T01_r1_t2,T01,D,Plaza del Sol,0,T01_r1
+T01_r2_t1,T01,LS,Cerro del Cuatro,1,T01_r2
+T01_r2_t2,T01,D,Cerro del Cuatro,1,T01_r2
+T02-A02_r1_t1,T02-A02,LS,Estación Plaza Revolución,0,T02-A02_r1
+T02-A02_r1_t2,T02-A02,D,Estación Plaza Revolución,0,T02-A02_r1
+T02-A02_r2_t1,T02-A02,LS,Las Liebres,1,T02-A02_r2
+T02-A02_r2_t2,T02-A02,D,Las Liebres,1,T02-A02_r2
+T02_r1_t1,T02,LS,Barranca de Huentitán,0,T02_r1
+T02_r1_t2,T02,D,Barranca de Huentitán,0,T02_r1
+T02_r2_t1,T02,LS,Colonia Alfredo Barba,1,T02_r2
+T02_r2_t2,T02,D,Colonia Alfredo Barba,1,T02_r2
+T03-C01_r1_t1,T03-C01,LS,San Juan de Dios,0,T03-C01_r1
+T03-C01_r1_t2,T03-C01,D,San Juan de Dios,0,T03-C01_r1
+T03-C01_r2_t1,T03-C01,LS,Puerta de la Barranca de Huentitán,1,T03-C01_r2
+T03-C01_r2_t2,T03-C01,D,Puerta de la Barranca de Huentitán,1,T03-C01_r2
+T03_r1_t1,T03,LS,La Micailita,0,T03_r1
+T03_r1_t2,T03,D,La Micailita,0,T03_r1
+T03_r2_t1,T03,LS,Puerta de la Barranca de Huentitán,1,T03_r2
+T03_r2_t2,T03,D,Puerta de la Barranca de Huentitán,1,T03_r2
+T04A-1_r1_t1,T04A-1,LS,Vallarta Patria,0,T04A-1_r1
+T04A-1_r1_t2,T04A-1,D,Vallarta Patria,0,T04A-1_r1
+T04A-1_r2_t1,T04A-1,LS,Tonalá Centro,1,T04A-1_r2
+T04A-1_r2_t2,T04A-1,D,Tonalá Centro,1,T04A-1_r2
+T04A-2_r1_t1,T04A-2,LS,Mercado de Abastos,0,T04A-2_r1
+T04A-2_r1_t2,T04A-2,D,Mercado de Abastos,0,T04A-2_r1
+T04A-2_r2_t1,T04A-2,LS,Tonalá Centro,1,T04A-2_r2
+T04A-2_r2_t2,T04A-2,D,Tonalá Centro,1,T04A-2_r2
+T04A-C01_r1_t1,T04A-C01,LS,Vallarta Patria,0,T04A-C01_r1
+T04A-C01_r1_t2,T04A-C01,D,Vallarta Patria,0,T04A-C01_r1
+T04A-C01_r2_t1,T04A-C01,LS,Las Pintas de Arriba,1,T04A-C01_r2
+T04A-C01_r2_t2,T04A-C01,D,Las Pintas de Arriba,1,T04A-C01_r2
+T04B-1_r1_t1,T04B-1,LS,Tonalá Centro,0,T04B-1_r1
+T04B-1_r1_t2,T04B-1,D,Tonalá Centro,0,T04B-1_r1
+T04B-1_r2_t1,T04B-1,D,Jardines Tapatíos,1,T04B-1_r2
+T04B-1_r2_t2,T04B-1,LS,Jardines Tapatíos,1,T04B-1_r2
+T04B-2_r1_t1,T04B-2,D,IMSS Hospital General Regional 46,0,T04B-2_r1
+T04B-2_r1_t2,T04B-2,LS,IMSS Hospital General Regional 46,0,T04B-2_r1
+T04B-2_r2_t1,T04B-2,D,Arroyo de En medio,1,T04B-2_r2
+T04B-2_r2_t2,T04B-2,LS,Arroyo de En medio,1,T04B-2_r2
+T04B-3_r1_t1,T04B-3,D,Plaza del Sol,0,T04B-3_r1
+T04B-3_r1_t2,T04B-3,LS,Plaza del Sol,0,T04B-3_r1
+T04B-3_r2_t1,T04B-3,D,Loma Dorada,1,T04B-3_r2
+T04B-3_r2_t2,T04B-3,LS,Loma Dorada,1,T04B-3_r2
+T04B-4_r1_t1,T04B-4,D,Mercado de Abastos,0,T04B-4_r1
+T04B-4_r1_t2,T04B-4,LS,Mercado de Abastos,0,T04B-4_r1
+T04B-4_r2_t1,T04B-4,D,El Fortín,1,T04B-4_r2
+T04B-4_r2_t2,T04B-4,LS,El Fortín,1,T04B-4_r2
+T06_r1_t1,T06,LS,Centro Metropolitano,0,T06_r1
+T06_r1_t2,T06,D,Centro Metropolitano,0,T06_r1
+T06_r2_t1,T06,D,Jardines de la Cruz,1,T06_r2
+T06_r2_t2,T06,LS,Jardines de la Cruz,1,T06_r2
+T07-C02_r1_t1,T07-C02,D,Centro Metropolitano,0,T07-C02_r1
+T07-C02_r1_t2,T07-C02,LS,Centro Metropolitano,0,T07-C02_r1
+T07-C02_r2_t1,T07-C02,D,La Tijera,1,T07-C02_r2
+T07-C02_r2_t2,T07-C02,LS,La Tijera,1,T07-C02_r2
+T07-C03_r1_t1,T07-C03,D,Plaza Centro Sur,0,T07-C03_r1
+T07-C03_r1_t2,T07-C03,LS,Plaza Centro Sur,0,T07-C03_r1
+T07-C03_r2_t1,T07-C03,D,El Briseño,1,T07-C03_r2
+T07-C03_r2_t2,T07-C03,LS,El Briseño,1,T07-C03_r2
+T07_Route_1_0000001_15840,T07,D,Parques de Santa Maria,0,T07_r1
+T07_Route_2_0000001_15900,T07,D,Agua Fria,1,T07_r2
+T07_TRIP_1,T07,LS,Parques de Santa Maria,0,T07_r1
+T07_TRIP_2,T07,LS,Agua Fria,1,T07_r2
+T08-C01_r1_t1,T08-C01,D,Plaza Patria,0,T08-C01_r1
+T08-C01_r1_t2,T08-C01,LS,Plaza Patria,0,T08-C01_r1
+T08-C01_r2_t1,T08-C01,D,Haciendas del Valle,1,T08-C01_r2
+T08-C01_r2_t2,T08-C01,LS,Haciendas del Valle,1,T08-C01_r2
+T08_r1_t1,T08,D,Deitz,0,T08_r1
+T08_r1_t2,T08,LS,Deitz,0,T08_r1
+T08_r2_t1,T08,D,Haciendas del Valle,1,T08_r2
+T08_r2_t2,T08,LS,Haciendas del Valle,1,T08_r2
+T09-B_r1_t1,T09-B,D,Oblatos - Circunvalacion,0,T09-B_r1
+T09-B_r1_t2,T09-B,LS,Oblatos - Circunvalacion,0,T09-B_r1
+T09-B_r2_t1,T09-B,D,Oblatos - Belisario,1,T09-B_r2
+T09-B_r2_t2,T09-B,LS,Oblatos - Belisario,1,T09-B_r2
+T09-O_r1_t1,T09-O,D,Belisario,0,T09-O_r1
+T09-O_r1_t2,T09-O,LS,Belisario,0,T09-O_r1
+T09-O_r2_t1,T09-O,D,Circunvalacion,1,T09-O_r2
+T09-O_r2_t2,T09-O,LS,Circunvalacion,1,T09-O_r2
+T10-C01_r1_t1,T10-C01,D,Americana,0,T10-C01_r1
+T10-C01_r1_t2,T10-C01,LS,Americana,0,T10-C01_r1
+T10-C01_r2_t1,T10-C01,D,Miramar,1,T10-C01_r2
+T10-C01_r2_t2,T10-C01,LS,Miramar,1,T10-C01_r2
+T10-C02_r1_t1,T10-C02,D,Americana,0,T10-C02_r1
+T10-C02_r1_t2,T10-C02,LS,Americana,0,T10-C02_r1
+T10-C02_r2_t1,T10-C02,D,Miramar,1,T10-C02_r2
+T10-C02_r2_t2,T10-C02,LS,Miramar,1,T10-C02_r2
+T10-C03_r1_t1,T10-C03,D,Plaza Centro,0,T10-C03_r1
+T10-C03_r1_t2,T10-C03,LS,Plaza Centro,0,T10-C03_r1
+T10-C03_r2_t1,T10-C03,D,Los Robles,1,T10-C03_r2
+T10-C03_r2_t2,T10-C03,LS,Los Robles,1,T10-C03_r2
+T10_r1_t1,T10,D,Americana,0,T10_r1
+T10_r1_t2,T10,LS,Americana,0,T10_r1
+T10_r2_t1,T10,D,Foret,1,T10_r2
+T10_r2_t2,T10,LS,Foret,1,T10_r2
+T11A-C01_r1_t1,T11A-C01,D,Centro Metropolitano,0,T11A-C01_r1
+T11A-C01_r1_t2,T11A-C01,LS,Centro Metropolitano,0,T11A-C01_r1
+T11A-C01_r2_t1,T11A-C01,D,El Fortín,1,T11A-C01_r2
+T11A-C01_r2_t2,T11A-C01,LS,El Fortín,1,T11A-C01_r2
+T11A-C02_r1_t1,T11A-C02,D,Centro Metropolitano,0,T11A-C02_r1
+T11A-C02_r1_t2,T11A-C02,LS,Centro Metropolitano,0,T11A-C02_r1
+T11A-C02_r2_t1,T11A-C02,D,San Nicolás de la Primavera,1,T11A-C02_r2
+T11A-C02_r2_t2,T11A-C02,LS,San Nicolás de la Primavera,1,T11A-C02_r2
+T11A-C03_r1_t1,T11A-C03,D,Centro Metropolitano,0,T11A-C03_r1
+T11A-C03_r1_t2,T11A-C03,LS,Centro Metropolitano,0,T11A-C03_r1
+T11A-C03_r2_t1,T11A-C03,D,San Nicolás de la Primavera,1,T11A-C03_r2
+T11A-C03_r2_t2,T11A-C03,LS,San Nicolás de la Primavera,1,T11A-C03_r2
+T11A_r1_t1,T11A,D,Centro Metropolitano,0,T11A_r1
+T11A_r1_t2,T11A,LS,Centro Metropolitano,0,T11A_r1
+T11A_r2_t1,T11A,D,El Fortín,1,T11A_r2
+T11A_r2_t2,T11A,LS,El Fortín,1,T11A_r2
+T11B_Route_1_0000011_18000,T11B,SD,Jardines del Tepeyac,0,T11B_r1
+T11B_Route_2_0000011_24960,T11B,SD,Privadas de la Reina,1,T11B_r2
+T11B_TRIP_1,T11B,LV,Jardines del Tepeyac,0,T11B_r1
+T11B_TRIP_2,T11B,LV,Privadas de la Reina,1,T11B_r2
+T13A_TRIP_1,T13A,LD,Centro Metropolitano,0,T13A_r1
+T13A_TRIP_2,T13A,LD,Juanacatlan,1,T13A_r2
+T14B-C03-1_r1_t1,T14B-C03-1,D,Centro Médico,0,T14B-C03-1_r1
+T14B-C03-1_r1_t2,T14B-C03-1,LS,Centro Médico,0,T14B-C03-1_r1
+T14B-C03-1_r2_t1,T14B-C03-1,D,Jardines de Santa María,1,T14B-C03-1_r2
+T14B-C03-1_r2_t2,T14B-C03-1,LS,Jardines de Santa María,1,T14B-C03-1_r2
+T14B-C03-2_r1_t1,T14B-C03-2,D,Aránzazu,0,T14B-C03-2_r1
+T14B-C03-2_r1_t2,T14B-C03-2,LS,Aránzazu,0,T14B-C03-2_r1
+T14B-C03-2_r2_t1,T14B-C03-2,D,Jardines de Santa María,1,T14B-C03-2_r2
+T14B-C03-2_r2_t2,T14B-C03-2,LS,Jardines de Santa María,1,T14B-C03-2_r2
+T14B_Route_1_0000001_18000,T14B,D,Miguel Hidalgo,0,T14B_r1
+T14B_Route_2_0000001_18000,T14B,D,Nuevo Santa Maria,1,T14B_r2
+T14B_TRIP_1,T14B,LS,Miguel Hidalgo,0,T14B_r1
+T14B_TRIP_2,T14B,LS,Nuevo Santa Maria,1,T14B_r2
+T15_Route_1_0000001_16200,T15,D,La Guadalupana,0,T15_r1
+T15_Route_2_0000001_16080,T15,D,La Coronilla,1,T15_r2
+T15_TRIP_1,T15,LS,La Guadalupana,0,T15_r1
+T15_TRIP_2,T15,LS,La Coronilla,1,T15_r2
+T16B-C06_r1_t1,T16B-C06,D,El Capullo,0,T16B-C06_r1
+T16B-C06_r1_t2,T16B-C06,LS,El Capullo,0,T16B-C06_r1
+T16B-C06_r2_t1,T16B-C06,D,Palermo,1,T16B-C06_r2
+T16B-C06_r2_t2,T16B-C06,LS,Palermo,1,T16B-C06_r2
+T16B-C07-C_r1_t1,T16B-C07-C,D,San Francisco Tesistán,0,T16B-C07-C_r1
+T16B-C07-C_r1_t2,T16B-C07-C,LS,San Francisco Tesistán,0,T16B-C07-C_r1
+T16B-C07-C_r2_t1,T16B-C07-C,D,Privanza de la Ceiba,1,T16B-C07-C_r2
+T16B-C07-C_r2_t2,T16B-C07-C,LS,Privanza de la Ceiba,1,T16B-C07-C_r2
+T16B-C07-V_r1_t1,T16B-C07-V,D,El Capullo,0,T16B-C07-V_r1
+T16B-C07-V_r1_t2,T16B-C07-V,LS,El Capullo,0,T16B-C07-V_r1
+T16B-C07-V_r2_t1,T16B-C07-V,D,Vistas de Tesistán,1,T16B-C07-V_r2
+T16B-C07-V_r2_t2,T16B-C07-V,LS,Vistas de Tesistán,1,T16B-C07-V_r2
+T16B-C08-M_r1_t1,T16B-C08-M,D,La Piedrera,0,T16B-C08-M_r1
+T16B-C08-M_r1_t2,T16B-C08-M,LS,La Piedrera,0,T16B-C08-M_r1
+T16B-C08-M_r2_t1,T16B-C08-M,D,Las Mesitas,1,T16B-C08-M_r2
+T16B-C08-M_r2_t2,T16B-C08-M,LS,Las Mesitas,1,T16B-C08-M_r2
+T16B-C08-P_r1_t1,T16B-C08-P,D,El Capullo,0,T16B-C08-P_r1
+T16B-C08-P_r1_t2,T16B-C08-P,LS,El Capullo,0,T16B-C08-P_r1
+T16B-C08-P_r2_t1,T16B-C08-P,D,La Piedrera,1,T16B-C08-P_r2
+T16B-C08-P_r2_t2,T16B-C08-P,LS,La Piedrera,1,T16B-C08-P_r2
+T16B_Route_1_0000011_15600,T16B,SD,Unidad Republica,0,T16B_r1
+T16B_Route_2_0000001_20580,T16B,D,Nextipac,1,T16B_r2
+T16B_TRIP_1,T16B,LV,Unidad Republica,0,T16B_r1
+T16B_TRIP_2,T16B,LS,Nextipac,1,T16B_r2
+T17-C01_r1_t1,T17-C01,D,Francisco Sarabia,0,T17-C01_r1
+T17-C01_r1_t2,T17-C01,LS,Francisco Sarabia,0,T17-C01_r1
+T17-C01_r2_t1,T17-C01,D,Nuevo México,1,T17-C01_r2
+T17-C01_r2_t2,T17-C01,LS,Nuevo México,1,T17-C01_r2
+T17_r1_t1,T17,D,San Martín del Tajo,0,T17_r1
+T17_r1_t2,T17,LS,San Martín del Tajo,0,T17_r1
+T17_r2_t1,T17,D,Nuevo México,1,T17_r2
+T17_r2_t2,T17,LS,Nuevo México,1,T17_r2
+T18-1-L_r1_t1,T18-1-L,S,Colonia San Elías,0,T18-1-L_r1
+T18-1-L_r1_t2,T18-1-L,LV,Colonia San Elías,0,T18-1-L_r1
+T18-1-L_r1_t3,T18-1-L,D,Colonia San Elías,0,T18-1-L_r1
+T18-1-T_r1_t1,T18-1-T,S,Colonia San Elías,0,T18-1-T_r1
+T18-1-T_r1_t2,T18-1-T,LV,Colonia San Elías,0,T18-1-T_r1
+T18-1-T_r1_t3,T18-1-T,D,Colonia San Elías,0,T18-1-T_r1
+T18-2-L_r2_t1,T18-2-L,S,Colonia San Elias,1,T18-2-L_r2
+T18-2-L_r2_t2,T18-2-L,LV,Colonia San Elias,1,T18-2-L_r2
+T18-2-L_r2_t3,T18-2-L,D,Colonia San Elias,1,T18-2-L_r2
+T18-2-T_r2_t1,T18-2-T,S,Colonia San Elias,1,T18-2-T_r2
+T18-2-T_r2_t2,T18-2-T,LV,Colonia San Elias,1,T18-2-T_r2
+T18-2-T_r2_t3,T18-2-T,D,Colonia San Elias,1,T18-2-T_r2
+C98_route_2_0000001_32640,C98,D,CU Tonala,1,C98_r2
+C98_route_1_0000001_53760,C98,D,Estacion Periferico Norte Tren Electrico Urbano,0,C98_r1
+C98_route_2_1111110_50520,C98,LS,CU Tonala,1,C98_r2
+C98_route_1_1111110_60000,C98,LS,Estacion Periferico Norte Tren Electrico Urbano,0,C98_r1
+A03_1,MC-A03,LD,Estacion San Patricio,0,MC-A03_r1
+A03_2,MC-A03,LD,Santa Elena de la Cruz,1,MC-A03_r2
+A05_2,MC-A05,LD,Dr. Alt,1,MC-A05_r2
+A05_1,MC-A05,LD,Estacion Independencia Norte,0,MC-A05_r1
+A06_2,MC-A06,LD,El Vergel,1,MC-A06_r2
+A06_1_1,MC-A06,LD,Estacion Fray Angelico,0,MC-A06_r1
+A07_2,MC-A07,LD,Cerro del Cuatro,1,MC-A07_r2
+A07_2_1,MC-A07,LD,Cerro del Cuatro,1,MC-A07_r2
+A07_1_1,MC-A07,LD,Estacion Fray Angelico,0,MC-A07_r1
+A08_1,MC-A08,LD,Estacion Fray Angelico,0,MC-A08_r1
+A08_2,MC-A08,LD,Valle de la Misericordia,1,MC-A08_r2
+A09_2,MC-A09,LD,Del Carmen,1,MC-A09_r2
+A09_1,MC-A09,LD,Estacion Fray Angelico,0,MC-A09_r1
+A10_1,MC-A10,LD,Estacion Fray Angelico,0,MC-A10_r1
+A10_2,MC-A10,LD,Periferico Sur,1,MC-A10_r2
+A13_2,MC-A13,LD,1ero de Mayo,1,MC-A13_r2
+A13_2_1,MC-A13,LD,1ero de Mayo,1,MC-A13_r2
+A13_1,MC-A13,LD,Estacion Clemente Orozco,0,MC-A13_r1
+A15_2_1,MC-A15,LD,Artesanos,1,MC-A15_r2
+A15_1,MC-A15,LD,Estacion Fray Angelico,0,MC-A15_r1
+A16_1_1,MC-A16,LD,Estacion Independencia Norte,0,MC-A16_r1
+A16_2,MC-A16,LD,Panoramica de Huentitan,1,MC-A16_r2
+A17_2_0,MC-A17,D,Cerro del Cuatro,1,MC-A17_r2
+A17_1_0,MC-A17,D,Estacion Fray Angelico,0,MC-A17_r1
+A17_2_1,MC-A17,LS,Cerro del Cuatro,1,MC-A17_r2
+A17_2_2,MC-A17,LS,Cerro del Cuatro,1,MC-A17_r2
+A17_1_1,MC-A17,LS,Estacion Fray Angelico,0,MC-A17_r1
+A17_1_2,MC-A17,LS,Estacion Fray Angelico,0,MC-A17_r1
+A18_1_1,MC-A18,D,Estacion Fray Angelico,0,MC-A18_r1
+A18_2_1,MC-A18,D,Paseos del Prado,1,MC-A18_r2
+A18_1,MC-A18,LS,Estacion Fray Angelico,0,MC-A18_r1
+A18_2_2,MC-A18,LS,Paseos del Prado,1,MC-A18_r2
+A19_2_1,MC-A19,D,Chulavista,1,MC-A19_r2
+A19_1_1,MC-A19,D,Estacion Fray Angelico,0,MC-A19_r1
+A19_2,MC-A19,LS,Chulavista,1,MC-A19_r2
+A19_1,MC-A19,LS,Estacion Fray Angelico,0,MC-A19_r1
+A20_1_1,MC-A20,D,Estacion Fray Angelico,0,MC-A20_r1
+A20_2_1,MC-A20,D,Hacienda Santa Fe,1,MC-A20_r2
+A20_1,MC-A20,LS,Estacion Fray Angelico,0,MC-A20_r1
+A20_2,MC-A20,LS,Hacienda Santa Fe,1,MC-A20_r2
+A21_2_1,MC-A21,D,Chulavista,1,MC-A21_r2
+A21_1_1,MC-A21,D,Estacion Fray Angelico,0,MC-A21_r1
+A21_2,MC-A21,LS,Chulavista,1,MC-A21_r2
+A21_1,MC-A21,LS,Estacion Fray Angelico,0,MC-A21_r1
+MM_10_R_FRAY,MC-L1,D,Fray Angélico,0,MC-L1_r1
+MM_09_R_MIRADOR,MC-L1,D,Mirador,0,MC-L1_r1
+MM_02_R_FRAY,MC-L1,LV,Fray Angélico,0,MC-L1_r1
+MM_01_R_MIRADOR,MC-L1,LV,Mirador,0,MC-L1_r1
+MM_06_R_FRAY,MC-L1,S,Fray Angélico,0,MC-L1_r1
+MM_05_R_MIRADOR,MC-L1,S,Mirador,0,MC-L1_r1
+MM_04_E_FRAY,MC-L1E,LV,Fray Angélico-Express,0,MC-L1E_r1
+MM_03_E_MIRADOR,MC-L1E,LV,Mirador-Express,0,MC-L1E_r1
+MM_08_E_FRAY,MC-L1E,S,Fray Angélico-Express,0,MC-L1E_r1
+MM_07_E_MIRADOR,MC-L1E,S,Mirador-Express,0,MC-L1E_r1
+MP-A01-MM00-D,MP-A01,D,21 de Marzo,0,MP-A01_r2
+MP-A01-MM01-D,MP-A01,D,Francisco Villa,0,MP-A01_r2
+MP-A01-MM00-LV,MP-A01,LV,21 de Marzo,0,MP-A01_r2
+MP-A01-MM01-LV,MP-A01,LV,Francisco Villa,0,MP-A01_r2
+MP-A01-MM00-S,MP-A01,S,21 de Marzo,0,MP-A01_r2
+MP-A01-MM01-S,MP-A01,S,Francisco Villa,0,MP-A01_r2
+MP-A02-MM02-D,MP-A02,D,21 de Marzo,0,MP-A02_r2
+MP-A02-MM03-D,MP-A02,D,Salamanca,0,MP-A02_r2
+MP-A02-MM02-LV,MP-A02,LV,21 de Marzo,0,MP-A02_r2
+MP-A02-MM03-LV,MP-A02,LV,Salamanca,0,MP-A02_r2
+MP-A02-MM02-S,MP-A02,S,21 de Marzo,0,MP-A02_r2
+MP-A02-MM03-S,MP-A02,S,Salamanca,0,MP-A02_r2
+MP-A03-MM05-D,MP-A03,D,Jose Parres Arias,0,MP-A03_r2
+MP-A03-MM04-D,MP-A03,D,Santa Catalina,0,MP-A03_r2
+MP-A03-MM05-LV,MP-A03,LV,Jose Parres Arias,0,MP-A03_r2
+MP-A03-MM04-LV,MP-A03,LV,Santa Catalina,0,MP-A03_r2
+MP-A03-MM05-S,MP-A03,S,Jose Parres Arias,0,MP-A03_r2
+MP-A03-MM04-S,MP-A03,S,Santa Catalina,0,MP-A03_r2
+MP-A04-MM07-D,MP-A04,D,Colón,0,MP-A04_r2
+MP-A04-MM06-D,MP-A04,D,Lomas de San Agustin,0,MP-A04_r2
+MP-A04-MM07-LV,MP-A04,LV,Colón,0,MP-A04_r2
+MP-A04-MM06-LV,MP-A04,LV,Lomas de San Agustin,0,MP-A04_r2
+MP-A04-MM07-S,MP-A04,S,Colón,0,MP-A04_r2
+MP-A04-MM06-S,MP-A04,S,Lomas de San Agustin,0,MP-A04_r2
+MP-A05-1-MM26-D,MP-A05-1,D,Cerro Copey,0,MP-A05-1_r1
+MP-A05-1-MM27-D,MP-A05-1,D,Periférico Sur,0,MP-A05-1_r1
+MP-A05-1-MM26-LV,MP-A05-1,LV,Cerro Copey,0,MP-A05-1_r1
+MP-A05-1-MM27-LV,MP-A05-1,LV,Periférico Sur,0,MP-A05-1_r1
+MP-A05-1-MM26-S,MP-A05-1,S,Cerro Copey,0,MP-A05-1_r1
+MP-A05-1-MM27-S,MP-A05-1,S,Periférico Sur,0,MP-A05-1_r1
+MP-A06-MM11-D,MP-A06,D,Antonio Caso,0,MP-A06_r1
+MP-A06-MM08-D,MP-A06,D,Periférico Oriente,0,MP-A06_r1
+MP-A06-MM11-LV,MP-A06,LV,Antonio Caso,0,MP-A06_r1
+MP-A06-MM08-LV,MP-A06,LV,Periférico Oriente,0,MP-A06_r1
+MP-A06-MM11-S,MP-A06,S,Antonio Caso,0,MP-A06_r1
+MP-A06-MM08-S,MP-A06,S,Periférico Oriente,0,MP-A06_r1
+MP-A07-MM09-D,MP-A07,D,5 de Mayo,0,MP-A07_r1
+MP-A07-MM10-D,MP-A07,D,Periférico Oriente,0,MP-A07_r1
+MP-A07-MM09-LV,MP-A07,LV,5 de Mayo,0,MP-A07_r1
+MP-A07-MM10-LV,MP-A07,LV,Periférico Oriente,0,MP-A07_r1
+MP-A07-MM09-S,MP-A07,S,5 de Mayo,0,MP-A07_r1
+MP-A07-MM10-S,MP-A07,S,Periférico Oriente,0,MP-A07_r1
+MP-C01-MM13-D,MP-C01,D,Barranca De Huentitán,0,MP-C01_r2
+MP-C01-MM12-D,MP-C01,D,Carretera A Chapala,0,MP-C01_r2
+MP-C01-MM13-LV,MP-C01,LV,Barranca De Huentitán,0,MP-C01_r2
+MP-C01-MM12-LV,MP-C01,LV,Carretera A Chapala,0,MP-C01_r2
+MP-C01-MM13-S,MP-C01,S,Barranca De Huentitán,0,MP-C01_r2
+MP-C01-MM12-S,MP-C01,S,Carretera A Chapala,0,MP-C01_r2
+MP-C02-MM14-D,MP-C02,D,Barranca De Huentitán,0,MP-C02_r2
+MP-C02-MM15-D,MP-C02,D,San Juan de Ocotán,0,MP-C02_r2
+MP-C02-MM14-LV,MP-C02,LV,Barranca De Huentitán,0,MP-C02_r2
+MP-C02-MM15-LV,MP-C02,LV,San Juan de Ocotán,0,MP-C02_r2
+MP-C02-MM14-S,MP-C02,S,Barranca De Huentitán,0,MP-C02_r2
+MP-C02-MM15-S,MP-C02,S,San Juan de Ocotán,0,MP-C02_r2
+MP-C03-MM22-LV,MP-C03,LV,Central de Autobuses,0,MP-C03_r1
+MP-C03-MM23-LV,MP-C03,LV,Chapalita Inn,0,MP-C03_r1
+MP-C03-MM22-S,MP-C03,S,Central de Autobuses,0,MP-C03_r1
+MP-C03-MM23-S,MP-C03,S,Chapalita Inn,0,MP-C03_r1
+MP-T01-MM21-D,MP-T01,D,Barranca De Huentitán,0,MP-T01_r1
+MP-T01-MM19-D,MP-T01,D,Carretera A Chapala,0,MP-T01_r1
+MP-T01-MM21-LV,MP-T01,LV,Barranca De Huentitán,0,MP-T01_r1
+MP-T01-MM19-LV,MP-T01,LV,Carretera A Chapala,0,MP-T01_r1
+MP-T01-MM21-S,MP-T01,S,Barranca De Huentitán,0,MP-T01_r1
+MP-T01-MM19-S,MP-T01,S,Carretera A Chapala,0,MP-T01_r1
+MP-T02-MM18-LV,MP-T02,LV,Barranca De Huentitán,0,MP-T02_r1
+MP-T02-MM20-LV,MP-T02,LV,Chapalita Inn,0,MP-T02_r1
+MP-T02-MM18-S,MP-T02,S,Barranca De Huentitán,0,MP-T02_r1
+MP-T02-MM20-S,MP-T02,S,Chapalita Inn,0,MP-T02_r1
+MP-T03-MM16-LV,MP-T03,LV,Carretera A Chapala,0,MP-T03_r2
+MP-T03-MM17-LV,MP-T03,LV,Chapalita Inn,0,MP-T03_r2
+MP-T03-MM16-S,MP-T03,S,Carretera A Chapala,0,MP-T03_r2
+MP-T03-MM17-S,MP-T03,S,Chapalita Inn,0,MP-T03_r2
+MT_L3-2-D,MT_L3,D,Arcos de Zapopan,0,MT_L3_r1
+MT_L3-1-D,MT_L3,D,Central de Autobuses,0,MT_L3_r1
+MT_L3-2-LV,MT_L3,LV,Arcos de Zapopan,0,MT_L3_r1
+MT_L3-1-LV,MT_L3,LV,Central de Autobuses,0,MT_L3_r1
+MT_L3-2-S,MT_L3,S,Arcos de Zapopan,0,MT_L3_r1
+MT_L3-1-S,MT_L3,S,Central de Autobuses,0,MT_L3_r1
+ST_21,ST_L1,D,Aviación,0,ST_L1_r1
+ST_22,ST_L1,D,Juárez,0,ST_L1_r1
+ST_01,ST_L1,LV,Aviación,0,ST_L1_r1
+ST_02,ST_L1,LV,Juárez,0,ST_L1_r1
+ST_11,ST_L1,S,Aviación,0,ST_L1_r1
+ST_12,ST_L1,S,Juárez,0,ST_L1_r1
+ST_24,ST_L2,D,Tetlán,0,ST_L2_r1
+ST_23,ST_L2,D,Tonalá,0,ST_L2_r1
+ST_04,ST_L2,LV,Tetlán,0,ST_L2_r1
+ST_03,ST_L2,LV,Tonalá,0,ST_L2_r1
+ST_14,ST_L2,S,Tetlán,0,ST_L2_r1
+ST_13,ST_L2,S,Tonalá,0,ST_L2_r1
+ST_26,ST_L3,D,Arcos,0,ST_L3_r1
+ST_25,ST_L3,D,Felipe Ángeles,0,ST_L3_r1
+ST_06,ST_L3,LV,Arcos,0,ST_L3_r1
+ST_05,ST_L3,LV,Felipe Ángeles,0,ST_L3_r1
+ST_16,ST_L3,S,Arcos,0,ST_L3_r1
+ST_15,ST_L3,S,Felipe Ángeles,0,ST_L3_r1
+ST_28,ST_L4,D,Juan Gil Preciado,0,ST_L4_r1
+ST_27,ST_L4,D,Molinos,0,ST_L4_r1
+ST_08,ST_L4,LV,Juan Gil Preciado,0,ST_L4_r1
+ST_07,ST_L4,LV,Molinos,0,ST_L4_r1
+ST_18,ST_L4,S,Juan Gil Preciado,0,ST_L4_r1
+ST_17,ST_L4,S,Molinos,0,ST_L4_r1
+SITEUR_T_01,ST_L1,LV,Aviación,0,ST_L1_r1
+SITEUR_T_02,ST_L1,LV,Juárez,0,ST_L1_r1
+SITEUR_T_03,ST_L2,LV,Tonalá,0,ST_L2_r1
+SITEUR_T_04,ST_L2,LV,Tetlán,0,ST_L2_r1
+SITEUR_T_05,ST_L3,LV,Felipe Ángeles,0,ST_L3_r1
+SITEUR_T_06,ST_L3,LV,Arcos,0,ST_L3_r1
+SITEUR_T_07,ST_L4,LV,Molinos,0,ST_L4_r1
+SITEUR_T_08,ST_L4,LV,Juan Gil Preciado,0,ST_L4_r1
+SITEUR_T_11,ST_L1,S,Aviación,0,ST_L1_r1
+SITEUR_T_12,ST_L1,S,Juárez,0,ST_L1_r1
+SITEUR_T_13,ST_L2,S,Tonalá,0,ST_L2_r1
+SITEUR_T_14,ST_L2,S,Tetlán,0,ST_L2_r1
+SITEUR_T_15,ST_L3,S,Felipe Ángeles,0,ST_L3_r1
+SITEUR_T_16,ST_L3,S,Arcos,0,ST_L3_r1
+SITEUR_T_17,ST_L4,S,Molinos,0,ST_L4_r1
+SITEUR_T_18,ST_L4,S,Juan Gil Preciado,0,ST_L4_r1
+SITEUR_T_21,ST_L1,D,Aviación,0,ST_L1_r1
+SITEUR_T_22,ST_L1,D,Juárez,0,ST_L1_r1
+SITEUR_T_23,ST_L2,D,Tonalá,0,ST_L2_r1
+SITEUR_T_24,ST_L2,D,Tetlán,0,ST_L2_r1
+SITEUR_T_25,ST_L3,D,Felipe Ángeles,0,ST_L3_r1
+SITEUR_T_26,ST_L3,D,Arcos,0,ST_L3_r1
+SITEUR_T_27,ST_L4,D,Molinos,0,ST_L4_r1
+SITEUR_T_28,ST_L4,D,Juan Gil Preciado,0,ST_L4_r1
+TL1_01,MT_L1,LV,AUDITORIO,0,MT_L1_r1
+TL1_02,MT_L1,S,AUDITORIO,0,MT_L1_r1
+TL1_03,MT_L1,D,AUDITORIO,0,MT_L1_r1
+TL1_04,MT_L1,LV,PERIFERICO SUR,0,MT_L1_r1
+TL1_05,MT_L1,S,PERIFERICO SUR,0,MT_L1_r1
+TL1_06,MT_L1,D,PERIFERICO SUR,0,MT_L1_r1
+TL2_01,MT_L2,LV,TETLAN,0,MT_L2_r1
+TL2_02,MT_L2,S,TETLAN,0,MT_L2_r1
+TL2_03,MT_L2,D,TETLAN,0,MT_L2_r1
+TL2_04,MT_L2,LV,JUAREZ,0,MT_L2_r1
+TL2_05,MT_L2,S,JUAREZ,0,MT_L2_r1
+TL2_06,MT_L2,D,JUAREZ,0,MT_L2_r1
+LM-V03_trip_H_r1,LM-V03,LV,Troncal LM-V03 "Zapopan Centro" - Ida,0,LM_V03_r1
+LM-V03_trip_H_r2,LM-V03,LV,Troncal LM-V03 "Zapopan Centro" - Regreso,1,LM_V03_r2
+LM-V03_trip_S_r1,LM-V03,S,Troncal LM-V03 "Zapopan Centro" - Ida,0,LM_V03_r1
+LM-V03_trip_S_r2,LM-V03,S,Troncal LM-V03 "Zapopan Centro" - Regreso,1,LM_V03_r2
+LM-V03_trip_D_r1,LM-V03,D,Troncal LM-V03 "Zapopan Centro" - Ida,0,LM_V03_r1
+LM-V03_trip_D_r2,LM-V03,D,Troncal LM-V03 "Zapopan Centro" - Regreso,1,LM_V03_r2
+LM-V04_trip_H_r1,LM-V04,LV,Troncal LM-V04 "Plaza Patria" - Ida,0,LM-V04_r1
+LM-V04_trip_H_r2,LM-V04,LV,Troncal LM-V04 "Plaza Patria" - Regreso,1,LM-V04_r2
+LM-V04_trip_S_r1,LM-V04,S,Troncal LM-V04 "Plaza Patria" - Ida,0,LM-V04_r1
+LM-V04_trip_S_r2,LM-V04,S,Troncal LM-V04 "Plaza Patria" - Regreso,1,LM-V04_r2
+LM-V04_trip_D_r1,LM-V04,D,Troncal LM-V04 "Plaza Patria" - Ida,0,LM-V04_r1
+LM-V04_trip_D_r2,LM-V04,D,Troncal LM-V04 "Plaza Patria" - Regreso,1,LM-V04_r2
+LM-V05_trip_H_r1,LM-V05,LV,Troncal LM-V05 "Glorieta Miverva" - Ida,0,LM-V05_r1
+LM-V05_trip_H_r2,LM-V05,LV,Troncal LM-V05 "Glorieta Miverva" - Regreso,1,LM-V05_r2
+LM-V05_trip_S_r1,LM-V05,S,Troncal LM-V05 "Glorieta Miverva" - Ida,0,LM-V05_r1
+LM-V05_trip_S_r2,LM-V05,S,Troncal LM-V05 "Glorieta Miverva" - Regreso,1,LM-V05_r2
+LM-V05_trip_D_r1,LM-V05,D,Troncal LM-V05 "Glorieta Miverva" - Ida,0,LM-V05_r1
+LM-V05_trip_D_r2,LM-V05,D,Troncal LM-V05 "Glorieta Miverva" - Regreso,1,LM-V05_r2
+LM-V01_trip_H_r1,LM-V01,LV,Troncal LM-V01 "Central Vieja" - Ida,0,LM_V01_r1
+LM-V01_trip_H_r2,LM-V01,LV,Troncal LM-V01 "Central Vieja" - Regreso,1,LM_V01_r2
+LM-V01_trip_S_r1,LM-V01,S,Troncal LM-V01 "Central Vieja" - Ida,0,LM_V01_r1
+LM-V01_trip_S_r2,LM-V01,S,Troncal LM-V01 "Central Vieja" - Regreso,1,LM_V01_r2
+LM-V01_trip_D_r1,LM-V01,D,Troncal LM-V01 "Central Vieja" - Ida,0,LM_V01_r1
+LM-V01_trip_D_r2,LM-V01,D,Troncal LM-V01 "Central Vieja" - Regreso,1,LM_V01_r2
+LM-V02_trip_H_r1,LM-V02,LV,Troncal LM-V02 "San Juan de Dios" - Ida,0,LM_V02_r1
+LM-V02_trip_H_r2,LM-V02,LV,Troncal LM-V02 "San Juan de Dios" - Regreso,1,LM_V02_r2
+LM-V02_trip_S_r1,LM-V02,S,Troncal LM-V02 "San Juan de Dios" - Ida,0,LM_V02_r1
+LM-V02_trip_S_r2,LM-V02,S,Troncal LM-V02 "San Juan de Dios" - Regreso,1,LM_V02_r2
+LM-V02_trip_D_r1,LM-V02,D,Troncal LM-V02 "San Juan de Dios" - Ida,0,LM_V02_r1
+LM-V02_trip_D_r2,LM-V02,D,Troncal LM-V02 "San Juan de Dios" - Regreso,1,LM_V02_r2
+LM-C01_trip_H_r1,LM-C01,LV,Troncal LM-C01 "Tren Sur" - Ida,0,LM_C01_r1
+LM-C01_trip_H_r2,LM-C01,LV,Troncal LM-C01 "Tren Sur" - Regreso,1,LM_C01_r2
+LM-C01_trip_S_r1,LM-C01,S,Troncal LM-C01 "Tren Sur" - Ida,0,LM_C01_r1
+LM-C01_trip_S_r2,LM-C01,S,Troncal LM-C01 "Tren Sur" - Regreso,1,LM_C01_r2
+LM-C01_trip_D_r1,LM-C01,D,Troncal LM-C01 "Tren Sur" - Ida,0,LM_C01_r1
+LM-C01_trip_D_r2,LM-C01,D,Troncal LM-C01 "Tren Sur" - Regreso,1,LM_C01_r2
+LM-C02_trip_H_r1,LM-C02,LV,Troncal LM-C02 "Centro Sur" - Ida,0,LM_C02_r1
+LM-C02_trip_H_r2,LM-C02,LV,Troncal LM-C02 "Centro Sur" - Regreso,1,LM_C02_r2
+LM-C02_trip_S_r1,LM-C02,S,Troncal LM-C02 "Centro Sur" - Ida,0,LM_C02_r1
+LM-C02_trip_S_r2,LM-C02,S,Troncal LM-C02 "Centro Sur" - Regreso,1,LM_C02_r2
+LM-C02_trip_D_r1,LM-C02,D,Troncal LM-C02 "Centro Sur" - Ida,0,LM_C02_r1
+LM-C02_trip_D_r2,LM-C02,D,Troncal LM-C02 "Centro Sur" - Regreso,1,LM_C02_r2
+LM-C03_trip_H_r1,LM-C03,LV,Troncal LM-C03 "Centro Sur" - Ida,0,LM_C03_r1
+LM-C03_trip_H_r2,LM-C03,LV,Troncal LM-C03 "Centro Sur" - Regreso,1,LM_C03_r2
+LM-C03_trip_S_r1,LM-C03,S,Troncal LM-C03 "Centro Sur" - Ida,0,LM_C03_r1
+LM-C03_trip_S_r2,LM-C03,S,Troncal LM-C03 "Centro Sur" - Regreso,1,LM_C03_r2
+LM-C03_trip_D_r1,LM-C03,D,Troncal LM-C03 "Centro Sur" - Ida,0,LM_C03_r1
+LM-C03_trip_D_r2,LM-C03,D,Troncal LM-C03 "Centro Sur" - Regreso,1,LM_C03_r2

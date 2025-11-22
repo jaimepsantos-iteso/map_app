@@ -1,0 +1,6 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone
+BUS,Mi Transporte,https://setrans.jalisco.gob.mx/,America/Mexico_City,es,
+ME,Mi Transporte Eléctrico,https://setrans.jalisco.gob.mx/,America/Mexico_City,es,
+MM,Mi Macro,http://siteur.gob.mx/,America/Mexico_City,es,(33)3942-5700
+MT,Mi Tren,http://siteur.gob.mx/,America/Mexico_City,es,(33)3942-5700
+ST,SiTren,http://siteur.gob.mx/,America/Mexico_City,es,(33)3942-5700

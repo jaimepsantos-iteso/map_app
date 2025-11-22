@@ -1,0 +1,277 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_url,route_color,route_text_color
+C01,BUS,C01,Troncal C01 - 39A "Poniente",3,,4C8D2B,FFFFFF
+C02,BUS,C02,Troncal C02 - 45A,3,,4C8D2B,FFFFFF
+C03,BUS,C03,Troncal C03 - 61 "Mercado de Abastos",3,,4C8D2B,FFFFFF
+C04,BUS,C04,Troncal C04 - 110,3,,4C8D2B,FFFFFF
+C05,BUS,C05,Troncal C05 - 136,3,,4C8D2B,FFFFFF
+C06,BUS,C06,Troncal C06 - 136A,3,,4C8D2B,FFFFFF
+C07-V1,BUS,C07-V1,Troncal C07-V1 - 153CTM,3,,4C8D2B,FFFFFF
+C07-V2,BUS,C07-V2,Troncal C07-V2 - 153A,3,,4C8D2B,FFFFFF
+C08,BUS,C08,Troncal C08 - 156,3,,4C8D2B,FFFFFF
+C09,BUS,C09,Troncal C09 - 175D,3,,4C8D2B,FFFFFF
+C10,BUS,C10,Troncal C10 - 175E,3,,4C8D2B,FFFFFF
+C100,BUS,C100,Troncal C100 - 181 "La Fortuna",3,,4C8D2B,FFFFFF
+C101,BUS,C101,Troncal C101 - 186A "San Sebastian - Calera",3,,4C8D2B,FFFFFF
+C102,BUS,C102,Troncal C102 - 187,3,,4C8D2B,FFFFFF
+C103,BUS,C103,Troncal C103 - 188,3,,4C8D2B,FFFFFF
+C104,BUS,C104,Troncal C104 - 629 "Plaza del Sol",3,,4C8D2B,FFFFFF
+C105,BUS,C105,Troncal C105 - 808,3,,4C8D2B,FFFFFF
+C106,BUS,C106,Troncal C106 - 809,3,,4C8D2B,FFFFFF
+C107,BUS,C107,Troncal C107 - 110A,3,,4C8D2B,FFFFFF
+C108,BUS,C108,Troncal C108 - 371,3,,4C8D2B,FFFFFF
+C109,BUS,C109,Troncal C109 - 629A "CG",3,,4C8D2B,FFFFFF
+C110-V1,BUS,C110-V1,Troncal C110-V1 - 629B "Nuevo Mexico - Chori",3,,4C8D2B,FFFFFF
+C110-V2,BUS,C110-V2,Troncal C110-V2 - 629B "Primavera - La Venta",3,,4C8D2B,FFFFFF
+C111-V1,BUS,C111-V1,Troncal C111-V1 - 176A "Robles",3,,4C8D2B,FFFFFF
+C111-V2,BUS,C111-V2,Troncal C111-V2 - 176A "Lomas del Sur",3,,4C8D2B,FFFFFF
+C111-V3,BUS,C111-V3,Troncal C111-V3 - 176A "Chulavista",3,,4C8D2B,FFFFFF
+C112,BUS,C112,Troncal C112 - 176D,3,,4C8D2B,FFFFFF
+C113-V1,BUS,C113-V1,Troncal C113-V1 - 623A "Chulavista - Valle Dorado",3,,4C8D2B,FFFFFF
+C113-V2,BUS,C113-V2,Troncal C113-V2 - 623A "Aqua",3,,4C8D2B,FFFFFF
+C114-V1,BUS,C114-V1,Troncal C114-V1 - 181 "8 de Julio",3,,4C8D2B,FFFFFF
+C114-V2,BUS,C114-V2,Troncal C114-V2 - 181 "Clinica 180",3,,4C8D2B,FFFFFF
+C115,BUS,C115,Troncal C115 - 623 "Santa Cruz del Valle",3,,4C8D2B,FFFFFF
+C116-A,BUS,C116-A,Troncal C116-A - 01A "El Salto",3,,4C8D2B,FFFFFF
+C116-B,BUS,C116-B,Troncal C116-B - 01B "El Salto",3,,4C8D2B,FFFFFF
+C117,BUS,C117,Troncal C117 - 78 "Valle de los Molinos",3,,4C8D2B,FFFFFF
+C118,BUS,C118,Troncal C118 - 62,3,,4C8D2B,FFFFFF
+C119,BUS,C119,Troncal C119 - 360 "Esteban Alatorre - Jesus Garcia",3,,4C8D2B,FFFFFF
+C120,BUS,C120,Troncal C120 - 25,3,,4C8D2B,FFFFFF
+C121-B,BUS,C121-B,Troncal C121-B - 635B,3,,4C8D2B,FFFFFF
+C122,BUS,C122,Troncal C122 - 03,3,,4C8D2B,FFFFFF
+C123-V1,BUS,C123-V1,Troncal C123-V1 - 258,3,,4C8D2B,FFFFFF
+C123-V2,BUS,C123-V2,Troncal C123-V2 - 258A,3,,4C8D2B,FFFFFF
+C124,BUS,C124,Troncal C124 - 258D,3,,4C8D2B,FFFFFF
+C125-V1,BUS,C125-V1,Troncal C125-V1 - 186 "Valle de los Emperadores",3,,4C8D2B,FFFFFF
+C125-V2,BUS,C125-V2,Troncal C125-V2 - 186 "Emperadores - Eucalipto",3,,4C8D2B,FFFFFF
+C126-V1,BUS,C126-V1,Troncal C126-V1 - 186A "Lomas de la Tejeda - Lopez Mateos",3,,4C8D2B,FFFFFF
+C127-V1,BUS,C127-V1,Troncal C127-V1 - 183 "Lomas de San Agustin",3,,4C8D2B,FFFFFF
+C128,BUS,C128,Troncal C128 - 182 "Lomas del Sur",3,,4C8D2B,FFFFFF
+C128A-V1,BUS,C128A-V1,Troncal C128A-V1 - 182 "Balcones",3,,4C8D2B,FFFFFF
+C129,BUS,C129,Troncal C129 - 89,3,,4C8D2B,FFFFFF
+C12-V1,BUS,C12-V1,Troncal C12-V1 - 175 "Santa Anita - Tren Ligero",3,,4C8D2B,FFFFFF
+C130,BUS,C130,Troncal C130 - 86,3,,4C8D2B,FFFFFF
+C131-V1,BUS,C131-V1,Troncal C131-V1 - 186B "Tlajomulco - Santa Cruz de las Flores",3,,4C8D2B,FFFFFF
+C131-V2,BUS,C131-V2,Troncal C131-V2 - 186B "Tlajomulco - La Noria",3,,4C8D2B,FFFFFF
+C132,BUS,C132,Troncal C132 - 382 "Providencia",3,,4C8D2B,FFFFFF
+C133-V1,BUS,C133-V1,Troncal C133-V1 - 184 "Bosque Real Santa Anita",3,,4C8D2B,FFFFFF
+C133-V2,BUS,C133-V2,Troncal C133-V2 - 184 "Outlet",3,,4C8D2B,FFFFFF
+C134,BUS,C134,Troncal C134 - 185 "Los Ocotes",3,,4C8D2B,FFFFFF
+C135,BUS,C135,Jardines de Santa Ana - Fraccionamiento Rincon del Valle,3,,4C8D2B,FFFFFF
+C136,BUS,C136,Valle de la Providencia - Plaza Patria,3,,4C8D2B,FFFFFF
+C138,BUS,C138,Lomas de Independencia - San Juan de Dios,3,,4C8D2B,FFFFFF
+C13-V1,BUS,C13-V1,Troncal C13-V1 - 45 "Alamedas",3,,4C8D2B,FFFFFF
+C13-V2,BUS,C13-V2,Troncal C13-V2 - 45 "Jalisco - Panteon",3,,4C8D2B,FFFFFF
+C13-V3,BUS,C13-V3,Troncal C13-V3 - 45 "Jalisco - Tetlan",3,,4C8D2B,FFFFFF
+C14-V1,BUS,C14-V1,Troncal C14-V1 - 175A,3,,4C8D2B,FFFFFF
+C14-V2,BUS,C14-V2,Troncal C14-V2 - 175A "Lomas de Tejeda",3,,4C8D2B,FFFFFF
+C15,BUS,C15,Troncal C15 - 54A "Abastos",3,,4C8D2B,FFFFFF
+C16,BUS,C16,Troncal C16 - 602 "Legalidad",3,,4C8D2B,FFFFFF
+C17,BUS,C17,Troncal C17 - 214,3,,4C8D2B,FFFFFF
+C18,BUS,C18,Troncal C18 - 258,3,,4C8D2B,FFFFFF
+C19,BUS,C19,Troncal C19 - 330A,3,,4C8D2B,FFFFFF
+C20-V1,BUS,C20-V1,Troncal C20-V1 - 333 "Alamo",3,,4C8D2B,FFFFFF
+C20-V2,BUS,C20-V2,Troncal C20-V2 - 333 "Corta",3,,4C8D2B,FFFFFF
+C21,BUS,C21,Troncal C21 - 602 "Soriana",3,,4C8D2B,FFFFFF
+C22,BUS,C22,Troncal C22 - 603A "Villas",3,,4C8D2B,FFFFFF
+C23,BUS,C23,Troncal C23 - 603B,3,,4C8D2B,FFFFFF
+C25,BUS,C25,Troncal C25 - 175 "Roca",3,,4C8D2B,FFFFFF
+C26,BUS,C26,Troncal C26 - 45 "CG",3,,4C8D2B,FFFFFF
+C27,BUS,C27,Troncal C27 - 605,3,,4C8D2B,FFFFFF
+C28,BUS,C28,Troncal C28 - 608,3,,4C8D2B,FFFFFF
+C29-V1,BUS,C29-V1,Troncal C29-V1 - 610,3,,4C8D2B,FFFFFF
+C29-V2,BUS,C29-V2,Troncal C29-V2 - 610A,3,,4C8D2B,FFFFFF
+C30,BUS,C30,Troncal C30 - 611,3,,4C8D2B,FFFFFF
+C31,BUS,C31,Troncal C31 - 616,3,,4C8D2B,FFFFFF
+C32-V1,BUS,C32-V1,Troncal C32-V1 - 639,3,,4C8D2B,FFFFFF
+C32-V2,BUS,C32-V2,Troncal C32-V2 - 639A,3,,4C8D2B,FFFFFF
+C33,BUS,C33,Troncal C33 - 142 "San Jorge",3,,4C8D2B,FFFFFF
+C34,BUS,C34,Troncal C34 - 51 "Educadores",3,,4C8D2B,FFFFFF
+C35,BUS,C35,Troncal C35 - 51 "Vado",3,,4C8D2B,FFFFFF
+C36,BUS,C36,Troncal C36 - 612,3,,4C8D2B,FFFFFF
+C37-V1,BUS,C37-V1,Troncal C37-V1 - 614 "BT",3,,4C8D2B,FFFFFF
+C37-V2,BUS,C37-V2,Troncal C37-V2 - 614 "Rosario",3,,4C8D2B,FFFFFF
+C38-V1,BUS,C38-V1,Troncal C38-V1 - 615 "Vocacional - La Punta",3,,4C8D2B,FFFFFF
+C38-V2,BUS,C38-V2,Troncal C38-V2 - 615 "Vocacional - CU Tonala",3,,4C8D2B,FFFFFF
+C39-V1,BUS,C39-V1,Troncal C39-V1 - 615 "Hospicio",3,,4C8D2B,FFFFFF
+C39-V2,BUS,C39-V2,Troncal C39-V2 - 615 "Hospital Civil",3,,4C8D2B,FFFFFF
+C40,BUS,C40,Troncal C40 - 619 "Naranja",3,,4C8D2B,FFFFFF
+C41-V1,BUS,C41-V1,Troncal C41-V1 - 619 "Amarilla Chulavista - Central de Autobuses",3,,4C8D2B,FFFFFF
+C41-V2,BUS,C41-V2,Troncal C41-V2 - 619 "Amarilla Cantaros - Central de Autobuses",3,,4C8D2B,FFFFFF
+C42,BUS,C42,Troncal C42 - 624,3,,4C8D2B,FFFFFF
+C43-V1,BUS,C43-V1,Troncal C43-V1 - 636 "Belenes",3,,4C8D2B,FFFFFF
+C43-V2,BUS,C43-V2,Troncal C43-V2 - 636 "Haciendas del Valle",3,,4C8D2B,FFFFFF
+C43-V3,BUS,C43-V3,Troncal C43-V3 - 636 "Valdepeñas",3,,4C8D2B,FFFFFF
+C44,BUS,C44,Troncal C44 - 637 "Martinica",3,,4C8D2B,FFFFFF
+C45-V1,BUS,C45-V1,Troncal C45-V1 - 637 "Centinela",3,,4C8D2B,FFFFFF
+C45-V2,BUS,C45-V2,Troncal C45-V2 - 637 "Cinco Esquinas",3,,4C8D2B,FFFFFF
+C46-V1,BUS,C46-V1,Troncal C46-V1 - 643 "Altamira",3,,4C8D2B,FFFFFF
+C46-V2,BUS,C46-V2,Troncal C46-V2 - 643 "Urbiquintas",3,,4C8D2B,FFFFFF
+C47-V1,BUS,C47-V1,Troncal C47-V1 - 644A "Juntas - Vergel",3,,4C8D2B,FFFFFF
+C47-V2,BUS,C47-V2,Troncal C47-V2 - 644A "Km 13",3,,4C8D2B,FFFFFF
+C48,BUS,C48,Troncal C48 - 644A "Tapatio",3,,4C8D2B,FFFFFF
+C49-V1,BUS,C49-V1,Troncal C49-V1 - 645 "Arboledas",3,,4C8D2B,FFFFFF
+C49-V2,BUS,C49-V2,Troncal C49-V2 - 645 "Topacio",3,,4C8D2B,FFFFFF
+C50-V1,BUS,C50-V1,Troncal C50-V1 - 645 "Chulavista - Aqua",3,,4C8D2B,FFFFFF
+C50-V2,BUS,C50-V2,Troncal C50-V2 - 645 "Villas de la Hacienda",3,,4C8D2B,FFFFFF
+C51-V2,BUS,C51-V2,Troncal C51-V2 - 645A "Cochinita",3,,4C8D2B,FFFFFF
+C53,BUS,C53,Troncal C53 - 19A,3,,4C8D2B,FFFFFF
+C54,BUS,C54,Troncal C54 - 51C,3,,4C8D2B,FFFFFF
+C58-V1,BUS,C58-V1,Troncal C58-V1 - 644B "CU Tonala - Pajaritos",3,,4C8D2B,FFFFFF
+C58-V2,BUS,C58-V2,Troncal C58-V2 - 644B "CU Tonala",3,,4C8D2B,FFFFFF
+C60,BUS,C60,Troncal C60 - 644B "Santa Isabel",3,,4C8D2B,FFFFFF
+C61,BUS,C61,Troncal C61 - 644B "Santibañez - Emiliano Zapata",3,,4C8D2B,FFFFFF
+C62,BUS,C62,Troncal C62 - 644B "Carril",3,,4C8D2B,FFFFFF
+C63,BUS,C63,Troncal C63 - 644B "SB",3,,4C8D2B,FFFFFF
+C64,BUS,C64,Troncal C64 - 27,3,,4C8D2B,FFFFFF
+C65,BUS,C65,Troncal C65 - 27A,3,,4C8D2B,FFFFFF
+C66-V1,BUS,C66-V1,Troncal C66-V1 - 249,3,,4C8D2B,FFFFFF
+C66-V2,BUS,C66-V2,Troncal C66-V2 - 249 "Jardines de la Cruz",3,,4C8D2B,FFFFFF
+C67-V1,BUS,C67-V1,Troncal C67-V1 - 171 "Roja",3,,4C8D2B,FFFFFF
+C67-V2,BUS,C67-V2,Troncal C67-V2 - 171 "Verde",3,,4C8D2B,FFFFFF
+C69,BUS,C69,Troncal C69 - 321,3,,4C8D2B,FFFFFF
+C70,BUS,C70,Troncal C70 - 358 "Las Aguilas",3,,4C8D2B,FFFFFF
+C71,BUS,C71,Troncal C71 - 604A,3,,4C8D2B,FFFFFF
+C73,BUS,C73,Troncal C73 - 15,3,,4C8D2B,FFFFFF
+C74,BUS,C74,Troncal C74 - 101,3,,4C8D2B,FFFFFF
+C75,BUS,C75,Troncal C75 - 611A,3,,4C8D2B,FFFFFF
+C76-V1,BUS,C76-V1,Troncal C76-V1 - 623A "Real del Sol-Paseos del Prado Directa",3,,4C8D2B,FFFFFF
+C76-V2,BUS,C76-V2,Troncal C76-V2 - 623A "Real del Sol-Paseos del Prado",3,,4C8D2B,FFFFFF
+C77,BUS,C77,Troncal C77 - 623A,3,,4C8D2B,FFFFFF
+C78-V1,BUS,C78-V1,Troncal C78-V1 - 619A,3,,4C8D2B,FFFFFF
+C79,BUS,C79,Troncal C79 - 640,3,,4C8D2B,FFFFFF
+C80-V1,BUS,C80-V1,Troncal C80-V1 - 619 "Verde Chulavista",3,,4C8D2B,FFFFFF
+C80-V2,BUS,C80-V2,Troncal C80-V2 - 619 "Verde 8 de julio",3,,4C8D2B,FFFFFF
+C83,BUS,C83,Troncal C83 - 644A "Liebres",3,,4C8D2B,FFFFFF
+C85,BUS,C85,Troncal C85 - 631A,3,,4C8D2B,FFFFFF
+C86,BUS,C86,Troncal C86 - 644B "IBM Victoria",3,,4C8D2B,FFFFFF
+C88-V2,BUS,C88-V2,Troncal C88-V2 - 161 "Mirador del Bosque",3,,4C8D2B,FFFFFF
+C89,BUS,C89,Troncal C89 - 162,3,,4C8D2B,FFFFFF
+C90,BUS,C90,Troncal C90 - 165,3,,4C8D2B,FFFFFF
+C92,BUS,C92,Troncal C92 - 167,3,,4C8D2B,FFFFFF
+C93,BUS,C93,Troncal C93 - 168,3,,4C8D2B,FFFFFF
+C94,BUS,C94,Troncal C94 - 169,3,,4C8D2B,FFFFFF
+C95,BUS,C95,Troncal C95 - 172,3,,4C8D2B,FFFFFF
+C96-V2,BUS,C96-V2,Troncal C96-V2 - 275B "Santibañez",3,,4C8D2B,FFFFFF
+C97-V1,BUS,C97-V1,Troncal C97-V1 - 275B "San Martin de las  Flores",3,,4C8D2B,FFFFFF
+C97-V2,BUS,C97-V2,Troncal C97-V2 - 275B "La Capilla",3,,4C8D2B,FFFFFF
+C99,BUS,C99,Troncal C99 - 181 "H. Santa Fe",3,,4C8D2B,FFFFFF
+T01,BUS,T01,Troncal T01-63  "18 de Marzo",3,,D40000,FFFFFF
+T02,BUS,T02,Troncal T02-80  "Artesanos",3,,D40000,FFFFFF
+T02-A02,BUS,T02-A02,Alimentadora T02-A02 "Artesanos",3,,4C8D2B,FFFFFF
+T03,BUS,T03,Troncal T03-66 "Belisario",3,,D40000,FFFFFF
+T03-C01,BUS,T03-C01,Complementaira T03-C01 "Belisario Complementaria",3,,4C8D2B,FFFFFF
+T04A-1,BUS,T04A-1,Troncal T04A-1 - 646 "Lazaro Cardenas",3,,D40000,FFFFFF
+T04A-2,BUS,T04A-2,Troncal T04A-2 - 646 "Lazaro Cardenas",3,,D40000,FFFFFF
+T04A-C01,BUS,T04A-C01,Troncal "Troncal 04A-C01 - Lázaro Cárdenas Complementaria",3,,4C8D2B,FFFFFF
+T04B-1,BUS,T04B-1,Troncal T04B-1 - 59A "Lazaro Cardenas",3,,D40000,FFFFFF
+T04B-2,BUS,T04B-2,Troncal T04B-2 - 59B "Lazaro Cardenas",3,,D40000,FFFFFF
+T04B-3,BUS,T04B-3,Troncal T04B-3 - 59 "Lazaro Cardenas",3,,D40000,FFFFFF
+T04B-4,BUS,T04B-4,Troncal T04B-4 "Lazaro Cardenas",3,,D40000,FFFFFF
+T06,BUS,T06,Troncal T06-37 "Pablo Valdez",3,,D40000,FFFFFF
+T06-03,BUS,T06-03,Troncal T06-03 - 37A "Zalate",3,,D40000,FFFFFF
+T07,BUS,T07,Troncal T07 - 30 "Enrique Diaz de Leon",3,,D40000,FFFFFF
+T07-C01,BUS,T07-C01,Troncal T07-C01 - 30A "Enrique Diaz de Leon Complementaria",3,,4C8D2B,FFFFFF
+T07-C02,BUS,T07-C02,Troncal T07-C02 - 625 Cozumel "Enrique Diaz de Leon Complementaria",3,,4C8D2B,FFFFFF
+T07-C03,BUS,T07-C03,Troncal T07-C03 - 625 Cozumel corta "Enrique Diaz de Leon Complementaria",3,,4C8D2B,FFFFFF
+T07-C04,BUS,T07-C04,Troncal T07-C04 - 128 "Enrique Diaz de Leon Complementaria",3,,4C8D2B,FFFFFF
+T08,BUS,T08,Troncal T08-634 " Américas",3,,D40000,FFFFFF
+T08-C01,BUS,T08-C01,Troncal T08-C01 - 634 V2 "Américas",3,,4C8D2B,FFFFFF
+T09-B,BUS,T09-Belisario,Troncal T09 "Circuito Belisario",3,,D40000,FFFFFF
+T09-O,BUS,T09-Oblatos,Troncal T09 "Circuito Oblatos",3,,D40000,FFFFFF
+T10,BUS,T10,Troncal T10-626  "Mariano Otero",3,,D40000,FFFFFF
+T10-C01,BUS,T10-C01,Troncal T10-C01 - 626A "Mariano Otero Complementaria",3,,4C8D2B,FFFFFF
+T10-C02,BUS,T10-C02,Troncal T10-C02 - 626A "Mariano Otero Complementaria",3,,4C8D2B,FFFFFF
+T10-C03,BUS,T10-C03,Troncal T10-C03 - 626 "Mariano Otero Complementaria",3,,4C8D2B,FFFFFF
+T11A,BUS,T11A,Troncal T11A - 51D Directa "Rio Nilo-Guadalupe",3,,D40000,FFFFFF
+T11A-C01,BUS,T11A-C01,Troncal T11A-C01 - 51D "Rio Nilo-Guadalupe",3,,4C8D2B,FFFFFF
+T11A-C02,BUS,T11A-C02,Troncal T11A-C02 - 51A "Rio Nilo-Guadalupe",3,,4C8D2B,FFFFFF
+T11A-C03,BUS,T11A-C03,Troncal T11A-C03 - 51B "Rio Nilo-Guadalupe",3,,4C8D2B,FFFFFF
+T11B,BUS,T11B,Troncal T11B - 55 "Rio Nilo - Guadalupe",3,,D40000,FFFFFF
+T13A,BUS,T13A,Troncal T13A - 177 "Alamo",3,,D40000,FFFFFF
+T13A-C01,BUS,T13A-C01,Troncal T13A-C01 - 180 "Rancho Alegre",3,,4C8D2B,FFFFFF
+T13A-C02,BUS,T13A-C02,Troncal T13A-C02 - 180 "Solidaridad Complementaria",3,,4C8D2B,FFFFFF
+T13A-C03,BUS,T13A-C03,Troncal T13A-C03 - 178 "Parques del Castillo",3,,4C8D2B,FFFFFF
+T13B-C01-1,BUS,T13B-C01-1,Troncal T13B-C01-1 - 176 "Solidaridad",3,,4C8D2B,FFFFFF
+T13B-C02-1,BUS,T13B-C02-1,Troncal T13B-C02 - 176C "Solidaridad Complementaria",3,,4C8D2B,FFFFFF
+T13B-V1,BUS,T13B-V1,Troncal T13B-V1 - 176B "Jardines",3,,D40000,FFFFFF
+T13B-V2,BUS,T13B-V2,Troncal T13B-V1 - 176 "Villas",3,,D40000,FFFFFF
+T13C-1,BUS,T13C-1,Troncal T13C-1 - 178 "Agua Blanca",3,,D40000,FFFFFF
+T13C-2,BUS,T13C-2,Troncal T13C-2 - 178 "Central Vieja",3,,D40000,FFFFFF
+T14A-C01,BUS,T14A-C01,Troncal T14-C01 - 50A "Santa Fe - 8 de Julio",3,,4C8D2B,FFFFFF
+T14A-C02,BUS,T14A-C02,Troncal T14-C02 - 52A "Santa Rita",3,,4C8D2B,FFFFFF
+T14A-C03,BUS,T14A-C03,Troncal T14-C03 - 52A "Mezquitera",3,,4C8D2B,FFFFFF
+T14B,BUS,T14B,Troncal T14B - 50 "Reyes Heroles",3,,D40000,FFFFFF
+T14B-C03-1,BUS,T14B-C03-1,Troncal T14B-C03-01 - 52C "8 de Julio",3,,4C8D2B,FFFFFF
+T14B-C03-2,BUS,T14B-C03-2,Troncal T14B-C03-02 - 52C "8 de Julio",3,,4C8D2B,FFFFFF
+T15,BUS,T15,Troncal T15 - 231 "Prolongacion Alcalde",3,,D40000,FFFFFF
+T15-1,BUS,T15-1,Troncal T15-1 - 235 "Prolongacion Alcalde",3,,D40000,FFFFFF
+T15-C01,BUS,T15-C01,Troncal T15-C01 - 636A "Coronilla",3,,4C8D2B,FFFFFF
+T15-C02,BUS,T15-C02,Troncal T15-C02 - 636A "Mesas",3,,4C8D2B,FFFFFF
+T15-C03,BUS,T15-C03,Troncal T15-C03 - 636A "Mirador Escondido",3,,4C8D2B,FFFFFF
+T15-C04,BUS,T15-C04,Troncal T15-C04 - 275B "Villas",3,,4C8D2B,FFFFFF
+T15-C05,BUS,T15-C05,Troncal T15-C05 - 275B "Higuera",3,,4C8D2B,FFFFFF
+T15-C06,BUS,T15-C06,Troncal T15-C06 - 231C "Prolongacion Alcalde Complementaria",3,,4C8D2B,FFFFFF
+T16A-C01,BUS,T16A-C01,Troncal T16A-C01 - 163 "Molinos",3,,4C8D2B,FFFFFF
+T16B,BUS,T16B,Troncal T16B - 275F "Juan Gil Preciado",3,,D40000,FFFFFF
+T16B-1,BUS,T16B-1,Troncal T16B-1 - 275F "Angeles",3,,D40000,FFFFFF
+T16B-C01,BUS,T16B-C01,Troncal T16B-C01 - 275F "Conos",3,,4C8D2B,FFFFFF
+T16B-C03,BUS,T16B-C03,Troncal T16B-C03 - 633 "Las Agujas",3,,4C8D2B,FFFFFF
+T16B-C06,BUS,T16B-C06,Troncal T16B-C06 - 24A "Juan Gil Preciado Complementaria - La Magdalena",3,,4C8D2B,FFFFFF
+T16B-C07-C,BUS,T16B-C07-Ceibas,Troncal T16B-C07 - 24A "Juan Gil Preciado Complementaria - Ceibas",3,,4C8D2B,FFFFFF
+T16B-C07-V,BUS,T16B-C07-Vistas,Troncal T16B-C07 - 24A "Juan Gil Preciado Complementaria - Vistas",3,,4C8D2B,FFFFFF
+T16B-C08-M,BUS,T16B-C08-Mesitas,Troncal T16B-C08 - 24A "Juan Gil Preciado Complementaria - Las Mesitas",3,,4C8D2B,FFFFFF
+T16B-C08-P,BUS,T16B-C08-Piedrera,Troncal T16B-C08 - 24A "Juan Gil Preciado Complementaria - La Piedrera",3,,4C8D2B,FFFFFF
+T17,BUS,T17,Troncal T17-632 "Patria",3,,D40000,FFFFFF
+T17-1,BUS,T17-1,Troncal T17-1 - 632 "Patria",3,,D40000,FFFFFF
+T17-C01,BUS,T17-C01,Troncal T17-C01 - 632A "Patria Complementaria",3,,4C8D2B,FFFFFF
+T18-1-L,BUS,T18-1-Lopez,Troncal T18-1 - 622 "Lopez Mateos (Washington-Canada)",3,,D40000,FFFFFF
+T18-1-T,BUS,T18-1-Terranova,Troncal T18-1 - 622A "Terranova (Washington-Canada)",3,,D40000,FFFFFF
+T18-2-L,BUS,T18-2-Lopez,Troncal T18-2 - 622 "Lopez Mateos (Washington-Minerva)",3,,D40000,FFFFFF
+T18-2-T,BUS,T18-2-Terranova,Troncal T18-2 - 622A "Terranova (Washington-Minerva)",3,,D40000,FFFFFF
+MC-A03,MM,MC-A03,Alimentadora Mi Macro Calzada A03,3,,7FFF00,
+MC-A05,MM,MC-A05,Alimentadora Mi Macro Calzada A05,3,,7FFF00,
+MC-A06,MM,MC-A06,Alimentadora Mi Macro Calzada A06,3,,7FFF00,
+MC-A07,MM,MC-A07,Alimentadora Mi Macro Calzada A07,3,,7FFF00,
+MC-A08,MM,MC-A08,Alimentadora Mi Macro Calzada A08,3,,7FFF00,
+MC-A09,MM,MC-A09,Alimentadora Mi Macro Calzada A09,3,,7FFF00,
+MC-A10,MM,MC-A10,Alimentadora Mi Macro Calzada A10,3,,7FFF00,
+MC-A13,MM,MC-A13,Alimentadora Mi Macro Calzada A13,3,,7FFF00,
+MC-A15,MM,MC-A15,Alimentadora Mi Macro Calzada A15,3,,7FFF00,
+MC-A16,MM,MC-A16,Alimentadora Mi Macro Calzada A16,3,,7FFF00,
+MC-A17,MM,MC-A17,Alimentadora Mi Macro Calzada A17,3,,7FFF00,
+MC-A18,MM,MC-A18,Alimentadora Mi Macro Calzada A18,3,,7FFF00,
+MC-A19,MM,MC-A19,Alimentadora Mi Macro Calzada A19,3,,7FFF00,
+MC-A20,MM,MC-A20,Alimentadora Mi Macro Calzada A20,3,,7FFF00,
+MC-A21,MM,MC-A21,Alimentadora Mi Macro Calzada A21,3,,7FFF00,
+MP-A01,MM,MP-A01,Alimentadora Mi Macro Periférico A01,3,,872292,FFFFFF
+MP-A02,MM,MP-A02,Alimentadora Mi Macro Periférico A02,3,,872292,FFFFFF
+MP-A03,MM,MP-A03,Alimentadora Mi Macro Periférico A03,3,,872292,FFFFFF
+MP-A04,MM,MP-A04,Alimentadora Mi Macro Periférico A04,3,,872292,FFFFFF
+MP-A05-1,MM,MP-A05-1,Alimentadora Mi Macro Periférico A05-1,3,,872292,FFFFFF
+MP-A06,MM,MP-A06,Alimentadora Mi Macro Periférico A06,3,,872292,FFFFFF
+MP-A07,MM,MP-A07,Alimentadora Mi Macro Periférico A07,3,,872292,FFFFFF
+MP-C01,MM,MP-C01,Complementaria Mi Macro Periférico C01,3,,9A82DB,FFFFFF
+MP-C02,MM,MP-C02,Complementaria Mi Macro Periférico C02,3,,9A82DB,FFFFFF
+MP-C03,MM,MP-C03,Complementaria Mi Macro Periférico C03,3,,9A82DB,FFFFFF
+MC-L1,MM,MC-L1,Mi Macro Calzada,3,,4CADA9,FFFFFF
+MC-L1E,MM,MC-L1E,Mi Macro Calzada Express,3,,4CADA9,FFFFFF
+MP-T01,MM,MP-T01,Mi Macro Periférico T01,3,,513780,FFFFFF
+MP-T02,MM,MP-T02,Mi Macro Periférico T02,3,,7357C1,FFFFFF
+MP-T03,MM,MP-T03,Mi Macro Periférico T03,3,,390094,FFFFFF
+C98,ME,C98,Ruta Troncal C98 - 368 "CU Tonala",3,,4C8D2B,FFFFFF
+MT_L3,MT,L3,Linea 3 Arcos Zapopan - Central Camionera,0,,B8007C,FFFFFF
+MT_L1,MT,L1,Linea 1 Periferico Sur-Auditorio,0,http://www.siteur.gob.mx/estaciones-tren-ligero.html,D40D0D,FFFFFF
+MT_L2,MT,L2,Linea 2 Juarez-Tetlan,0,http://www.siteur.gob.mx/estaciones-tren-ligero.html,116633,FFFFFF
+ST_L1,ST,L1,Linea 1 Juárez-Aviación,3,http://www.siteur.gob.mx/sitren/linea-1.html,B61F3E,FFFFFF
+ST_L2,ST,L2,Linea 2 Tetlán-Tonalá,3,http://www.siteur.gob.mx/sitren/linea-2.html,B61F3E,FFFFFF
+ST_L3,ST,L3,Linea 3 Arcos-Felipe Ángeles,3,http://www.siteur.gob.mx/sitren/linea-3.html,B61F3E,FFFFFF
+ST_L4,ST,L4,Linea 4 Juan Gil Preciado-Molinos,3,http://www.siteur.gob.mx/sitren/linea4.html,B61F3E,FFFFFF
+LM-V03,BUS,LM-V03,Troncal LM-V03 "Zapopan Centro",3,,4C8D2B,FFFFFF
+LM-V04,BUS,LM-V04,Troncal LM-V04 "Plaza Patria",3,,4C8D2B,FFFFFF
+LM-V05,BUS,LM-V05,Troncal LM-V05 "Glorieta Miverva",3,,4C8D2B,FFFFFF
+LM-V01,BUS,LM-V01,Troncal LM-V01 "Central Vieja",3,,4C8D2B,FFFFFF
+LM-V02,BUS,LM-V02,Troncal LM-V02 "San Juan de Dios",3,,4C8D2B,FFFFFF
+LM-C01,BUS,LM-C01,Troncal LM-C01 "Tren Sur",3,,4C8D2B,FFFFFF
+LM-C02,BUS,LM-C02,Troncal LM-C02 "Centro Sur",3,,4C8D2B,FFFFFF
+LM-C03,BUS,LM-C03,Troncal LM-C03 "Centro Sur",3,,4C8D2B,FFFFFF
