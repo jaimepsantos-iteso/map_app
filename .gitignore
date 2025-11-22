@@ -1,0 +1,10 @@
+# Ignore Python bytecode cache directories
+**/__pycache__/
+
+# Ignore OpenStreetMap data files
+**/*.osm
+**/*.pbf
+**/*.osm.pbf
+
+# Ignore generated map HTML files, those are only for visualization
+**/map.html
