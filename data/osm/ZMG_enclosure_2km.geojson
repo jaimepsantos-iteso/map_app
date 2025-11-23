@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "ZMG_enclosure_2km",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -103.116191694315603, 20.397992206881877 ], [ -103.116191694315603, 20.875121922792687 ], [ -103.582835305679396, 20.875121922792687 ], [ -103.582835305679396, 20.397992206881877 ], [ -103.116191694315603, 20.397992206881877 ] ] ] } }
+]
+}
