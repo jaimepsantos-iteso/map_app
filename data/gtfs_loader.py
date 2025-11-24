@@ -1,102 +1,245 @@
-import os
-from typing import Optional
 
 import pandas as pd
 import geopandas as gpd
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
+import os
+import pickle
 
 
-def load_routes_geodataframe(gtfs_folder: str, crs: str = "EPSG:4326") -> gpd.GeoDataFrame:
+def load_transit_dataframe(gtfs_folder: str) -> pd.DataFrame:
     """
-    Load GTFS `routes.txt`, `trips.txt` and `shapes.txt` and return a GeoDataFrame
-    where each route is represented by a LineString geometry built from the
-    corresponding shape points.
-
+    Load and merge GTFS transit data from multiple files into a single DataFrame.
+    This function reads the following GTFS files from the specified folder:
+    - trips.txt: Contains trip information including route and service IDs
+    - stop_times.txt: Contains stop sequences and timing information for each trip
+    - stops.txt: Contains stop location and details
+    - frequencies.txt: Contains headway-based service frequency information
+    The function merges these files to create a comprehensive transit dataset with
+    all relevant information needed for transit analysis and routing.
     Args:
-        gtfs_folder: Path to the folder containing GTFS text files (routes.txt,
-            trips.txt, shapes.txt).
-        crs: Coordinate reference system for the returned GeoDataFrame.
-
+        gtfs_folder (str): Path to the folder containing GTFS files
     Returns:
-        GeoDataFrame with route fields from `routes.txt` and a `geometry` column
-        containing LineString objects where available. Routes without a matching
-        shape will have `geometry` set to None.
+        pd.DataFrame: A merged DataFrame (transit_df) containing all relevant
+                      transit information from the GTFS files, including trip
+                      details, stop times, stop locations, shape geometry,
+                      stop geometry and service frequencies.
+    """
+    
 
-    Usage example:
-        >>> from data.gtfs_loader import load_routes_geodataframe
-        >>> gdf = load_routes_geodataframe(r"data/gtfs")
-        >>> gdf.plot()
+    
+    # if file transit_df.pkl exists only load the file and return other wise create the whole df
+    pkl_path = os.path.join(gtfs_folder, "htransit_df.pkl")
+    if os.path.exists(pkl_path):
+        transit_df = pd.read_pickle(pkl_path)
+        return transit_df
+
+    # If file doesn't exist, create the DataFrame
+
+    # Start with the trips, it contains all the information to be retrieve from the other files, from this one we can filter the information that we want
+
+    ### trips_df = pd.read_csv(f"{gtfs_folder}/trips.txt", dtype=str, low_memory=False)
+    
+    # Modified trips.txt with Excel to fix some issues regarding some shape allocations
+    trips_df = pd.read_excel(f"{gtfs_folder}/trips_fixed.xlsx", dtype=str)
+    trips_df = process_trips(trips_df)
+
+    # Based on the stop times get all the sequence of stops per trip and the time between each stop and stop geometry
+    stop_times_df = pd.read_csv(f"{gtfs_folder}/stop_times.txt", dtype=str, low_memory=False)
+    stop_df = pd.read_csv(f"{gtfs_folder}/stops.txt", dtype=str, low_memory=False)
+    stop_df = process_stops(stop_df, stop_times_df, trips_df)
+
+    # To get the average frequency of each trip
+    frequencies_df = pd.read_csv(f"{gtfs_folder}/frequencies.txt", dtype=str, low_memory=False)
+    frequencies_df = process_frequencies(frequencies_df, trips_df)
+
+    shapes_df = pd.read_csv(f"{gtfs_folder}/shapes.txt", dtype=str, low_memory=False)
+    shapes_df = process_shapes(shapes_df, trips_df)
+
+    # Filter used routes and fix colors and route types
+    routes_df = pd.read_csv(f"{gtfs_folder}/routes.txt", dtype=str, low_memory=False)
+    routes_df = process_routes(routes_df, trips_df)
+
+    # Now merge all the information into transit_df, use trips_df as base
+    transit_df = trips_df#[['shape_id', 'route_id', 'trip_id', 'trip_headsign']] -> All columns "copied"
+    # Add to the transit_df the geometry of each shape_id
+    transit_df = transit_df.merge(shapes_df[['shape_id', 'shape_geometry']], on='shape_id', how='left')
+    # Add to the transit_df the information of each route_id
+    transit_df = transit_df.merge(routes_df[["route_id", "route_short_name", "route_long_name", "route_type", "route_color"]], on='route_id', how='left')
+    # Add to the transit_df the information of stops per trip_id   
+    transit_df = transit_df.merge(stop_df, on='trip_id', how='left') #stop_ids, stop_headsigns, stop_time_deltas, time_trip, num_stops, stop_geometry -> All columns merged
+    # Add to the transit_df the information of frequencies per trip_id
+    transit_df = transit_df.merge(frequencies_df[["trip_id", "frequency"]], on='trip_id', how='left')
+
+    transit_df.to_pickle(f"{gtfs_folder}/transit_df_py.pkl")
+
+    return transit_df
+
+def process_trips(trips_df: pd.DataFrame) -> pd.DataFrame:
+
+    """
+    Process the trips DataFrame to select one trip per shape_id based on service priority.
+    The function assigns a priority to service_ids and selects the trip with the highest
+    priority for each shape_id.
+    Args:
+        trips_df (pd.DataFrame): DataFrame containing trip information
+    Returns:
+        pd.DataFrame: Processed DataFrame with one trip per shape_id
+    """
+    # Assign priority to service_id, this due this ones are the more frequent services
+    service_priority = {'LD': 1, 'LS': 2, 'LV': 3}
+    trips_df['service_prio'] = trips_df['service_id'].map(service_priority).fillna(99).astype(int)
+
+    # Sort by shape_id then priority so the preferred service is first
+    tmp = trips_df.sort_values(['shape_id', 'service_prio'])
+
+    # Drop duplicates to keep the chosen trip per shape
+    rep = tmp.drop_duplicates(subset='shape_id', keep='first')
+
+    # DataFrame with the assignments
+    trips_df = rep[['shape_id', 'route_id', 'trip_id', 'trip_headsign']]
+
+    # Remove route "T14B" since it has problems with its shape
+    trips_df = trips_df[trips_df['route_id'] != 'T14B']
+
+    return trips_df
+
+
+def process_stops(stop_df: pd.DataFrame, stop_times_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the stops DataFrame  and stop_times DataFrame to include the geometry of the stops.
+    This function can include any necessary preprocessing steps for stops data.
+    Args:
+        stop_df (pd.DataFrame): DataFrame containing stop information
+        stop_times_df (pd.DataFrame): DataFrame containing stop times information
+    Returns:
+        pd.DataFrame: Processed stops DataFrame
     """
 
-    routes_path = os.path.join(gtfs_folder, "routes.txt")
-    trips_path = os.path.join(gtfs_folder, "trips.txt")
-    shapes_path = os.path.join(gtfs_folder, "shapes.txt")
+    # Filter stop_times to only include trips present in trips_df
+    stop_times_df = stop_times_df[stop_times_df['trip_id'].isin(trips_df['trip_id'])]
 
-    # Read files, handle missing gracefully
-    if not os.path.exists(routes_path):
-        raise FileNotFoundError(f"routes.txt not found in {gtfs_folder}")
+    # Convert departure times to pandas Timedelta (handles >24:00:00)
+    stop_times_df["departure_time"] = pd.to_timedelta(stop_times_df["departure_time"], errors="coerce")
+    stop_times_df["stop_sequence"] = pd.to_numeric(stop_times_df["stop_sequence"], errors="coerce")
 
-    routes_df = pd.read_csv(routes_path, dtype=str)
+    # Aggregate stop_times by trip_id to create lists of stop_ids, stop_headsigns, and time deltas between consecutive stops
+    def _condense_trip_info(g):
+        g = g.copy()
+        g = g.sort_values('stop_sequence')
+        stops = g['stop_id'].tolist()
+        stop_headsigns = g['stop_headsign'].tolist()
+        times = g['departure_time']
+        deltas = times.diff().iloc[1:].dt.total_seconds().astype(int).tolist()  # list of int seconds (length = len(stops)-1)
+        time_trip = int((times.iloc[-1] - times.iloc[0]).total_seconds())  # total trip time in seconds
+        return pd.Series({'stop_ids': stops, 'stop_headsigns': stop_headsigns, 'stop_time_deltas': deltas, 'time_trip': time_trip, 'num_stops': len(stops)})
 
-    # Load shapes
-    if os.path.exists(shapes_path):
-        shapes_df = pd.read_csv(shapes_path, dtype={"shape_id": str})
-        # Ensure required columns exist
-        if not {"shape_pt_lat", "shape_pt_lon"}.issubset(shapes_df.columns):
-            raise ValueError("shapes.txt must contain 'shape_pt_lat' and 'shape_pt_lon' columns")
-        # Default sequence column name
-        seq_col = "shape_pt_sequence" if "shape_pt_sequence" in shapes_df.columns else None
+    stop_times_df = stop_times_df.groupby('trip_id').apply(_condense_trip_info).reset_index()
 
-        if seq_col:
-            shapes_df = shapes_df.sort_values(["shape_id", seq_col])
+    # Filter stops to only include those present in stop_times_df
+    stop_df = stop_df[stop_df['stop_id'].isin(stop_times_df['stop_ids'].explode())]
+
+    # Add to the transit_stop_df the Linestring geometry of each stop
+    stop_df['stop_lat'] = pd.to_numeric(stop_df['stop_lat'], errors='coerce')
+    stop_df['stop_lon'] = pd.to_numeric(stop_df['stop_lon'], errors='coerce')
+
+    #for each trip in transit_stop_df, create a linestring geometry of its stops
+    def _create_stop_linestring(row):
+        stop_ids = row['stop_ids']
+        coords = []
+        for stop_id in stop_ids:
+            stop_info = stop_df[stop_df['stop_id'] == stop_id]
+            if not stop_info.empty:
+                lat = stop_info['stop_lat'].values[0]
+                lon = stop_info['stop_lon'].values[0]
+                coords.append((lat, lon))  # Note: (lat, lon) for Point
+        if len(coords) == 0:
+            return None
+        elif len(coords) == 1:
+            return Point(coords[0])
         else:
-            shapes_df = shapes_df.sort_values(["shape_id"])
+            return LineString(coords)
+    
+    stop_times_df['stop_geometry'] = stop_times_df.apply(_create_stop_linestring, axis=1)
+    
+    return stop_times_df
 
-        # Build LineString for each shape_id
-        shape_geoms = (
-            shapes_df.groupby("shape_id").apply(
-                lambda df: LineString(list(zip(df["shape_pt_lon"].astype(float), df["shape_pt_lat"].astype(float))))
-            )
-        )
-        # series: index shape_id -> LineString
-        shape_point_counts = shapes_df.groupby("shape_id")["shape_pt_lat"].size().to_dict()
-    else:
-        shape_geoms = pd.Series(dtype=object)
-        shape_point_counts = {}
+def process_frequencies(frequencies_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the frequencies DataFrame to include only relevant trips and aggregate frequencies.
+    This function filters frequencies to include only trips present in trips_df and aggregates
+    headway_secs to compute average frequency per trip_id.
+    Args:
+        frequencies_df (pd.DataFrame): DataFrame containing frequency information
+        trips_df (pd.DataFrame): DataFrame containing trip information used to filter valid trips only
+    Returns:
+        pd.DataFrame: Processed frequencies DataFrame
+    """
+    # Filter frequencies to only include trips present in trips_df
+    frequencies_df = frequencies_df[frequencies_df['trip_id'].isin(trips_df['trip_id'])]
 
-    # Map routes -> shape via trips.txt
-    route_shape_map = {}
-    if os.path.exists(trips_path):
-        trips_df = pd.read_csv(trips_path, dtype=str)
-        if "route_id" in trips_df.columns and "shape_id" in trips_df.columns:
-            # Collect candidate shapes per route
-            candidates = trips_df.groupby("route_id")["shape_id"].unique().to_dict()
-            for route_id, shape_ids in candidates.items():
-                # choose the shape with the most points (if available)
-                best_shape = None
-                best_count = -1
-                for sid in shape_ids:
-                    cnt = shape_point_counts.get(sid, 0)
-                    if cnt > best_count:
-                        best_count = cnt
-                        best_shape = sid
-                if best_shape is not None:
-                    route_shape_map[route_id] = best_shape
+    # Convert headway_secs to numeric
+    frequencies_df['frequency'] = pd.to_numeric(frequencies_df['headway_secs'], errors='coerce')
 
-    # Build geometry list matching routes_df rows
-    geometries = []
-    for _, row in routes_df.iterrows():
-        rid = str(row.get("route_id")) if "route_id" in row else None
-        geom = None
-        if rid in route_shape_map:
-            sid = route_shape_map[rid]
-            # lookup geometry
-            try:
-                geom = shape_geoms.loc[sid]
-            except Exception:
-                geom = None
-        geometries.append(geom)
+    # Combine to have only one entry per trip_id, taking the average headway_secs if multiple entries exist
+    frequencies_df = frequencies_df.groupby('trip_id')['frequency'].mean().astype(int).reset_index()
 
-    gdf = gpd.GeoDataFrame(routes_df.copy(), geometry=geometries, crs=crs)
+    return frequencies_df
 
-    return gdf
+def process_shapes(shapes_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the shapes DataFrame to create LineString geometries for each shape_id.
+    This function filters shapes to include only those present in trips_df and constructs
+    LineString geometries from the shape points.
+    Args:
+        shapes_df (pd.DataFrame): DataFrame containing shape information
+        trips_df (pd.DataFrame): DataFrame containing trip information used to filter valid shapes only
+    Returns:
+        pd.DataFrame: Processed shapes DataFrame with LineString geometries
+    """
+    # Filter shapes to only include those present in trips_df
+    shapes_df = shapes_df[shapes_df['shape_id'].isin(trips_df['shape_id'])]
+
+    # Convert shape_pt_lat and shape_pt_lon to numeric
+    shapes_df['shape_pt_lat'] = pd.to_numeric(shapes_df['shape_pt_lat'], errors='coerce')
+    shapes_df['shape_pt_lon'] = pd.to_numeric(shapes_df['shape_pt_lon'], errors='coerce')
+    shapes_df['shape_pt_sequence'] = pd.to_numeric(shapes_df['shape_pt_sequence'], errors='coerce')
+
+    # Aggregate shape points into LineString geometries
+    def _create_shape_linestring(g):
+        g = g.sort_values('shape_pt_sequence')
+        coords = list(zip(g['shape_pt_lat'], g['shape_pt_lon']))  # Note: (lat, lon) for Point
+        if len(coords) == 0:
+            return None
+        elif len(coords) == 1:
+            return Point(coords[0])
+        else:
+            return LineString(coords)
+
+    shapes_geom = shapes_df.groupby('shape_id').apply(_create_shape_linestring).reset_index()
+    shapes_geom.columns = ['shape_id', 'shape_geometry']
+
+    return shapes_geom
+
+def process_routes(routes_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the routes DataFrame to include only relevant routes.
+    This function filters routes to include only those present in trips_df and modifies route colors and route types.
+    Args:
+        routes_df (pd.DataFrame): DataFrame containing route information
+        trips_df (pd.DataFrame): DataFrame containing trip information used to filter valid routes only
+    Returns:
+        pd.DataFrame: Processed routes DataFrame
+    """
+    # Filter routes to only include those present in trips_df
+    routes_df = routes_df[routes_df['route_id'].isin(trips_df['route_id'])]
+
+    # Add "#" to the colors of the routes_df
+    routes_df['route_color'] = routes_df['route_color'].apply(lambda c: f"#{c}" if pd.notna(c) and not c.startswith('#') else c)
+
+    #to numeric route_type
+    routes_df['route_type'] = pd.to_numeric(routes_df['route_type'], errors='coerce')
+
+    # Modify route_type for the Macrobus (Troncales only: MC-L1, MC-L1E, MP-T01, MP-T02, MP-T03)
+    routes_df.loc[routes_df['route_short_name'].isin(["MC-L1", "MC-L1E", "MP-T01", "MP-T02", "MP-T03"]), 'route_type'] = 1
+
+    return routes_df
