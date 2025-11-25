@@ -28,7 +28,7 @@ def load_transit_dataframe(gtfs_folder: str) -> pd.DataFrame:
 
     
     # if file transit_df.pkl exists only load the file and return other wise create the whole df
-    pkl_path = os.path.join(gtfs_folder, "htransit_df.pkl")
+    pkl_path = os.path.join(gtfs_folder, "transit_df.pkl")
     if os.path.exists(pkl_path):
         transit_df = pd.read_pickle(pkl_path)
         return transit_df
@@ -136,7 +136,7 @@ def process_stops(stop_df: pd.DataFrame, stop_times_df: pd.DataFrame, trips_df: 
     stop_times_df = stop_times_df.groupby('trip_id').apply(_condense_trip_info).reset_index()
 
     # Filter stops to only include those present in stop_times_df
-    stop_df = stop_df[stop_df['stop_id'].isin(stop_times_df['stop_ids'].explode())]
+    stop_df = stop_df[stop_df['stop_id'].isin(stop_times_df['stop_ids'].explode().unique())]
 
     # Add to the transit_stop_df the Linestring geometry of each stop
     stop_df['stop_lat'] = pd.to_numeric(stop_df['stop_lat'], errors='coerce')
@@ -151,7 +151,7 @@ def process_stops(stop_df: pd.DataFrame, stop_times_df: pd.DataFrame, trips_df: 
             if not stop_info.empty:
                 lat = stop_info['stop_lat'].values[0]
                 lon = stop_info['stop_lon'].values[0]
-                coords.append((lat, lon))  # Note: (lat, lon) for Point
+                coords.append((lon, lat))  # Note: (lon, lat) for Point
         if len(coords) == 0:
             return None
         elif len(coords) == 1:
@@ -207,7 +207,7 @@ def process_shapes(shapes_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFr
     # Aggregate shape points into LineString geometries
     def _create_shape_linestring(g):
         g = g.sort_values('shape_pt_sequence')
-        coords = list(zip(g['shape_pt_lat'], g['shape_pt_lon']))  # Note: (lat, lon) for Point
+        coords = list(zip(g['shape_pt_lon'], g['shape_pt_lat']))  # Note: (lon, lat) for Point
         if len(coords) == 0:
             return None
         elif len(coords) == 1:
