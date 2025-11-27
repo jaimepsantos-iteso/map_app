@@ -2,77 +2,161 @@
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import LineString, Point
+from collections import defaultdict
 import os
 import pickle
 
+class GTFSLoader:
 
-def load_transit_dataframe(gtfs_folder: str) -> pd.DataFrame:
-    """
-    Load and merge GTFS transit data from multiple files into a single DataFrame.
-    This function reads the following GTFS files from the specified folder:
-    - trips.txt: Contains trip information including route and service IDs
-    - stop_times.txt: Contains stop sequences and timing information for each trip
-    - stops.txt: Contains stop location and details
-    - frequencies.txt: Contains headway-based service frequency information
-    The function merges these files to create a comprehensive transit dataset with
-    all relevant information needed for transit analysis and routing.
-    Args:
-        gtfs_folder (str): Path to the folder containing GTFS files
-    Returns:
-        pd.DataFrame: A merged DataFrame (transit_df) containing all relevant
-                      transit information from the GTFS files, including trip
-                      details, stop times, stop locations, shape geometry,
-                      stop geometry and service frequencies.
-    """
-    
+    def load_transit_dataframe(self, gtfs_folder: str) -> pd.DataFrame:
+        """
+        Load and merge GTFS transit data from multiple files into a single DataFrame.
+        This function reads the following GTFS files from the specified folder:
+        - trips.txt: Contains trip information including route and service IDs
+        - stop_times.txt: Contains stop sequences and timing information for each trip
+        - stops.txt: Contains stop location and details
+        - frequencies.txt: Contains headway-based service frequency information
+        The function merges these files to create a comprehensive transit dataset with
+        all relevant information needed for transit analysis and routing.
+        Args:
+            gtfs_folder (str): Path to the folder containing GTFS files
+        Returns:
+            pd.DataFrame: A merged DataFrame (transit_df) containing all relevant
+                        transit information from the GTFS files, including trip
+                        details, stop times, stop locations, shape geometry,
+                        stop geometry and service frequencies.
+        """
+        
 
-    
-    # if file transit_df.pkl exists only load the file and return other wise create the whole df
-    pkl_path = os.path.join(gtfs_folder, "transit_df.pkl")
-    if os.path.exists(pkl_path):
-        transit_df = pd.read_pickle(pkl_path)
+        
+        # if file transit_df.pkl exists only load the file and return other wise create the whole df
+        pkl_path = os.path.join(gtfs_folder, "transit_df.pkl")
+        if os.path.exists(pkl_path):
+            transit_df = pd.read_pickle(pkl_path)
+            return transit_df
+
+        # If file doesn't exist, create the DataFrame
+
+        # Start with the trips, it contains all the information to be retrieve from the other files, from this one we can filter the information that we want
+
+        ### trips_df = pd.read_csv(f"{gtfs_folder}/trips.txt", dtype=str, low_memory=False)
+        
+        # Modified trips.txt with Excel to fix some issues regarding some shape allocations
+        trips_df = pd.read_excel(f"{gtfs_folder}/trips_fixed.xlsx", dtype=str)
+        trips_df = process_trips(trips_df)
+
+        # Based on the stop times get all the sequence of stops per trip and the time between each stop
+        stop_times_df = pd.read_csv(f"{gtfs_folder}/stop_times.txt", dtype=str, low_memory=False)
+        stop_times_df = process_stops(stop_times_df, stop_times_df, trips_df)
+
+        # To get the average frequency of each trip
+        frequencies_df = pd.read_csv(f"{gtfs_folder}/frequencies.txt", dtype=str, low_memory=False)
+        frequencies_df = process_frequencies(frequencies_df, trips_df)
+
+        shapes_df = pd.read_csv(f"{gtfs_folder}/shapes.txt", dtype=str, low_memory=False)
+        shapes_df = process_shapes(shapes_df, trips_df)
+
+        # Filter used routes and fix colors and route types
+        routes_df = pd.read_csv(f"{gtfs_folder}/routes.txt", dtype=str, low_memory=False)
+        routes_df = process_routes(routes_df, trips_df)
+
+        # Now merge all the information into transit_df, use trips_df as base
+        transit_df = trips_df#[['shape_id', 'route_id', 'trip_id', 'trip_headsign']] -> All columns "copied"
+        # Add to the transit_df the geometry of each shape_id
+        transit_df = transit_df.merge(shapes_df[['shape_id', 'shape_geometry']], on='shape_id', how='left')
+        # Add to the transit_df the information of each route_id
+        transit_df = transit_df.merge(routes_df[["route_id", "route_short_name", "route_long_name", "route_type", "route_color"]], on='route_id', how='left')
+        # Add to the transit_df the information of stops per trip_id   
+        transit_df = transit_df.merge(stop_times_df, on='trip_id', how='left') #stop_ids, stop_headsigns, stop_time_deltas, time_trip, num_stops -> All columns merged
+        # Add to the transit_df the information of frequencies per trip_id
+        transit_df = transit_df.merge(frequencies_df[["trip_id", "frequency"]], on='trip_id', how='left')
+
+        transit_df.to_pickle(f"{gtfs_folder}/transit_df_py.pkl")
+
         return transit_df
 
-    # If file doesn't exist, create the DataFrame
+    def load_stops_dataframe(self, gtfs_folder: str, transit_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Load and process the stops.txt GTFS file into a GeoDataFrame.
+        This function reads the stops.txt file from the specified GTFS folder,
+        processes the stop locations, and converts them into a GeoDataFrame
+        with Point geometries for each stop.
+        Args:
+            gtfs_folder (str): Path to the folder containing GTFS files
+        Returns:
+            gpd.GeoDataFrame: A GeoDataFrame containing stop information with
+                            Point geometries for each stop location.
+        """
+        stops_df = pd.read_csv(f"{gtfs_folder}/stops.txt", dtype=str, low_memory=False)
 
-    # Start with the trips, it contains all the information to be retrieve from the other files, from this one we can filter the information that we want
+        #filter stops to only those in transit_df["stop_ids"]
+        stops_df = stops_df[stops_df['stop_id'].isin(transit_df['stop_ids'].explode().unique())]
 
-    ### trips_df = pd.read_csv(f"{gtfs_folder}/trips.txt", dtype=str, low_memory=False)
-    
-    # Modified trips.txt with Excel to fix some issues regarding some shape allocations
-    trips_df = pd.read_excel(f"{gtfs_folder}/trips_fixed.xlsx", dtype=str)
-    trips_df = process_trips(trips_df)
+        # Adds Point geometries to the stops_df
+        stops_df = process_stops_geometry(stops_df)
 
-    # Based on the stop times get all the sequence of stops per trip and the time between each stop and stop geometry
-    stop_times_df = pd.read_csv(f"{gtfs_folder}/stop_times.txt", dtype=str, low_memory=False)
-    stop_df = pd.read_csv(f"{gtfs_folder}/stops.txt", dtype=str, low_memory=False)
-    stop_df = process_stops(stop_df, stop_times_df, trips_df)
+        # Create adjacency list of stops
+        stops_df = process_stops_adjacency(stops_df, transit_df)
 
-    # To get the average frequency of each trip
-    frequencies_df = pd.read_csv(f"{gtfs_folder}/frequencies.txt", dtype=str, low_memory=False)
-    frequencies_df = process_frequencies(frequencies_df, trips_df)
+        return stops_df
 
-    shapes_df = pd.read_csv(f"{gtfs_folder}/shapes.txt", dtype=str, low_memory=False)
-    shapes_df = process_shapes(shapes_df, trips_df)
 
-    # Filter used routes and fix colors and route types
-    routes_df = pd.read_csv(f"{gtfs_folder}/routes.txt", dtype=str, low_memory=False)
-    routes_df = process_routes(routes_df, trips_df)
+def process_stops_geometry(stops_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the stops DataFrame to include Point geometries for each stop location.
+    This function converts the latitude and longitude columns into Point geometries.
+    Args:
+        stops_df (pd.DataFrame): DataFrame containing stop information
+    Returns:
+        pd.DataFrame: Processed DataFrame with Point geometries for each stop location
+    """
+    # Convert latitude and longitude to numeric
+    stops_df['stop_lat'] = pd.to_numeric(stops_df['stop_lat'], errors='coerce')
+    stops_df['stop_lon'] = pd.to_numeric(stops_df['stop_lon'], errors='coerce')
 
-    # Now merge all the information into transit_df, use trips_df as base
-    transit_df = trips_df#[['shape_id', 'route_id', 'trip_id', 'trip_headsign']] -> All columns "copied"
-    # Add to the transit_df the geometry of each shape_id
-    transit_df = transit_df.merge(shapes_df[['shape_id', 'shape_geometry']], on='shape_id', how='left')
-    # Add to the transit_df the information of each route_id
-    transit_df = transit_df.merge(routes_df[["route_id", "route_short_name", "route_long_name", "route_type", "route_color"]], on='route_id', how='left')
-    # Add to the transit_df the information of stops per trip_id   
-    transit_df = transit_df.merge(stop_df, on='trip_id', how='left') #stop_ids, stop_headsigns, stop_time_deltas, time_trip, num_stops, stop_geometry -> All columns merged
-    # Add to the transit_df the information of frequencies per trip_id
-    transit_df = transit_df.merge(frequencies_df[["trip_id", "frequency"]], on='trip_id', how='left')
+    # Create Point geometries
+    stops_df['geometry'] = [Point(xy) for xy in zip(stops_df['stop_lon'], stops_df['stop_lat'])]
+        
 
-    transit_df.to_pickle(f"{gtfs_folder}/transit_df_py.pkl")
+    return stops_df
 
-    return transit_df
+def process_stops_adjacency(stops_df: pd.DataFrame, transit_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process the stops DataFrame to create an adjacency list of stops.
+    This function can include any necessary preprocessing steps for stops data.
+    Args:
+        stops_df (pd.DataFrame): DataFrame containing stop information
+        transit_df (pd.DataFrame): DataFrame containing transit information
+    Returns:
+        pd.DataFrame: Processed DataFrame with adjacency information for stops
+    """
+    # Use defaultdict to map stop_id to sets
+    next_stop_dict = defaultdict(dict)
+    routes_dict = defaultdict(set)
+
+    for stops_per_trip, stop_time_deltas, shape_id, route_id in zip(transit_df['stop_ids'], transit_df['stop_time_deltas'], transit_df['shape_id'], transit_df['route_id']):
+        for i in range(len(stops_per_trip)-1):
+            stop_id = stops_per_trip[i]
+            next_stop_id = stops_per_trip[i+1]
+            stop_time_delta = stop_time_deltas[i]
+            # if empty key, assign stop_time_delta and shape_id in a list
+            if next_stop_id not in next_stop_dict[stop_id]:
+                next_stop_dict[stop_id][next_stop_id] = {'weight': stop_time_delta, 'shape_ids': [shape_id]}
+            # otherwise append shape_id to the list and update the average stop_time_delta            
+            else:
+                next_stop_dict[stop_id][next_stop_id]['shape_ids'].append(shape_id)
+                next_stop_dict[stop_id][next_stop_id]['weight'] = round((next_stop_dict[stop_id][next_stop_id]['weight'] + stop_time_delta) / (len(next_stop_dict[stop_id][next_stop_id]['shape_ids'])))
+            
+            routes_dict[stop_id].add(route_id)
+
+    # add columns from dictionaries
+    stops_df['next_stop_id'] = stops_df['stop_id'].map(lambda x: next_stop_dict.get(x, dict()))
+    stops_df['routes_by_stop'] = stops_df['stop_id'].map(lambda x: routes_dict.get(x, set()))
+
+    #remove stops with no next_stop_id
+    stops_df = stops_df[stops_df['next_stop_id'].map(len) > 0]
+
+    return stops_df
 
 def process_trips(trips_df: pd.DataFrame) -> pd.DataFrame:
 
@@ -103,14 +187,13 @@ def process_trips(trips_df: pd.DataFrame) -> pd.DataFrame:
 
     return trips_df
 
-
-def process_stops(stop_df: pd.DataFrame, stop_times_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
+def process_stops(stop_times_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:
     """
     Process the stops DataFrame  and stop_times DataFrame to include the geometry of the stops.
     This function can include any necessary preprocessing steps for stops data.
     Args:
-        stop_df (pd.DataFrame): DataFrame containing stop information
-        stop_times_df (pd.DataFrame): DataFrame containing stop times information
+        stop_times_df (pd.DataFrame): DataFrame containing stop times and sequence of stops per trip
+        trips_df (pd.DataFrame): DataFrame containing trip information used to filter valid trips only
     Returns:
         pd.DataFrame: Processed stops DataFrame
     """
@@ -134,33 +217,7 @@ def process_stops(stop_df: pd.DataFrame, stop_times_df: pd.DataFrame, trips_df: 
         return pd.Series({'stop_ids': stops, 'stop_headsigns': stop_headsigns, 'stop_time_deltas': deltas, 'time_trip': time_trip, 'num_stops': len(stops)})
 
     stop_times_df = stop_times_df.groupby('trip_id').apply(_condense_trip_info).reset_index()
-
-    # Filter stops to only include those present in stop_times_df
-    stop_df = stop_df[stop_df['stop_id'].isin(stop_times_df['stop_ids'].explode().unique())]
-
-    # Add to the transit_stop_df the Linestring geometry of each stop
-    stop_df['stop_lat'] = pd.to_numeric(stop_df['stop_lat'], errors='coerce')
-    stop_df['stop_lon'] = pd.to_numeric(stop_df['stop_lon'], errors='coerce')
-
-    #for each trip in transit_stop_df, create a linestring geometry of its stops
-    def _create_stop_linestring(row):
-        stop_ids = row['stop_ids']
-        coords = []
-        for stop_id in stop_ids:
-            stop_info = stop_df[stop_df['stop_id'] == stop_id]
-            if not stop_info.empty:
-                lat = stop_info['stop_lat'].values[0]
-                lon = stop_info['stop_lon'].values[0]
-                coords.append((lon, lat))  # Note: (lon, lat) for Point
-        if len(coords) == 0:
-            return None
-        elif len(coords) == 1:
-            return Point(coords[0])
-        else:
-            return LineString(coords)
-    
-    stop_times_df['stop_geometry'] = stop_times_df.apply(_create_stop_linestring, axis=1)
-    
+  
     return stop_times_df
 
 def process_frequencies(frequencies_df: pd.DataFrame, trips_df: pd.DataFrame) -> pd.DataFrame:

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication
 
 from data.graph_loader import GraphLoader
 from core.routing import RouteService
+from data.gtfs_loader import GTFSLoader
 from gui.main_window import MainWindow
 
 LOAD_TYPE="local"
@@ -17,11 +18,15 @@ def main():
 
     graph_loader = GraphLoader()
 
-    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.graphml", "data/osm/ZMG_enclosure_2km.geojson")
+    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk", "data/osm/ZMG_enclosure_2km.geojson")
 
-    transit_df = load_transit_dataframe("data/gtfs")
+    gtfs_loader = GTFSLoader()
 
-    graph_transit = graph_loader.create_graph_transit(transit_df)
+    transit_df = gtfs_loader.load_transit_dataframe("data/gtfs")
+
+    stops_df = gtfs_loader.load_stops_dataframe("data/gtfs", transit_df)
+
+    graph_transit = graph_loader.create_graph_transit(transit_df, stops_df)
 
     route_service = RouteService(graph)
 
