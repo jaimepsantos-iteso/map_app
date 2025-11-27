@@ -153,9 +153,6 @@ def process_stops_adjacency(stops_df: pd.DataFrame, transit_df: pd.DataFrame) ->
     stops_df['next_stop_id'] = stops_df['stop_id'].map(lambda x: next_stop_dict.get(x, dict()))
     stops_df['routes_by_stop'] = stops_df['stop_id'].map(lambda x: routes_dict.get(x, set()))
 
-    #remove stops with no next_stop_id
-    stops_df = stops_df[stops_df['next_stop_id'].map(len) > 0]
-
     return stops_df
 
 def process_trips(trips_df: pd.DataFrame) -> pd.DataFrame:
