@@ -1,5 +1,4 @@
 import sys
-import os
 
 from PyQt5.QtWidgets import QApplication
 
@@ -16,20 +15,13 @@ def main():
 
     app = QApplication(sys.argv)
 
-    loader = GraphLoader()
-    if LOAD_TYPE=="local":
-        filepath = "data/osm/mexico.osm"
+    graph_loader = GraphLoader()
 
-        # Guadalajara bounding box
-        bbox_guadalajara = (20.80, 20.50, -103.20, -103.50)
+    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.graphml", "data/osm/ZMG_enclosure_2km.geojson")
 
-        graph = loader.load_local(
-            filepath=filepath,
-            network_type="drive",
-            bbox=bbox_guadalajara
-        )    
-    else:
-        graph = loader.load("Guadalajara, Mexico")
+    transit_df = load_transit_dataframe("data/gtfs")
+
+    graph_transit = graph_loader.create_graph_transit(transit_df)
 
     route_service = RouteService(graph)
 
