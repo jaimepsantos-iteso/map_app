@@ -133,25 +133,27 @@ def process_stops_adjacency(stops_df: pd.DataFrame, transit_df: pd.DataFrame) ->
     # Use defaultdict to map stop_id to sets
     next_stop_dict = defaultdict(dict)
     routes_dict = defaultdict(set)
+    shapes_dict = defaultdict(set)
 
-    for stops_per_trip, stop_time_deltas, shape_id, route_id in zip(transit_df['stop_ids'], transit_df['stop_time_deltas'], transit_df['shape_id'], transit_df['route_id']):
+    for stops_per_trip, stop_time_deltas, shape_id, route_id, frequency in zip(transit_df['stop_ids'], transit_df['stop_time_deltas'], transit_df['shape_id'], transit_df['route_id'], transit_df['frequency']):
         for i in range(len(stops_per_trip)-1):
             stop_id = stops_per_trip[i]
             next_stop_id = stops_per_trip[i+1]
             stop_time_delta = stop_time_deltas[i]
             # if empty key, assign stop_time_delta and shape_id in a list
             if next_stop_id not in next_stop_dict[stop_id]:
-                next_stop_dict[stop_id][next_stop_id] = {'weight': stop_time_delta, 'shape_ids': [shape_id]}
-            # otherwise append shape_id to the list and update the average stop_time_delta            
+                next_stop_dict[stop_id][next_stop_id] = [{'weight': stop_time_delta, 'shape_id': shape_id, 'frequency': frequency}]
+            # otherwise append to the list and update with the other ways to reach the next stop            
             else:
-                next_stop_dict[stop_id][next_stop_id]['shape_ids'].append(shape_id)
-                next_stop_dict[stop_id][next_stop_id]['weight'] = round((next_stop_dict[stop_id][next_stop_id]['weight'] + stop_time_delta) / (len(next_stop_dict[stop_id][next_stop_id]['shape_ids'])))
+                next_stop_dict[stop_id][next_stop_id].append({'weight': stop_time_delta, 'shape_id': shape_id, 'frequency': frequency})
             
             routes_dict[stop_id].add(route_id)
+            shapes_dict[stop_id].add(shape_id)
 
     # add columns from dictionaries
     stops_df['next_stop_id'] = stops_df['stop_id'].map(lambda x: next_stop_dict.get(x, dict()))
     stops_df['routes_by_stop'] = stops_df['stop_id'].map(lambda x: routes_dict.get(x, set()))
+    stops_df['shapes_by_stop'] = stops_df['stop_id'].map(lambda x: shapes_dict.get(x, set()))
 
     return stops_df
 
