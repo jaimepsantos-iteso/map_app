@@ -21,9 +21,9 @@ def main():
 
     stops_df = gtfs_loader.load_stops_dataframe("data/gtfs", transit_df)
 
-    graph_transit = graph_loader.create_graph_transit(transit_df, stops_df)
+    graph_transit = graph_loader.create_graph_transit(stops_df)
 
-    route_service = RouteService(graph_walk)
+    route_service = RouteService(graph_walk, graph_transit)
 
     win = MainWindow(route_service)
     win.show()
