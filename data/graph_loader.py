@@ -1,38 +1,51 @@
 import osmnx as ox
+import geopandas as gpd
+import networkx as nx
+import pandas as pd
+import os
+import pickle
+
 
 class GraphLoader:
-    def load(self, place_name):
-        print(f"Loading OSM graph for: {place_name}")
-        # Drive or walk network depending on your application
-        graph = ox.graph_from_place(place_name, network_type="drive")
-        graph = ox.add_edge_speeds(graph)
-        graph = ox.add_edge_travel_times(graph)
-        return graph
-    
-    def load_local(self, filepath, network_type="drive", bbox=None):
-        """
-        Load a graph from a local OSM file.
 
-        Args:
-            filepath (str): Path to .osm, .osm.xml or .osm.pbf file.
-            network_type (str): Type of network ("drive", "walk", etc.)
-            bbox (tuple): Optional (north, south, east, west) to clip.
+    def create_graph_walk(self, graphfile_path, geojson_poly_path):
 
-        Returns:
-            networkx.MultiDiGraph: The loaded (and clipped) graph.
-        """
-        print(f"Loading OSM data from: {filepath}")
+        graphml_path = f"{graphfile_path}.graphml"
+        graphpkl_path = f"{graphfile_path}.pkl"
 
-        G = ox.graph_from_xml(filepath) #, network_type=network_type arg not supported TBD to fix the filter
+        # if graph pkl exists, load and return it
+        if os.path.exists(graphpkl_path):
+            print(f"Loading graph from {graphpkl_path}")
+            with open(graphpkl_path, "rb") as f:
+                G = pickle.load(f)
+            return G
 
-        if bbox:
-            north, south, east, west = bbox
-            print("Clipping graph to bounding box...")
-            G = ox.truncate.truncate_graph_bbox(
-                G, north=north, south=south, east=east, west=west
-            )
-        
-        G = ox.add_edge_speeds(G)
-        G = ox.add_edge_travel_times(G)
+        # if graphml exists, load and return it
+        if os.path.exists(graphml_path):
+            print(f"Loading graph from {graphml_path}")
+            return ox.load_graphml(graphml_path)
+
+        # otherwise read geojson, build graph from polygon and save it
+        gdf_poly = gpd.read_file(geojson_poly_path)
+        if gdf_poly.empty:
+            raise ValueError(f"No geometry found in {geojson_poly_path}")
+        poly = gdf_poly.geometry.iloc[0]
+
+        G = ox.graph_from_polygon(poly, network_type="walk")
+        G = G.to_undirected()
+
+        # ensure output directory exists
+        os.makedirs(os.path.dirname(graphml_path), exist_ok=True)
+        ox.save_graphml(G, graphml_path)
+        print(f"Graph created and saved to {graphml_path}")
+
+        with open(graphpkl_path, "wb") as f:
+            pickle.dump(G, f)
+        print(f"Graph also saved to {graphpkl_path}")
 
         return G
+
+    def create_graph_transit(self, transit_df, stops_df):
+        pass
+    
+

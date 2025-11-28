@@ -7,12 +7,7 @@ from core.routing import RouteService
 from data.gtfs_loader import GTFSLoader
 from gui.main_window import MainWindow
 
-LOAD_TYPE="local"
-
 def main():
-
-    for v in ["HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"]:
-        os.environ.pop(v, None)
 
     app = QApplication(sys.argv)
 
@@ -28,7 +23,7 @@ def main():
 
     graph_transit = graph_loader.create_graph_transit(transit_df, stops_df)
 
-    route_service = RouteService(graph)
+    route_service = RouteService(graph_walk)
 
     win = MainWindow(route_service)
     win.show()
