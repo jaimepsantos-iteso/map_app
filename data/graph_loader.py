@@ -45,7 +45,21 @@ class GraphLoader:
 
         return G
 
-    def create_graph_transit(self, transit_df, stops_df):
-        pass
+    def create_graph_transit(self, stops_df: pd.DataFrame) -> nx.MultiDiGraph:
+        # create graph transit adjacency list in stops_df
+        G = nx.MultiDiGraph()
+        
+        # To have the geometry (Points) in meters for distance calculations
+        stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
+
+        for idx, stop in stops_gdf.iterrows():
+            stop_id = stop['stop_id']
+            G.add_node(stop_id, pos=stop['geometry'], stop_name=stop['stop_name'], routes=stop['routes_by_stop'], shapes=stop['shapes_by_stop'])
+            next_stops = stop['next_stop_id']
+            for next_stop_id, edge_list in next_stops.items():
+                for edge in edge_list:                
+                    G.add_edge(stop_id, next_stop_id, weight=edge['weight'], shape_id=edge['shape_id'], frequency=edge['frequency'])
+        return G
+
     
 
