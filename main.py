@@ -25,6 +25,8 @@ def main():
 
     route_service = RouteService(graph_walk, graph_transit)
 
+    route_service.test_transit_routing(transit_df, stops_df)
+
     win = MainWindow(route_service)
     win.show()
 
