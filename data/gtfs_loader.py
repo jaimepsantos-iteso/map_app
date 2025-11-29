@@ -24,12 +24,12 @@ class GTFSLoader:
             pd.DataFrame: A merged DataFrame (transit_df) containing all relevant
                         transit information from the GTFS files, including trip
                         details, stop times, stop locations, shape geometry,
-                        stop geometry and service frequencies.
+                        and service frequencies.
         """
         
 
         
-        # if file transit_df.pkl exists only load the file and return other wise create the whole df
+        # if file transit_df.pkl exists only load the file and return otherwise create the whole df
         pkl_path = os.path.join(gtfs_folder, "transit_df.pkl")
         if os.path.exists(pkl_path):
             transit_df = pd.read_pickle(pkl_path)
