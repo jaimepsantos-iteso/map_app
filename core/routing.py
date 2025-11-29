@@ -4,12 +4,12 @@ import pandas as pd
 import heapq
 import geopandas as gpd
 from shapely.geometry import Point
+import random as rd
 
 
 #src and dst are Point in meters, crs EPSG:3857
 def euclidean_heuristic(src:Point, dst:Point) -> float:
     # Time to reache the dst
-    # distance in meters using euclidean distance
     transit_average_speed_kph = 55.0  # average transit max speed in km/h
     transit_average_speed_mps = transit_average_speed_kph / 3.6  # convert to m/s
     distance_meters = src.distance(dst)
@@ -18,6 +18,13 @@ def euclidean_heuristic(src:Point, dst:Point) -> float:
 
 def no_heuristic(src, dst):
     return 0
+
+def openMap(m):
+    html = "map.html"
+    m.save(html)
+
+    import webbrowser
+    webbrowser.open(html)
 
 class RouteService:
     def __init__(self, graph_walk, graph_transit):
@@ -113,7 +120,7 @@ class RouteService:
 
 
 
-    def dijkstra(graph:nx.MultiDiGraph, src:str, dst:str, heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
+    def dijkstra_transit(self, src:str, dst:str, heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
 
         #accumulated cost for each node from the start, keys are (node, shape_id)
         cost = dict()
@@ -124,6 +131,8 @@ class RouteService:
         queue = []
         #to return the path from src to dst, list of tuples (node, shape_id)
         path = []
+
+        graph = self.graph_transit
 
         # fill the queue with all the possible starting edges from src
         for neighbor in graph.neighbors(src):
@@ -153,7 +162,7 @@ class RouteService:
                 break
 
 
-            # explore all neighbors (MultiDiGraph may have parallel edges) and use min edge weight
+            # explore all neighbors (MultiDiGraph may have parallel edges)
             for neighbor in graph.neighbors(current):
 
                 edges = graph.get_edge_data(current, neighbor)
@@ -176,12 +185,11 @@ class RouteService:
                     if (neighbor, next_shape) not in cost or tentative_cost < cost[(neighbor, next_shape)]:
                         cost[(neighbor, next_shape)] = tentative_cost                
                         previous[(neighbor, next_shape)] = (current, current_shape)
-                        heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos']) + 3*penalty
+                        heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos']) + 2*penalty
                         priority_cost = tentative_cost + heuristic_cost
                         heapq.heappush(queue, (priority_cost, neighbor, next_shape))
             
         if end_shape is None:
-            print("No path found from", src, "to", dst)
             return [], None
 
 
@@ -195,4 +203,57 @@ class RouteService:
         
         return path, cost[(dst, end_shape)]
     
+    def test_transit_routing(self, transit_df, stops_df):
 
+        path = []
+
+        while path == []:
+            start = rd.choice(list(self.graph_transit.nodes))
+            destination = rd.choice(list(self.graph_transit.nodes))
+
+            try:
+                path = nx.shortest_path(self.graph_transit, source=start, target=destination, weight='weight')
+            except nx.NetworkXNoPath:
+                path = []
+
+        dijkstra_path, dijkstra_cost = self.dijkstra_transit(start, destination, heuristic=euclidean_heuristic)
+        print("Shortest path from", start, "to", destination, ":", dijkstra_path)
+
+        print("Cost of the path:", dijkstra_cost/60)
+
+        transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326')
+
+        dijkstra_path_stops = []
+        dijkstra_path_shapes = []
+        prev_shape = None
+        for stop, shape in dijkstra_path:
+            dijkstra_path_stops.append(stop)
+            dijkstra_path_shapes.append(shape)
+            if prev_shape is None:
+                print("Walk to stop:", stop)
+            if shape == 'walking':
+                print("Walk to stop:", stop)
+            elif shape != prev_shape:
+                print("Take Bus:", shape, "from stop:", stop, " direction to:", transit_df[transit_df['shape_id'] == shape]['trip_headsign'].iloc[0])
+            prev_shape = shape
+
+
+        #show all the shapes in the path
+        #assign colors based on shape_id or randomly
+        shapes_in_path = sorted(set(dijkstra_path_shapes))
+        subset = transit_gdf[transit_gdf['shape_id'].isin(shapes_in_path)]
+        m = subset.explore(
+            column='route_long_name',
+            cmap='tab20',
+            legend=True,
+            tooltip=['route_long_name', 'route_short_name', 'trip_headsign'],
+            style_kwds={'weight': 6, 'opacity': 0.9}
+        )
+        print(set(shapes_in_path))
+
+        stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
+
+        path_gdf = stops_gdf[stops_gdf['stop_id'].isin(dijkstra_path_stops)]
+        m = path_gdf.explore(color='red', m=m)
+
+        openMap(m)
