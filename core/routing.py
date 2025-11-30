@@ -41,12 +41,12 @@ class RouteService:
 
         # Shortest path using travel time
         route_nodes = nx.shortest_path(
-            self.graph, u, v, weight="travel_time"
+            self.graph_walk, u, v, weight="travel_time"
         )
 
         # Convert nodes to coordinates for Leaflet
         coords = [
-            [self.graph.nodes[n]["y"], self.graph.nodes[n]["x"]]
+            [self.graph_walk.nodes[n]["y"], self.graph_walk.nodes[n]["x"]]
             for n in route_nodes
         ]
         return coords

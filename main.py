@@ -27,7 +27,7 @@ def main():
 
     route_service.test_transit_routing(transit_df, stops_df)
 
-    win = MainWindow(route_service)
+    win = MainWindow(route_service, polygon_path="data/osm/ZMG_enclosure_2km.geojson")
     win.show()
 
     sys.exit(app.exec_())
