@@ -10,20 +10,12 @@ class GraphLoader:
 
     def create_graph_walk(self, graphfile_path, geojson_poly_path) -> nx.MultiGraph:
 
-        graphml_path = f"{graphfile_path}.graphml"
-        graphpkl_path = f"{graphfile_path}.pkl"
-
         # if graph pkl exists, load and return it
-        if os.path.exists(graphpkl_path):
-            print(f"Loading walking graph from {graphpkl_path}")
-            with open(graphpkl_path, "rb") as f:
+        if os.path.exists(graphfile_path):
+            print(f"Loading walking graph from {graphfile_path}")
+            with open(graphfile_path, "rb") as f:
                 G = pickle.load(f)
             return G
-
-        # if graphml exists, load and return it
-        if os.path.exists(graphml_path):
-            print(f"Loading walking graph from {graphml_path}")
-            return ox.load_graphml(graphml_path)
 
         # otherwise read geojson, build graph from polygon and save it
         gdf_poly = gpd.read_file(geojson_poly_path)
@@ -31,23 +23,34 @@ class GraphLoader:
             raise ValueError(f"No geometry found in {geojson_poly_path}")
         poly = gdf_poly.geometry.iloc[0]
 
+        print("Creating walking graph from OSM data")
+
         # retrieve walkable graph within polygon from open street maps
         G = ox.graph_from_polygon(poly, network_type="walk")
-
+        
+        # change graph locations to be metric
+        G = ox.project_graph(G, to_crs="EPSG:3857")
+        
         # assumption one can walk both ways on all paths, this simplifies the graph
         G = G.to_undirected()
 
-        # change graph locations to be metric
-        #G = ox.project_graph(G, to_crs="EPSG:3857")
-
-
-
-        with open(graphpkl_path, "wb") as f:
+        with open(graphfile_path, "wb") as f:
             pickle.dump(G, f)
-        print(f"Walking graph also saved to {graphpkl_path}")
+        print(f"Walking graph saved to {graphfile_path}")
         return G
 
-    def create_graph_transit(self, stops_df: pd.DataFrame) -> nx.MultiDiGraph:
+    def create_graph_transit(self, graphfile_path, stops_df: pd.DataFrame, max_walking_time: int = 300) -> nx.MultiDiGraph:
+        
+        graphfile_path = graphfile_path.rstrip(".pkl")
+        graphfile_path = f"{graphfile_path}_{max_walking_time}.pkl"
+
+        # if graph pkl exists, load and return it
+        if os.path.exists(graphfile_path):
+            print(f"Loading transit graph from {graphfile_path}")
+            with open(graphfile_path, "rb") as f:
+                G = pickle.load(f)
+            return G
+        
         
         print("Creating transit graph")
         
@@ -58,7 +61,11 @@ class GraphLoader:
         stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
 
         add_adjacent_stops(graph_transit, stops_gdf)
-        add_walking_edges(graph_transit, stops_gdf)
+        add_walking_edges(graph_transit, stops_gdf, max_walking_time)
+
+        with open(graphfile_path, "wb") as f:
+            pickle.dump(graph_transit, f)
+        print(f"Transit graph saved to {graphfile_path}")
 
         return graph_transit
 

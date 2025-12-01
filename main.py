@@ -13,7 +13,7 @@ def main():
 
     graph_loader = GraphLoader()
 
-    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk", "data/osm/ZMG_enclosure_2km.geojson")
+    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.pkl", "data/osm/ZMG_enclosure_2km.geojson")
 
     gtfs_loader = GTFSLoader()
 
@@ -21,11 +21,11 @@ def main():
 
     stops_df = gtfs_loader.load_stops_dataframe("data/gtfs", transit_df)
 
-    graph_transit = graph_loader.create_graph_transit(stops_df)
+    graph_transit = graph_loader.create_graph_transit("data/graphs/ZMG_transit.pkl", stops_df, 300)
 
     route_service = RouteService(graph_walk, graph_transit, stops_df, transit_df)
 
-    route_service.test_transit_routing(transit_df, stops_df)
+    #route_service.test_transit_routing(transit_df, stops_df)
 
     win = MainWindow(route_service, polygon_path="data/osm/ZMG_enclosure_2km.geojson")
     win.show()
