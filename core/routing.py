@@ -132,7 +132,7 @@ class RouteService:
    
     def route_walking(self, start_walking_node:int, end_walking_node: int) -> tuple[LineString, int]:
 
-        if nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False:
+        if nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False or start_walking_node == end_walking_node:
             print("No walking path found between the two points.")
             start = Point(self.graph_walk.nodes[start_walking_node]['x'], self.graph_walk.nodes[start_walking_node]['y'])
             end = Point(self.graph_walk.nodes[end_walking_node]['x'], self.graph_walk.nodes[end_walking_node]['y'])
@@ -186,7 +186,7 @@ class RouteService:
         m = path_gdf.explore(color='orange', m=m, name="Transit Stops")
 
 
-        return subset['shape_geometry'], total_cost, m
+        return subset, total_cost, m
 
 
     def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
