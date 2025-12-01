@@ -15,14 +15,14 @@ class GraphLoader:
 
         # if graph pkl exists, load and return it
         if os.path.exists(graphpkl_path):
-            print(f"Loading graph from {graphpkl_path}")
+            print(f"Loading walking graph from {graphpkl_path}")
             with open(graphpkl_path, "rb") as f:
                 G = pickle.load(f)
             return G
 
         # if graphml exists, load and return it
         if os.path.exists(graphml_path):
-            print(f"Loading graph from {graphml_path}")
+            print(f"Loading walking graph from {graphml_path}")
             return ox.load_graphml(graphml_path)
 
         # otherwise read geojson, build graph from polygon and save it
@@ -38,20 +38,19 @@ class GraphLoader:
         G = G.to_undirected()
 
         # change graph locations to be metric
-        G = ox.project_graph(G, to_crs="EPSG:3857")
+        #G = ox.project_graph(G, to_crs="EPSG:3857")
 
-        # ensure output directory exists
-        os.makedirs(os.path.dirname(graphml_path), exist_ok=True)
-        ox.save_graphml(G, graphml_path)
-        print(f"Graph created and saved to {graphml_path}")
+
 
         with open(graphpkl_path, "wb") as f:
             pickle.dump(G, f)
-        print(f"Graph also saved to {graphpkl_path}")
-
+        print(f"Walking graph also saved to {graphpkl_path}")
         return G
 
     def create_graph_transit(self, stops_df: pd.DataFrame) -> nx.MultiDiGraph:
+        
+        print("Creating transit graph")
+        
         # create graph transit adjacency list in stops_df
         graph_transit = nx.MultiDiGraph()
         
@@ -64,7 +63,9 @@ class GraphLoader:
         return graph_transit
 
 
-def add_adjacent_stops(graph_transit: nx.MultiDiGraph, stops_gdf:gpd.GeoDataFrame):    
+def add_adjacent_stops(graph_transit: nx.MultiDiGraph, stops_gdf:gpd.GeoDataFrame):
+
+    print("Adding transit edges between adjacent stops")    
 
     for idx, stop in stops_gdf.iterrows():
         stop_id = stop['stop_id']
@@ -75,6 +76,8 @@ def add_adjacent_stops(graph_transit: nx.MultiDiGraph, stops_gdf:gpd.GeoDataFram
                 graph_transit.add_edge(stop_id, next_stop_id, weight=edge['weight'], shape_id=edge['shape_id'], frequency=edge['frequency'])
 
 def add_walking_edges(graph_transit: nx.MultiDiGraph, stops_gdf: gpd.GeoDataFrame, max_walking_time: int = 300):
+
+    print("Adding walking edges between nearby stops at a max walking time of", max_walking_time, "seconds")
 
     walking_speed_mps = 5 / 3.6 # average walking speed 5 km/h in m/s
     walking_distance = max_walking_time * walking_speed_mps  

@@ -32,10 +32,12 @@ class GTFSLoader:
         # if file transit_df.pkl exists only load the file and return otherwise create the whole df
         pkl_path = os.path.join(gtfs_folder, "transit_df.pkl")
         if os.path.exists(pkl_path):
+            print(f"Loading transit DataFrame from {pkl_path}")
             transit_df = pd.read_pickle(pkl_path)
             return transit_df
 
         # If file doesn't exist, create the DataFrame
+        print("Creating transit DataFrame from GTFS files")
 
         # Start with the trips, it contains all the information to be retrieve from the other files, from this one we can filter the information that we want
 
@@ -87,6 +89,17 @@ class GTFSLoader:
             gpd.GeoDataFrame: A GeoDataFrame containing stop information with
                             Point geometries for each stop location.
         """
+        
+        # if file stops_df.pkl exists only load the file and return otherwise create the whole df
+        pkl_path = os.path.join(gtfs_folder, "stops_df.pkl")
+        if os.path.exists(pkl_path):
+            print(f"Loading stops DataFrame from {pkl_path}")
+            stops_df = pd.read_pickle(pkl_path)
+            return stops_df
+        
+        # If file doesn't exist, create the DataFrame
+        print("Creating stops DataFrame from GTFS files")
+        
         stops_df = pd.read_csv(f"{gtfs_folder}/stops.txt", dtype=str, low_memory=False)
 
         #filter stops to only those in transit_df["stop_ids"]
@@ -97,6 +110,9 @@ class GTFSLoader:
 
         # Create adjacency list of stops
         stops_df = process_stops_adjacency(stops_df, transit_df)
+
+        print(f"Saving stops DataFrame to {pkl_path}")
+        stops_df.to_pickle(pkl_path)
 
         return stops_df
 
