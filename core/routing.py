@@ -27,22 +27,36 @@ def openMap(m):
     webbrowser.open(html)
 
 class RouteService:
-    def __init__(self, graph_walk, graph_transit):
+    def __init__(self, graph_walk, graph_transit, stops_df, transit_df):
         self.graph_walk = graph_walk
         self.graph_transit = graph_transit
+        self.stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
+        self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
 
-    def nearest_node(self, lat, lon):
-        return ox.nearest_nodes(self.graph_walk, lon, lat)
+    def metric_point_from_walking_node(self, node):
+        x = self.graph_walk.nodes[node]['x']
+        y = self.graph_walk.nodes[node]['y']
+        return Point(x, y)
+    
+    def metric_point_from_transit_node(self, node):
+        return self.graph_transit.nodes[node]['pos']
 
-    def route_walking(self, start_lat, start_lon, end_lat, end_lon):
+    def nearest_walking_node(self, point: Point):   
+        return ox.nearest_nodes(self.graph_walk, point.x, point.y)
+    
+    def nearest_transit_node(self, point: Point):
+
+        nearest_stop = self.stops_gdf.geometry.distance(point).idxmin()
+        
+        return self.stops_gdf.loc[nearest_stop]['stop_id']
+    
+    def route_walking(self, start: Point, end: Point):
         # Convert points to graph nodes
-        u = self.nearest_node(start_lat, start_lon)
-        v = self.nearest_node(end_lat, end_lon)
+        u = self.nearest_walking_node(start)
+        v = self.nearest_walking_node(end)
 
         # Shortest path using travel time
-        route_nodes = nx.shortest_path(
-            self.graph_walk, u, v, weight="travel_time"
-        )
+        route_nodes = nx.shortest_path(self.graph_walk, u, v)
 
         # Convert nodes to coordinates for Leaflet
         coords = [
@@ -51,7 +65,7 @@ class RouteService:
         ]
         return coords
     
-    def route_transit(self, start_lat, start_lon, end_lat, end_lon):
+    def route_transit(self, start: Point, end: Point):
         pass
 
 

@@ -31,8 +31,14 @@ class GraphLoader:
             raise ValueError(f"No geometry found in {geojson_poly_path}")
         poly = gdf_poly.geometry.iloc[0]
 
+        # retrieve walkable graph within polygon from open street maps
         G = ox.graph_from_polygon(poly, network_type="walk")
+
+        # assumption one can walk both ways on all paths, this simplifies the graph
         G = G.to_undirected()
+
+        # change graph locations to be metric
+        G = ox.project_graph(G, to_crs="EPSG:3857")
 
         # ensure output directory exists
         os.makedirs(os.path.dirname(graphml_path), exist_ok=True)
