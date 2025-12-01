@@ -1,9 +1,10 @@
+from tracemalloc import start
 import osmnx as ox
 import networkx as nx
 import pandas as pd
 import heapq
 import geopandas as gpd
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString
 import random as rd
 
 
@@ -33,40 +34,109 @@ class RouteService:
         self.stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
         self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
 
-    def metric_point_from_walking_node(self, node):
-        x = self.graph_walk.nodes[node]['x']
-        y = self.graph_walk.nodes[node]['y']
-        return Point(x, y)
-    
-    def metric_point_from_transit_node(self, node):
-        return self.graph_transit.nodes[node]['pos']
+   
+    def route_walking(self, start_walking_node:int, end_walking_node: int) -> tuple[LineString, int]:
 
-    def nearest_walking_node(self, point: Point):   
-        return ox.nearest_nodes(self.graph_walk, point.x, point.y)
-    
-    def nearest_transit_node(self, point: Point):
-
-        nearest_stop = self.stops_gdf.geometry.distance(point).idxmin()
+        if nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False:
+            print("No walking path found between the two points.")
+            start = Point(self.graph_walk.nodes[start_walking_node]['x'], self.graph_walk.nodes[start_walking_node]['y'])
+            end = Point(self.graph_walk.nodes[end_walking_node]['x'], self.graph_walk.nodes[end_walking_node]['y'])
+            return LineString([start, end]), round(start.distance(end) / (5 / 3.6))
         
-        return self.stops_gdf.loc[nearest_stop]['stop_id']
+        # Shortest path, to use my own Dijkstra implementation, replace this line
+        route_nodes = nx.shortest_path(self.graph_walk, start_walking_node, end_walking_node)
+        # get time walking
+        distance = nx.shortest_path_length(self.graph_walk, start_walking_node, end_walking_node, weight='length')
+        time_walking = round(distance / (5 / 3.6))  # average walking speed 5 km/h in m/s
+        # Convert nodes to list of coordinates
+        coords = [(self.graph_walk.nodes[n]["x"], self.graph_walk.nodes[n]["y"]) for n in route_nodes]
+        #create line geometry
+        line = LineString(coords)
+       
+        return line, time_walking
     
-    def route_walking(self, start: Point, end: Point):
-        # Convert points to graph nodes
-        u = self.nearest_walking_node(start)
-        v = self.nearest_walking_node(end)
+    def route_transit(self, start_transit_node: str, end_transit_node: str) -> tuple[list[LineString], float]:
+        
+        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, heuristic=euclidean_heuristic)
 
-        # Shortest path using travel time
-        route_nodes = nx.shortest_path(self.graph_walk, u, v)
+        dijkstra_path_stops = []
+        dijkstra_path_shapes = []
 
-        # Convert nodes to coordinates for Leaflet
-        coords = [
-            [self.graph_walk.nodes[n]["y"], self.graph_walk.nodes[n]["x"]]
-            for n in route_nodes
-        ]
-        return coords
-    
-    def route_transit(self, start: Point, end: Point):
-        pass
+        for stop, shape in path:
+            dijkstra_path_stops.append(stop)
+            if shape != 'walking' and shape not in dijkstra_path_shapes:
+                dijkstra_path_shapes.append(shape)
+
+       
+        subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
+
+        print(subset)
+
+
+
+        m = subset.explore(
+            name = "Transit Route",
+            column='route_long_name',
+            cmap='tab20',
+            legend=True,
+            tooltip=['route_long_name', 'route_short_name', 'trip_headsign'],
+            style_kwds={'weight': 6, 'opacity': 0.9}
+        )
+
+        path_gdf = self.stops_gdf[self.stops_gdf['stop_id'].isin(dijkstra_path_stops)]
+        m = path_gdf.explore(color='orange', m=m, name="Transit Stops")
+
+
+        return subset['shape_geometry'], total_cost, m
+
+
+    def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
+
+        def find_nearest_transit_and_walking_nodes(walking_point: Point) -> tuple[str, int, int]:
+            # Find nearest transit stops to start and end points
+            walking_node = ox.distance.nearest_nodes(self.graph_walk, walking_point.x, walking_point.y)
+            walking_node_point = Point(self.graph_walk.nodes[walking_node]['x'], self.graph_walk.nodes[walking_node]['y'])
+            nearest_stop_idx = self.stops_gdf.geometry.distance(walking_node_point).idxmin()
+            nearest_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
+            transit_point = self.graph_transit.nodes[nearest_transit_node]['pos']
+            nearest_transit_walking_node = ox.distance.nearest_nodes(self.graph_walk, transit_point.x, transit_point.y)
+
+            return nearest_transit_node, walking_node, nearest_transit_walking_node
+        
+        start_transit_node, start_walking_node, start_nearest_walking_node = find_nearest_transit_and_walking_nodes(start)
+        end_transit_node, end_walking_node, end_nearest_walking_node = find_nearest_transit_and_walking_nodes(end)
+        # Route walking from start to nearest transit stop
+        walk_to_transit_line, time_walking_start = self.route_walking(start_walking_node, start_nearest_walking_node)
+        # Route transit from start transit stop to end transit stop
+        transit_line, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        # Route walking from nearest transit stop to end
+        walk_from_transit_line, time_walking_end = self.route_walking(end_nearest_walking_node, end_walking_node)
+        # Combine all geometries
+        # Create a GeoSeries to hold all parts of the route
+        route_parts_walking = [walk_to_transit_line, walk_from_transit_line]
+
+        total_time = [time_walking_start, time_transit, time_walking_end]
+
+        route_gdf = gpd.GeoDataFrame(geometry=route_parts_walking, crs="EPSG:3857")
+        m = route_gdf.explore(m=m, color='blue', style_kwds={'weight': 5, 'opacity': 0.8}, name='Walking Route')
+
+        #add star point and end point color them differently
+        start_gdf = gpd.GeoDataFrame(geometry=[start], crs="EPSG:4326").to_crs(epsg=3857)   
+        end_gdf = gpd.GeoDataFrame(geometry=[end], crs="EPSG:4326").to_crs(epsg=3857)   
+
+        m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 16}, name='Start Point')
+        m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 16}, name='End Point')
+
+        return total_time , m
+
+
+
+
+
+
+
+
+
 
 
     def check_no_transfers(graph:nx.MultiDiGraph, src, dst, transit_df, stops_df):
