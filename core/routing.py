@@ -27,6 +27,101 @@ def openMap(m):
     import webbrowser
     webbrowser.open(html)
 
+# Function to trim a LineString shape between two stops
+from shapely.geometry import LineString, Point
+from shapely.ops import substring
+
+def trim_shape_between_stops(shape_geometry, stops_on_route, stops_df):
+    """
+    Trim a shape LineString to only include the portion between first and last stop used.
+    
+    Args:
+        shape_geometry: The full LineString of the shape
+        stops_on_route: List of stop_ids that are used in this segment
+        stops_df: DataFrame with stop information including geometry
+    
+    Returns:
+        Trimmed LineString
+    """
+    if len(stops_on_route) < 2:
+        return shape_geometry
+    
+    # Get the stop geometries
+    first_stop = stops_df[stops_df['stop_id'] == stops_on_route[0]].iloc[0]['geometry']
+    last_stop = stops_df[stops_df['stop_id'] == stops_on_route[-1]].iloc[0]['geometry']
+    
+    # Project stops onto the line to get their position along the line
+    first_distance = shape_geometry.project(first_stop)
+    last_distance = shape_geometry.project(last_stop)
+    
+    # Ensure first comes before last (in case route goes backwards)
+    start_dist = min(first_distance, last_distance)
+    end_dist = max(first_distance, last_distance)
+    
+    # Extract the substring between the two points
+    trimmed = substring(shape_geometry, start_dist, end_dist)
+    
+    return trimmed
+
+
+# Example: Trim shapes based on actual stops used
+# Assuming you have a route result with stops grouped by shape_id
+
+# Let's say you have a path like: [(stop1, shape1), (stop2, shape1), (stop3, shape2), ...]
+# Group stops by shape_id
+from collections import defaultdict
+
+def trim_route_shapes(dijkstra_path, transit_df, stops_df):
+    """
+    Trim shapes to only show the portions actually traveled.
+    
+    Args:
+        dijkstra_path: List of (stop_id, shape_id) tuples from route
+        transit_df: DataFrame with shape geometries
+        stops_df: DataFrame with stop information
+    
+    Returns:
+        List of trimmed LineStrings with metadata
+    """
+    # Group stops by shape_id
+    shape_stops = defaultdict(list)
+    for stop_id, shape_id in dijkstra_path:
+        if shape_id != 'walking':  # Skip walking segments
+            shape_stops[shape_id].append(stop_id)
+    
+    trimmed_shapes = []
+    
+    for shape_id, stops_on_shape in shape_stops.items():
+        if len(stops_on_shape) < 2:
+            continue
+            
+        # Get the full shape geometry
+        shape_row = transit_df[transit_df['shape_id'] == shape_id].iloc[0]
+        full_geometry = shape_row['shape_geometry']
+        
+        # Trim to actual stops used
+        trimmed_geom = trim_shape_between_stops(full_geometry, stops_on_shape, stops_df)
+        
+        trimmed_shapes.append({
+            'geometry': trimmed_geom,
+            'shape_id': shape_id,
+            'route_long_name': shape_row['route_long_name'],
+            'route_short_name': shape_row['route_short_name'],
+            'route_type': shape_row['route_type'],
+            'trip_headsign': shape_row['trip_headsign'],
+            'route_color': shape_row.get('route_color', '#7b1fa2'),
+            'stops_used': stops_on_shape
+        })
+    
+    return trimmed_shapes
+
+
+# Usage example (uncomment when you have a dijkstra_path):
+# trimmed = trim_route_shapes(dijkstra_path, transit_df, stops_df)
+# trimmed_gdf = gpd.GeoDataFrame(trimmed, crs='EPSG:4326')
+# m = trimmed_gdf.explore(column='route_name', cmap='tab20')
+# openMap(m)
+
 class RouteService:
     def __init__(self, graph_walk, graph_transit, stops_df, transit_df):
         self.graph_walk = graph_walk
@@ -69,6 +164,10 @@ class RouteService:
 
        
         subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
+
+        trimmed_shapes = trim_route_shapes(path, self.transit_gdf, self.stops_gdf)
+
+        trimmed_gdf = gpd.GeoDataFrame(trimmed_shapes, crs='EPSG:4326')
 
         print(subset)
 
@@ -118,14 +217,15 @@ class RouteService:
         total_time = [time_walking_start, time_transit, time_walking_end]
 
         route_gdf = gpd.GeoDataFrame(geometry=route_parts_walking, crs="EPSG:3857")
-        m = route_gdf.explore(m=m, color='blue', style_kwds={'weight': 5, 'opacity': 0.8}, name='Walking Route')
+        m = route_gdf.explore(m=m, color='blue', style_kwds={'weight': 3, 'opacity': 0.8}, name='Walking Route')
 
-        #add star point and end point color them differently
-        start_gdf = gpd.GeoDataFrame(geometry=[start], crs="EPSG:4326").to_crs(epsg=3857)   
-        end_gdf = gpd.GeoDataFrame(geometry=[end], crs="EPSG:4326").to_crs(epsg=3857)   
+        #add start point and end point - they are already in EPSG:3857
+        start_gdf = gpd.GeoDataFrame(geometry=[start], crs="EPSG:3857")   
+        end_gdf = gpd.GeoDataFrame(geometry=[end], crs="EPSG:3857")   
 
-        m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 16}, name='Start Point')
-        m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 16}, name='End Point')
+        # Add markers with better visibility
+        m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 10}, name='Start Point')
+        m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 10}, name='End Point')
 
         return total_time , m
 
