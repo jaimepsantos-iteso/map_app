@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QSplitter, QFrame
 )
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from .map_widget import MapWidget
 from shapely.geometry import Point, shape as shp_shape
 from pyproj import Transformer
@@ -15,6 +16,11 @@ class MainWindow(QWidget):
         super().__init__()
         self.route_service = route_service
         self.setWindowTitle("Mapa de Rutas")
+        try:
+            icon_path = Path(__file__).resolve().parent / 'assets' / 'train.svg'
+            self.setWindowIcon(QIcon(str(icon_path)))
+        except Exception:
+            pass
 
         # Center map
         self.map = MapWidget()
@@ -159,13 +165,14 @@ class MainWindow(QWidget):
                     total_time = result.get('total_time_sec', None)
                 except Exception:
                     segments = None
-            # Fallback to a simple polyline
+            # Fallback to a simple polyline using metric Points
             if segments is None:
                 try:
                     coords = None
                     if hasattr(self.route_service, 'route_walking'):
-                        coords = self.route_service.route_walking(olat, olon, dlat, dlon)
+                        coords = self.route_service.route_walking(p_o, p_d)
                     elif hasattr(self.route_service, 'get_route'):
+                        # legacy API fallback if present
                         coords = self.route_service.get_route(olat, olon, dlat, dlon)
                     self.map.draw_route(coords)
                     self.lbl_total.setText("Ruta dibujada (fallback)")
