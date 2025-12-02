@@ -182,9 +182,9 @@ class RouteService:
        
         subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
 
-        trimmed_shapes = trim_route_shapes(path, self.transit_gdf, self.stops_gdf)
+        #trimmed_shapes = trim_route_shapes(path, self.transit_gdf, self.stops_gdf)
 
-        trimmed_gdf = gpd.GeoDataFrame(trimmed_shapes, crs='EPSG:4326')
+        #trimmed_gdf = gpd.GeoDataFrame(trimmed_shapes, crs='EPSG:4326')
 
         print(subset)
 
