@@ -10,6 +10,8 @@ from pyproj import Transformer
 
 
 def point_from_text(address: str) -> Point:
+    if address is None:
+        return None
     geolocator = Nominatim(user_agent="geo")
     location = geolocator.geocode(address)
     #convert to metric projection (EPSG:3857)
