@@ -1,4 +1,3 @@
-from tracemalloc import start
 import osmnx as ox
 import networkx as nx
 import pandas as pd
@@ -6,7 +5,23 @@ import heapq
 import geopandas as gpd
 from shapely.geometry import Point, LineString
 import random as rd
+from geopy.geocoders import Nominatim
+from pyproj import Transformer
 
+
+def point_from_text(address: str) -> Point:
+    geolocator = Nominatim(user_agent="geo")
+    location = geolocator.geocode(address)
+    #convert to metric projection (EPSG:3857)
+    transformer = Transformer.from_crs(4326, 3857, always_xy=True)
+
+    if location:
+        #apply transformation if location is found
+        x, y = transformer.transform(location.longitude, location.latitude)
+        return Point(x, y)
+    else:
+        return None
+    
 
 #src and dst are Point in meters, crs EPSG:3857
 def euclidean_heuristic(src:Point, dst:Point) -> float:
