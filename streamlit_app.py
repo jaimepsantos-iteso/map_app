@@ -1,8 +1,11 @@
 import streamlit as st
 from streamlit_folium import st_folium
+import streamlit.components.v1 as components
 import folium
 from geopy.geocoders import Nominatim
 from shapely.geometry import Point
+from pyproj import Transformer
+
 
 from core.routing import RouteService
 from data.graph_loader import GraphLoader
@@ -17,7 +20,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Session state stores variables across page reloads
+# --- Session State: persistent app variables ---
 if 'route_service' not in st.session_state:
     st.session_state.route_service = None
 if 'geolocator' not in st.session_state:
@@ -28,6 +31,15 @@ if 'start_point' not in st.session_state:
     st.session_state.start_point = None
 if 'end_point' not in st.session_state:
     st.session_state.end_point = None
+if 'selected_target' not in st.session_state:
+    st.session_state.selected_target = None
+if 'map_center' not in st.session_state:
+    st.session_state.map_center = [20.67, -103.35]
+if 'map_zoom' not in st.session_state:
+    st.session_state.map_zoom = 12
+if 'map_bounds' not in st.session_state:
+    st.session_state.map_bounds = None
+# No pick mode: markers are draggable only
 
 # --- 2. Loading and logic functions ---
 
@@ -57,7 +69,7 @@ def geocode_address(address):
         location = st.session_state.geolocator.geocode(address, country_codes="MX")
         
         if location:
-            from pyproj import Transformer
+            
             transformer = Transformer.from_crs("EPSG:4326", "EPSG:3857", always_xy=True)
             x, y = transformer.transform(location.longitude, location.latitude)
             return Point(x, y)
@@ -74,55 +86,158 @@ with st.spinner('Cargando grafos y datos de rutas... Por favor, espera.'):
 
 st.title("🗺️ Planeador de Rutas de Transporte Público - GDL")
 
+# Optional: quick view of session state for debugging
+with st.expander("Estado de sesión (debug)", expanded=False):
+    st.write({
+        'selected_target': st.session_state.selected_target,
+        'start_point': (st.session_state.start_point.x, st.session_state.start_point.y) if st.session_state.start_point else None,
+        'end_point': (st.session_state.end_point.x, st.session_state.end_point.y) if st.session_state.end_point else None,
+        'map_center': st.session_state.map_center,
+        'map_zoom': st.session_state.map_zoom,
+        'map_bounds': st.session_state.map_bounds,
+        'has_last_map': bool(st.session_state.last_map),
+    })
+
 # --- 4. User interface (Sidebar and Map) ---
 
 with st.sidebar:
     st.header("Puntos de la Ruta")
     
     # Text inputs for origin and destination
-    start_address = st.text_input("📍 Origen", placeholder="Ej: Catedral de Guadalajara")
-    end_address = st.text_input("🏁 Destino", placeholder="Ej: ITESO")
+    def _update_from_start_text():
+        addr = st.session_state.get("start_address", "")
+        sp = geocode_address(addr) if addr else None
+        if sp:
+            st.session_state.start_point = sp
+            # Rerun to refresh markers without clearing the route map
+            st.rerun()
+    def _update_from_end_text():
+        addr = st.session_state.get("end_address", "")
+        ep = geocode_address(addr) if addr else None
+        if ep:
+            st.session_state.end_point = ep
+            # Rerun to refresh markers without clearing the route map
+            st.rerun()
+
+    start_address = st.text_input("📍 Origen", key="start_address", placeholder="Ej: Catedral de Guadalajara", on_change=_update_from_start_text)
+    end_address = st.text_input("🏁 Destino", key="end_address", placeholder="Ej: ITESO", on_change=_update_from_end_text)
 
     if st.button("Buscar y Calcular Ruta", type="primary"):
-        if not start_address or not end_address:
-            st.warning("Por favor, introduce tanto el origen como el destino.")
-        else:
-            with st.spinner("Buscando direcciones y calculando la mejor ruta..."):
-                start_coords = geocode_address(start_address)
-                end_coords = geocode_address(end_address)
+        with st.spinner("Buscando direcciones y calculando la mejor ruta..."):
+            # Allow either map-picked points or geocoded text
+            if start_address:
+                sp = geocode_address(start_address)
+                if sp:
+                    st.session_state.start_point = sp
+            if end_address:
+                ep = geocode_address(end_address)
+                if ep:
+                    st.session_state.end_point = ep
 
-                if start_coords and end_coords:
-                    st.session_state.start_point = start_coords
-                    st.session_state.end_point = end_coords
-                    
-                    # Call routing function that returns a folium map
-                    total_time_list, folium_map = st.session_state.route_service.route_combined(
-                        st.session_state.start_point, 
-                        st.session_state.end_point
-                    )
-                    
-                    st.session_state.last_map = folium_map
-                    
-                    # Show time summary
-                    total_time_min = sum(total_time_list) / 60
-                    st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
-                    
-                else:
-                    st.error("Could not find coordinates for one or both addresses.")
+            if not st.session_state.start_point or not st.session_state.end_point:
+                st.error("Selecciona puntos en el mapa o ingresa direcciones para origen y destino.")
+            else:
+                # Call routing function that returns a folium map
+                total_time_list, folium_map = st.session_state.route_service.route_combined(
+                    st.session_state.start_point,
+                    st.session_state.end_point
+                )
+                st.session_state.last_map = folium_map
+                total_time_min = sum(total_time_list) / 60
+                st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
+                # After calculating the route, clear selection and disable radio via last_map
+                st.session_state.selected_target = None
 
 # --- 5. Map visualization ---
 
 # The map occupies the main page area
 st.subheader("Mapa Interactivo")
 
-# If a route map exists, show it. Otherwise, show a base map.
+# Radio + reset button row
+col_radio, col_btn = st.columns([3, 1])
+with col_radio:
+    st.session_state.selected_target = st.radio(
+        "Selecciona punto a mover",
+        options=["Origen", "Destino"],
+        index=(0 if st.session_state.selected_target == "Origen" else 1) if st.session_state.selected_target in ["Origen", "Destino"] else 0,
+        horizontal=True,
+        help="El clic en el mapa actualizará el punto seleccionado.",
+        disabled=bool(st.session_state.last_map)
+    )
+with col_btn:
+    if st.button("Reiniciar selección"):
+        # Clear selection and re-enable radio; keep markers and points
+        st.session_state.selected_target = None
+        # Also clear the route map so selection is enabled again
+        st.session_state.last_map = None
+        st.rerun()
+
+
+
+# If a route map exists, show it as a static HTML (no flicker). Otherwise, show an interactive base map.
 if st.session_state.last_map:
-    map_to_show = st.session_state.last_map
+    # Apply preserved view to route map if possible and render static HTML
+    try:
+        st.session_state.last_map.location = st.session_state.map_center or [20.67, -103.35]
+        st.session_state.last_map.zoom_start = st.session_state.map_zoom or 12
+    except Exception:
+        pass
+    components.html(st.session_state.last_map._repr_html_(), height=600)
+    map_to_show = None
 else:
     # Initial base map centered on Guadalajara
-    map_to_show = folium.Map(location=[20.67, -103.35], zoom_start=12)
+    map_to_show = folium.Map(location=st.session_state.map_center, zoom_start=st.session_state.map_zoom)
 
-# Use st_folium to render the map interactively
-st_folium(map_to_show, width='100%', height=600, returned_objects=[])
+    # Initialize default markers if not set using placeholders
+    if st.session_state.start_point is None:
+        default_start = geocode_address("Catedral de Guadalajara")
+        if default_start:
+            st.session_state.start_point = default_start
+    if st.session_state.end_point is None:
+        default_end = geocode_address("ITESO")
+        if default_end:
+            st.session_state.end_point = default_end
+
+# Add current start/end markers to base map (only when interactive base map is shown)
+_to4326 = Transformer.from_crs("EPSG:3857", "EPSG:4326", always_xy=True)
+if map_to_show and st.session_state.start_point:
+    sp = st.session_state.start_point
+    lon, lat = _to4326.transform(sp.x, sp.y)
+    folium.Marker(location=[lat, lon], tooltip="Origen", icon=folium.Icon(color='green'), draggable=False).add_to(map_to_show)
+if map_to_show and st.session_state.end_point:
+    ep = st.session_state.end_point
+    lon, lat = _to4326.transform(ep.x, ep.y)
+    folium.Marker(location=[lat, lon], tooltip="Destino", icon=folium.Icon(color='red'), draggable=False).add_to(map_to_show)
+
+
+# Use st_folium to render the map interactively and capture clicks
+map_events = st_folium(map_to_show, width='100%', height=600) or {} if map_to_show else {}
+
+# Handle map click to set origin/destination
+clicked = map_events.get("last_clicked") if map_to_show else None
+
+if clicked and st.session_state.last_map is None:
+    _tr = Transformer.from_crs("EPSG:4326", "EPSG:3857", always_xy=True)
+    dx, dy = _tr.transform(clicked["lng"], clicked["lat"])
+    dpt = Point(dx, dy)
+    print("Clicked at:", dpt, clicked)
+    # Preserve current zoom/center from this interaction before rerun
+    if 'zoom' in map_events and map_events['zoom'] is not None:
+        st.session_state.map_zoom = map_events['zoom']
+    if 'center' in map_events and map_events['center']:
+        st.session_state.map_center = [map_events['center']['lat'], map_events['center']['lng']]
+    target = st.session_state.selected_target
+    if target == "Origen":
+        st.session_state.start_point = dpt
+        st.info("Origen movido al clic.")
+        st.rerun()
+    elif target == "Destino":
+        st.session_state.end_point = dpt
+        st.info("Destino movido al clic.")
+        st.rerun()
+    else:
+        st.info("Selecciona Origen o Destino para mover con clic.")
+
+
 
 st.info("To run this app, save as `streamlit_app.py` and run `streamlit run streamlit_app.py` in your terminal.")
