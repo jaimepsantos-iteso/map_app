@@ -8,7 +8,7 @@ from core.routing import RouteService
 from data.graph_loader import GraphLoader
 from data.gtfs_loader import GTFSLoader
 
-# --- 1. Configuración de la página y estado de la sesión ---
+# --- 1. Page configuration and session state ---
 
 st.set_page_config(
     page_title="Mapa de Rutas GDL",
@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# El estado de la sesión se usa para guardar variables entre recargas de la página
+# Session state stores variables across page reloads
 if 'route_service' not in st.session_state:
     st.session_state.route_service = None
 if 'geolocator' not in st.session_state:
@@ -29,11 +29,11 @@ if 'start_point' not in st.session_state:
 if 'end_point' not in st.session_state:
     st.session_state.end_point = None
 
-# --- 2. Funciones de Carga y Lógica ---
+# --- 2. Loading and logic functions ---
 
 @st.cache_resource
 def load_services():
-    """Carga todos los servicios pesados (grafos, dataframes) y los cachea."""
+    """Load heavy services (graphs, dataframes) and cache them."""
     graph_loader = GraphLoader()
     gtfs_loader = GTFSLoader()
 
@@ -45,7 +45,7 @@ def load_services():
     return RouteService(graph_walk, graph_transit, stops_df, transit_df)
 
 def geocode_address(address):
-    """Convierte una dirección de texto a coordenadas (lat, lon)."""
+    """Convert a text address to coordinates (lat, lon)."""
     try:
         location = st.session_state.geolocator.geocode(address, country_codes="MX")
         
@@ -53,26 +53,26 @@ def geocode_address(address):
             from pyproj import Transformer
             transformer = Transformer.from_crs("EPSG:4326", "EPSG:3857", always_xy=True)
             x, y = transformer.transform(location.longitude, location.latitude)
-            return (x, y)
+            return Point(x, y)
     except Exception as e:
-        st.error(f"Error de geocodificación: {e}")
+        st.error(f"Geocoding error: {e}")
     return None
 
-# --- 3. Inicialización de la App ---
+# --- 3. App initialization ---
 
-# Muestra un spinner mientras se cargan los datos pesados la primera vez
+# Show a spinner while heavy data loads the first time
 with st.spinner('Cargando grafos y datos de rutas... Por favor, espera.'):
     if st.session_state.route_service is None:
         st.session_state.route_service = load_services()
 
 st.title("🗺️ Planeador de Rutas de Transporte Público - GDL")
 
-# --- 4. Interfaz de Usuario (Sidebar y Mapa) ---
+# --- 4. User interface (Sidebar and Map) ---
 
 with st.sidebar:
     st.header("Puntos de la Ruta")
     
-    # Entradas de texto para origen y destino
+    # Text inputs for origin and destination
     start_address = st.text_input("📍 Origen", placeholder="Ej: Catedral de Guadalajara")
     end_address = st.text_input("🏁 Destino", placeholder="Ej: ITESO")
 
@@ -85,10 +85,10 @@ with st.sidebar:
                 end_coords = geocode_address(end_address)
 
                 if start_coords and end_coords:
-                    st.session_state.start_point = Point(start_coords[1], start_coords[0]) # lon, lat
-                    st.session_state.end_point = Point(end_coords[1], end_coords[0]) # lon, lat
+                    st.session_state.start_point = start_coords
+                    st.session_state.end_point = end_coords
                     
-                    # Llama a la función de ruteo que devuelve el mapa de folium
+                    # Call routing function that returns a folium map
                     total_time_list, folium_map = st.session_state.route_service.route_combined(
                         st.session_state.start_point, 
                         st.session_state.end_point
@@ -96,26 +96,26 @@ with st.sidebar:
                     
                     st.session_state.last_map = folium_map
                     
-                    # Mostrar resumen del tiempo
+                    # Show time summary
                     total_time_min = sum(total_time_list) / 60
                     st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
                     
                 else:
-                    st.error("No se pudieron encontrar las coordenadas para una o ambas direcciones.")
+                    st.error("Could not find coordinates for one or both addresses.")
 
-# --- 5. Visualización del Mapa ---
+# --- 5. Map visualization ---
 
-# El mapa ocupa el área principal de la página
+# The map occupies the main page area
 st.subheader("Mapa Interactivo")
 
-# Si hay un mapa de ruta calculado, muéstralo. Si no, muestra un mapa base.
+# If a route map exists, show it. Otherwise, show a base map.
 if st.session_state.last_map:
     map_to_show = st.session_state.last_map
 else:
-    # Mapa inicial centrado en Guadalajara
+    # Initial base map centered on Guadalajara
     map_to_show = folium.Map(location=[20.67, -103.35], zoom_start=12)
 
-# Usamos st_folium para renderizar el mapa y hacerlo interactivo
+# Use st_folium to render the map interactively
 st_folium(map_to_show, width='100%', height=600, returned_objects=[])
 
-st.info("Para ejecutar esta aplicación, guarda el código como `streamlit_app.py` y corre `streamlit run streamlit_app.py` en tu terminal.")
+st.info("To run this app, save as `streamlit_app.py` and run `streamlit run streamlit_app.py` in your terminal.")
