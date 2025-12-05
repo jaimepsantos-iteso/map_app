@@ -34,12 +34,19 @@ if 'end_point' not in st.session_state:
 @st.cache_resource
 def load_services():
     """Load heavy services (graphs, dataframes) and cache them."""
-    graph_loader = GraphLoader()
+    
     gtfs_loader = GTFSLoader()
 
-    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.pkl", "data/osm/ZMG_enclosure_2km.geojson")
+    # Load transit and stops data from GTFS files
     transit_df = gtfs_loader.load_transit_dataframe("data/gtfs")
     stops_df = gtfs_loader.load_stops_dataframe("data/gtfs", transit_df)
+    
+    graph_loader = GraphLoader()
+
+    # Create walking graph limited to the polygon
+    graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.pkl", "data/osm/ZMG_enclosure_2km.geojson")
+    
+    # Create transit graph from GTFS data and stops with a max walking distance of 300 seconds
     graph_transit = graph_loader.create_graph_transit("data/graphs/ZMG_transit.pkl", stops_df, 300)
     
     return RouteService(graph_walk, graph_transit, stops_df, transit_df)
