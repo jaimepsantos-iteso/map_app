@@ -37,8 +37,7 @@ if 'map_center' not in st.session_state:
     st.session_state.map_center = [20.67, -103.35]
 if 'map_zoom' not in st.session_state:
     st.session_state.map_zoom = 12
-if 'map_bounds' not in st.session_state:
-    st.session_state.map_bounds = None
+
 # No pick mode: markers are draggable only
 
 # --- 2. Loading and logic functions ---
@@ -86,17 +85,6 @@ with st.spinner('Cargando grafos y datos de rutas... Por favor, espera.'):
 
 st.title("🗺️ Planeador de Rutas de Transporte Público - GDL")
 
-# Optional: quick view of session state for debugging
-with st.expander("Estado de sesión (debug)", expanded=False):
-    st.write({
-        'selected_target': st.session_state.selected_target,
-        'start_point': (st.session_state.start_point.x, st.session_state.start_point.y) if st.session_state.start_point else None,
-        'end_point': (st.session_state.end_point.x, st.session_state.end_point.y) if st.session_state.end_point else None,
-        'map_center': st.session_state.map_center,
-        'map_zoom': st.session_state.map_zoom,
-        'map_bounds': st.session_state.map_bounds,
-        'has_last_map': bool(st.session_state.last_map),
-    })
 
 # --- 4. User interface (Sidebar and Map) ---
 
@@ -238,6 +226,3 @@ if clicked and st.session_state.last_map is None:
     else:
         st.info("Selecciona Origen o Destino para mover con clic.")
 
-
-
-st.info("To run this app, save as `streamlit_app.py` and run `streamlit run streamlit_app.py` in your terminal.")
