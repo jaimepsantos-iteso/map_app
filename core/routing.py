@@ -448,8 +448,9 @@ class RouteService:
 
         #from the transit path, build a detailed segments dataframe inclding real walking segments
         route_df = self.get_transit_segments_df(path_transit, start, end)
-
-        total_time = route_df['segment_time_seconds'].sum()
+        
+        # calculate total time, segment times + waiting times
+        total_time = route_df['segment_time_seconds'].sum() + route_df['frequency'].sum(skipna=True)
 
 
         return route_df, total_time

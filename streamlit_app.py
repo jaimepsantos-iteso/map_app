@@ -133,7 +133,8 @@ with st.sidebar:
                 )
                 st.session_state.last_map = st.session_state.route_service.create_map(df)
                 st.session_state.route_df = df
-                total_time_min = total_time / 60
+                total_time_min = math.ceil(total_time / 60.0)
+                st.session_state.total_time_min = total_time_min
                 st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
                 # After calculating the route, clear selection and disable radio via last_map
                 st.session_state.selected_target = None
@@ -226,7 +227,11 @@ if clicked and st.session_state.last_map is None:
 
 # Show route segments DataFrame below the map if available
 if st.session_state.get('route_df') is not None and not st.session_state.route_df.empty and st.session_state.last_map is not None:
-    st.subheader("📋 Instrucciones de la Ruta")
+   
+    # Display total travel time
+    if st.session_state.get('total_time_min'):
+        st.markdown(f"### ⏱️ Tiempo estimado de viaje: **{st.session_state.total_time_min:.0f} minutos**")
+        st.markdown("---")
     
     # Use CSS variables that adapt to theme automatically
     st.markdown("""
