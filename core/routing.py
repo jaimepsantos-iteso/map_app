@@ -182,14 +182,14 @@ class RouteService:
        
         return line, time_walking
     
-    def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = []) -> tuple[list[LineString], float, pd.DataFrame]:
+    def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = [], restricted_shapes : list[str] = []) -> tuple[list[LineString], float, pd.DataFrame]:
         
         #measure time
         import time
         start_time = time.time()
         
         # Run dijkstra algorithm to find optimal transit path
-        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges=start_walking_edges, heuristic=euclidean_heuristic)
+        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges, restricted_shapes, heuristic=euclidean_heuristic)
         
         end_time = time.time()
         print(f"Transit routing calculation time: {end_time - start_time:.3f} seconds")
@@ -435,25 +435,52 @@ class RouteService:
         end_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
         return end_transit_node
 
-    def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
+    def route_combined(self, start: Point, end: Point) -> list[tuple[pd.DataFrame, int]]:
        
         start_walking_edges = self.get_start_walking_edges(start)
 
         end_transit_node = self.get_end_transit_node(end)
 
-        # Route transit from start transit stop to end transit stop
-        path_transit = self.route_transit("Real_Start", end_transit_node, start_walking_edges)
+        restricted_shapes = []
+        alternatives = 3
+        routes_list = []
 
-        path_transit.append(('Real_End', 'walking'))  # Entry to indicate walking at the end
+        while alternatives > 0:
 
-        #from the transit path, build a detailed segments dataframe inclding real walking segments
-        route_df = self.get_transit_segments_df(path_transit, start, end)
+            # Route transit from start transit stop to end transit stop
+            path_transit = self.route_transit("Real_Start", end_transit_node, start_walking_edges, restricted_shapes)
+
+            path_transit.append(('Real_End', 'walking'))  # Entry to indicate walking at the end
+
+            #from the transit path, build a detailed segments dataframe inclding real walking segments
+            route_df = self.get_transit_segments_df(path_transit, start, end)
+            
+            # calculate total time, segment times + waiting times
+            total_time = route_df['segment_time_seconds'].sum() + route_df['frequency'].sum(skipna=True)
+            
+            routes_list.append((route_df, total_time))
+    
+            # Get shapes from CURRENT route only
+            current_route_shapes = set(route_df[route_df['mode']=='transit']['shape_id'].unique())
+            
+            #retrieve a shape from current route shapes to restrict in next iteration
+            found_new_shape = False
+            while current_route_shapes and not found_new_shape:
+                shape_to_restrict = current_route_shapes.pop()
+                if shape_to_restrict not in restricted_shapes:
+                    restricted_shapes.append(shape_to_restrict)
+                    found_new_shape = True
+            #either already restricted or no more shapes to restrict
+            if not found_new_shape:
+                break
+            
+            alternatives -= 1
         
-        # calculate total time, segment times + waiting times
-        total_time = route_df['segment_time_seconds'].sum() + route_df['frequency'].sum(skipna=True)
-
-
-        return route_df, total_time
+        #sort routes by total time
+        routes_list.sort(key=lambda x: x[1])   
+        print(routes_list)
+      
+        return routes_list
 
 
     def create_map(self, segments_df):
@@ -632,7 +659,7 @@ class RouteService:
 
 
 
-    def dijkstra_transit(self, src:str, dst:str, start_walking_edges: list[tuple[str, int]] = [], heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
+    def dijkstra_transit(self, src:str, dst:str, start_walking_edges: list[tuple[str, int]] = [], restricted_shapes : list[str] = [], heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
 
         #accumulated cost for each node from the start, keys are (node, shape_id)
         cost = dict()
@@ -665,6 +692,8 @@ class RouteService:
                     continue
                 for k, attrs in edges.items():
                     shape_id = attrs.get('shape_id')
+                    if shape_id in restricted_shapes:
+                        continue
                     weight = attrs.get('weight', 1)
                     frequency = attrs.get('frequency', 600)
                     tentative_cost = weight + frequency #initial transfer penalty
@@ -695,6 +724,8 @@ class RouteService:
                 
                 for k, attrs in edges.items():
                     next_shape = attrs.get('shape_id')
+                    if next_shape in restricted_shapes:
+                        continue
                     weight = attrs.get('weight', 1)
                     frequency = attrs.get('frequency', 600)
                     
