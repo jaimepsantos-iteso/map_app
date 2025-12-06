@@ -426,6 +426,18 @@ class RouteService:
         # Route transit from start transit stop to end transit stop
         #path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
         start_walking_edges = [(start_transit_node, time_walking_start)]
+
+        if start.distance(start_transit_node_pos) < 416.66: # Distance that can be walked in 5 minutes at 5 km/h
+            #find other nearby transit stops within walking distance
+            nearby_stops = self.stops_gdf[self.stops_gdf.geometry.distance(start) <= 416.66]
+            for idx, row in nearby_stops.iterrows():
+                stop_id = row['stop_id']
+                if stop_id != start_transit_node:
+                    stop_pos = self.graph_transit.nodes[stop_id]['pos']
+                    _, walk_time = self.route_walking(start, stop_pos)
+                    start_walking_edges.append((stop_id, walk_time))
+            print(f"{start_walking_edges}")
+
         # Route transit from start transit stop to end transit stop
         path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node, start_walking_edges)
         # Route walking from nearest transit stop to end
@@ -654,7 +666,7 @@ class RouteService:
                 tentative_cost = walking_time
                 cost[(first_transit_stop, shape_id)] = tentative_cost
                 previous[(first_transit_stop, shape_id)] = (src, None)
-                heuristic_cost = heuristic(graph.nodes[first_transit_stop]['pos'], graph.nodes[first_transit_stop]['pos'])
+                heuristic_cost = heuristic(graph.nodes[first_transit_stop]['pos'], graph.nodes[dst]['pos'])
                 priority_cost = walking_time + heuristic_cost
                 heapq.heappush(queue, (priority_cost, first_transit_stop, shape_id))
         else:
