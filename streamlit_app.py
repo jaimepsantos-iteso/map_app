@@ -126,11 +126,12 @@ with st.sidebar:
                 st.error("Selecciona puntos en el mapa o ingresa direcciones para origen y destino.")
             else:
                 # Call routing function that returns a folium map
-                total_time_list, folium_map = st.session_state.route_service.route_combined(
+                df, total_time_list, folium_map, path_transit = st.session_state.route_service.route_combined(
                     st.session_state.start_point,
                     st.session_state.end_point
                 )
-                st.session_state.last_map = folium_map
+                st.session_state.last_map = st.session_state.route_service.create_map(df)
+                st.session_state.route_df = df
                 total_time_min = sum(total_time_list) / 60
                 st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
                 # After calculating the route, clear selection and disable radio via last_map
@@ -208,7 +209,7 @@ if clicked and st.session_state.last_map is None:
     _tr = Transformer.from_crs("EPSG:4326", "EPSG:3857", always_xy=True)
     dx, dy = _tr.transform(clicked["lng"], clicked["lat"])
     dpt = Point(dx, dy)
-    print("Clicked at:", dpt, clicked)
+    
     # Preserve current zoom/center from this interaction before rerun
     if 'zoom' in map_events and map_events['zoom'] is not None:
         st.session_state.map_zoom = map_events['zoom']
@@ -221,4 +222,11 @@ if clicked and st.session_state.last_map is None:
     else:#if target == "Destino":
         st.session_state.end_point = dpt
         st.rerun()
+
+# Show route segments DataFrame below the map if available
+if st.session_state.get('route_df') is not None and not st.session_state.route_df.empty and st.session_state.last_map is not None:
+    st.subheader("Detalles de la Ruta")
+    # Display the DataFrame with selected columns for readability
+    display_df = st.session_state.route_df[['mode', 'route_long_name', 'route_short_name', 'trip_headsign', 'stops', 'stop_names', 'segment_time_seconds']].copy()
+    st.dataframe(display_df, use_container_width=True)
 
