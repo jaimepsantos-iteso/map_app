@@ -149,27 +149,42 @@ class RouteService:
         self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
 
    
-    def route_walking(self, start_walking_node:int, end_walking_node: int) -> tuple[LineString, int]:
+    def route_walking(self, start_point:Point, end_point: Point) -> tuple[LineString, int]:
 
-        if nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False or start_walking_node == end_walking_node:
-            start = Point(self.graph_walk.nodes[start_walking_node]['x'], self.graph_walk.nodes[start_walking_node]['y'])
-            end = Point(self.graph_walk.nodes[end_walking_node]['x'], self.graph_walk.nodes[end_walking_node]['y'])
-            return LineString([start, end]), round(start.distance(end) / (5 / 3.6))
+        start_walking_node = ox.distance.nearest_nodes(self.graph_walk, start_point.x, start_point.y)
+        end_walking_node = ox.distance.nearest_nodes(self.graph_walk, end_point.x, end_point.y)
+
+        start_walking_point = Point(self.graph_walk.nodes[start_walking_node]['x'], self.graph_walk.nodes[start_walking_node]['y'])
+        end_walking_point = Point(self.graph_walk.nodes[end_walking_node]['x'], self.graph_walk.nodes[end_walking_node]['y'])
+
+        #add first segment from start point to nearest walking node
+        coords = [(start_point.x, start_point.y), (start_walking_point.x, start_walking_point.y)]
+        time_walking = round(start_point.distance(start_walking_point) / (3 / 3.6))  # average walking speed 3 km/h in m/s due to unknown path
+        if start_walking_node == end_walking_node:
+            pass
+        elif nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False:
+
+            time_walking += round(start_walking_point.distance(end_walking_point) / (3 / 3.6)) # average walking speed 3 km/h in m/s due to unknown path
+        else:
+            route_nodes = nx.shortest_path(self.graph_walk, start_walking_node, end_walking_node)
+            # get time walking
+            distance = nx.shortest_path_length(self.graph_walk, start_walking_node, end_walking_node, weight='length')
+            time_walking += round(distance / (5 / 3.6))  # average walking speed 5 km/h in m/s
+            # Convert nodes to list of coordinates
+            coords += [(self.graph_walk.nodes[n]["x"], self.graph_walk.nodes[n]["y"]) for n in route_nodes]
         
-        route_nodes = nx.shortest_path(self.graph_walk, start_walking_node, end_walking_node)
-        # get time walking
-        distance = nx.shortest_path_length(self.graph_walk, start_walking_node, end_walking_node, weight='length')
-        time_walking = round(distance / (5 / 3.6))  # average walking speed 5 km/h in m/s
-        # Convert nodes to list of coordinates
-        coords = [(self.graph_walk.nodes[n]["x"], self.graph_walk.nodes[n]["y"]) for n in route_nodes]
-        #create line geometry
+        #add last segment from end walking point to end point
+        coords += [(end_walking_point.x, end_walking_point.y), (end_point.x, end_point.y)]
+        time_walking += round(end_walking_point.distance(end_point) / (3 / 3.6))  # average walking speed 3 km/h in m/s due to unknown path
+        
+        #create line geometry        
         line = LineString(coords)
        
         return line, time_walking
     
-    def route_transit(self, start_transit_node: str, end_transit_node: str) -> tuple[list[LineString], float, pd.DataFrame]:
+    def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = []) -> tuple[list[LineString], float, pd.DataFrame]:
         
-        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, heuristic=euclidean_heuristic)
+        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges=start_walking_edges, heuristic=euclidean_heuristic)
 
         dijkstra_path_stops = []
         dijkstra_path_shapes = []
@@ -198,7 +213,7 @@ class RouteService:
 
         return path, total_cost, m
 
-    def get_transit_segments_df(self, path : tuple[str,str]) -> pd.DataFrame:
+    def get_transit_segments_df(self, path : tuple[str,str], start_point:Point, end_point:Point) -> pd.DataFrame:
         """Build a detailed segment DataFrame for a transit-only route.
 
         Each row represents a contiguous segment by mode. For transit, the
@@ -318,23 +333,32 @@ class RouteService:
         def finalize_walking_segment(walk_stops: list[str]):
             if len(walk_stops) < 2:
                 return
-            # Build a simple linestring using transit node positions (EPSG:3857)
-            coords = []
-            for sid in walk_stops:
-                pos = self.graph_transit.nodes[sid].get('pos')
-                if isinstance(pos, Point):
-                    coords.append((pos.x, pos.y))
-            geom = LineString(coords) if len(coords) >= 2 else None
-            # Names and positions
-            stops_sub = self.stops_gdf[self.stops_gdf['stop_id'].isin(walk_stops)].copy()
-            stops_sub['__order'] = stops_sub['stop_id'].apply(lambda s: walk_stops.index(s) if s in walk_stops else -1)
-            stops_sub.sort_values('__order', inplace=True)
-            stop_names = stops_sub['stop_name'].tolist() if 'stop_name' in stops_sub.columns else walk_stops
+            # just take the start and end stops for walking
+            walk_stops = [walk_stops[0], walk_stops[-1]]
+            
+            if walk_stops[0] == "Real_Start":
+                start_walk_stop_pos = start_point
+                start_walk_stop_name = "Origen"
+            else:
+                start_walk_stop_pos = self.graph_transit.nodes[walk_stops[0]].get('pos')
+                start_walk_stop_name = self.stops_gdf[self.stops_gdf['stop_id']==walk_stops[0]]['stop_name'].iloc[0]
+
+            if walk_stops[1] == "Real_End":
+                end_walk_stop_pos = end_point
+                end_walk_stop_name = "Destino"
+            else:
+                end_walk_stop_pos = self.graph_transit.nodes[walk_stops[1]].get('pos')
+                end_walk_stop_name = self.stops_gdf[self.stops_gdf['stop_id']==walk_stops[1]]['stop_name'].iloc[0]
+
+            geom, time_walking = self.route_walking(start_walk_stop_pos, end_walk_stop_pos)
+
+            stop_names = [start_walk_stop_name, end_walk_stop_name]
             to4326 = Transformer.from_crs(3857, 4326, always_xy=True)
             stop_positions = []
-            for g in stops_sub.geometry.tolist():
+            for g in [start_walk_stop_pos, end_walk_stop_pos]:
                 lon, lat = to4326.transform(g.x, g.y)
                 stop_positions.append({'lat': lat, 'lon': lon})
+
             segments.append({
                 'mode': 'walking',
                 'shape_id': None,
@@ -348,7 +372,7 @@ class RouteService:
                 'stop_positions': stop_positions,
                 'stop_time_deltas': None,
                 'frequency': None,
-                'segment_time_seconds': None,
+                'segment_time_seconds': time_walking,
                 'segment_geometry': geom,
             })
 
@@ -391,24 +415,27 @@ class RouteService:
             walking_node_point = Point(self.graph_walk.nodes[walking_node]['x'], self.graph_walk.nodes[walking_node]['y'])
             nearest_stop_idx = self.stops_gdf.geometry.distance(walking_node_point).idxmin()
             nearest_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
-            transit_point = self.graph_transit.nodes[nearest_transit_node]['pos']
-            nearest_transit_walking_node = ox.distance.nearest_nodes(self.graph_walk, transit_point.x, transit_point.y)
+            nearest_transit_node_pos = self.graph_transit.nodes[nearest_transit_node]['pos']
 
-            return nearest_transit_node, walking_node, nearest_transit_walking_node
+            return nearest_transit_node, nearest_transit_node_pos
         
-        start_transit_node, start_walking_node, start_nearest_walking_node = find_nearest_transit_and_walking_nodes(start)
-        end_transit_node, end_walking_node, end_nearest_walking_node = find_nearest_transit_and_walking_nodes(end)
+        start_transit_node, start_transit_node_pos = find_nearest_transit_and_walking_nodes(start)
+        end_transit_node, end_transit_node_pos = find_nearest_transit_and_walking_nodes(end)
         # Route walking from start to nearest transit stop
-        walk_to_transit_line, time_walking_start = self.route_walking(start_walking_node, start_nearest_walking_node)
+        walk_to_transit_line, time_walking_start = self.route_walking(start, start_transit_node_pos)
         # Route transit from start transit stop to end transit stop
         path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
         # Route walking from nearest transit stop to end
-        walk_from_transit_line, time_walking_end = self.route_walking(end_nearest_walking_node, end_walking_node)
+        walk_from_transit_line, time_walking_end = self.route_walking(end_transit_node_pos, end)
+
+
         # Combine all geometries
         # Create a GeoSeries to hold all parts of the route
         route_parts_walking = [walk_to_transit_line, walk_from_transit_line]
 
-        route_df = self.get_transit_segments_df(path_transit)
+        path_transit.append(('Real_End', 'walking'))  # dummy entry to indicate walking at the end
+
+        route_df = self.get_transit_segments_df(path_transit, start, end)
 
         total_time = [time_walking_start, time_transit, time_walking_end]
 
@@ -589,7 +616,7 @@ class RouteService:
 
 
 
-    def dijkstra_transit(self, src:str, dst:str, heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
+    def dijkstra_transit(self, src:str, dst:str, start_walking_edges: list[tuple[str, int]] = [], heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
 
         #accumulated cost for each node from the start, keys are (node, shape_id)
         cost = dict()
@@ -603,21 +630,33 @@ class RouteService:
 
         graph = self.graph_transit
 
-        # fill the queue with all the possible starting edges from src
-        for neighbor in graph.neighbors(src):
-            edges = graph.get_edge_data(src, neighbor)
-            if not edges:
-                continue
-            for k, attrs in edges.items():
-                shape_id = attrs.get('shape_id')
-                weight = attrs.get('weight', 1)
-                frequency = attrs.get('frequency', 600)
-                tentative_cost = weight + frequency #initial transfer penalty
-                cost[(neighbor, shape_id)] = tentative_cost
-                previous[(neighbor, shape_id)] = (src, None)
-                heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos'])
-                priority_cost = tentative_cost + heuristic_cost
-                heapq.heappush(queue, (priority_cost, neighbor, shape_id))
+        # fill the queue with all the possible starting walking edges from the real origin
+        if start_walking_edges:
+            src = "Real_Start"
+            shape_id = "walking"
+            for first_transit_stop, walking_time in start_walking_edges:
+                tentative_cost = walking_time
+                cost[(first_transit_stop, shape_id)] = tentative_cost
+                previous[(first_transit_stop, shape_id)] = (src, None)
+                heuristic_cost = heuristic(graph.nodes[first_transit_stop]['pos'], graph.nodes[first_transit_stop]['pos'])
+                priority_cost = walking_time + heuristic_cost
+                heapq.heappush(queue, (priority_cost, first_transit_stop, shape_id))
+        else:
+            # fill the queue with all the possible starting edges from src
+            for neighbor in graph.neighbors(src):
+                edges = graph.get_edge_data(src, neighbor)
+                if not edges:
+                    continue
+                for k, attrs in edges.items():
+                    shape_id = attrs.get('shape_id')
+                    weight = attrs.get('weight', 1)
+                    frequency = attrs.get('frequency', 600)
+                    tentative_cost = weight + frequency #initial transfer penalty
+                    cost[(neighbor, shape_id)] = tentative_cost
+                    previous[(neighbor, shape_id)] = (src, None)
+                    heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos'])
+                    priority_cost = tentative_cost + heuristic_cost
+                    heapq.heappush(queue, (priority_cost, neighbor, shape_id))
         
 
         end_shape = None
