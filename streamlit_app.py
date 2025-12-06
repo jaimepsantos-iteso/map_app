@@ -138,7 +138,16 @@ with st.sidebar:
                     st.session_state.route_df = df
                     total_time_min = math.ceil(total_time / 60.0)
                     st.session_state.total_time_min = total_time_min
-                    st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
+                    #print total time per route found
+                    route_times = [
+                        f"Ruta {i+1}: {math.ceil(time_route / 60.0)} min"
+                        for i, (df_route, time_route) in enumerate(routes_list)
+                    ]
+                    st.success(
+                        f"{len(routes_list)} ruta(s) encontradas. "
+                        f"Tiempo total: {total_time_min:.0f} minutos.\n\n"
+                        + "\n".join(route_times)
+                    )
                 else:
                     st.error("No se pudo encontrar una ruta válida.")
                 # After calculating the route, clear selection and disable radio via last_map
