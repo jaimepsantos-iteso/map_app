@@ -38,6 +38,10 @@ if 'map_center' not in st.session_state:
     st.session_state.map_center = [20.67, -103.35]
 if 'map_zoom' not in st.session_state:
     st.session_state.map_zoom = 12
+if 'routes_list' not in st.session_state:
+    st.session_state.routes_list = []
+if 'selected_route_index' not in st.session_state:
+    st.session_state.selected_route_index = 0
 
 # No pick mode: markers are draggable only
 
@@ -133,21 +137,18 @@ with st.sidebar:
                 )
                 
                 if routes_list and len(routes_list) > 0:
+                    # Store all routes in session state
+                    st.session_state.routes_list = routes_list
+                    st.session_state.selected_route_index = 0
+                    
+                    # Display first route by default
                     df, total_time = routes_list[0]
                     st.session_state.last_map = st.session_state.route_service.create_map(df)
                     st.session_state.route_df = df
                     total_time_min = math.ceil(total_time / 60.0)
                     st.session_state.total_time_min = total_time_min
-                    #print total time per route found
-                    route_times = [
-                        f"Ruta {i+1}: {math.ceil(time_route / 60.0)} min"
-                        for i, (df_route, time_route) in enumerate(routes_list)
-                    ]
-                    st.success(
-                        f"{len(routes_list)} ruta(s) encontradas. "
-                        f"Tiempo total: {total_time_min:.0f} minutos.\n\n"
-                        + "\n".join(route_times)
-                    )
+                    
+                    st.success(f"{len(routes_list)} ruta(s) alternativa(s) encontrada(s). Mostrando la más rápida.")
                 else:
                     st.error("No se pudo encontrar una ruta válida.")
                 # After calculating the route, clear selection and disable radio via last_map
@@ -157,6 +158,26 @@ with st.sidebar:
 
 # The map occupies the main page area
 st.subheader("Mapa Interactivo")
+
+# Route selection buttons (if multiple routes available)
+if st.session_state.routes_list and len(st.session_state.routes_list) > 1 and st.session_state.last_map is not None:
+    st.markdown("### 🔀 Selecciona una ruta alternativa")
+    cols = st.columns(len(st.session_state.routes_list))
+    for i, (df_route, time_route) in enumerate(st.session_state.routes_list):
+        with cols[i]:
+            time_min = math.ceil(time_route / 60.0)
+            if st.button(
+                f"🚌 Ruta {i+1}\n{time_min} min",
+                key=f"route_btn_{i}",
+                type="primary" if i == st.session_state.selected_route_index else "secondary",
+                use_container_width=True
+            ):
+                st.session_state.selected_route_index = i
+                st.session_state.route_df = df_route
+                st.session_state.total_time_min = time_min
+                st.session_state.last_map = st.session_state.route_service.create_map(df_route)
+                st.rerun()
+    st.markdown("---")
 
 # Radio + reset button row
 col_radio, col_btn = st.columns([3, 1])

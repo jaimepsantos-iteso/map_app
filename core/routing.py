@@ -478,7 +478,6 @@ class RouteService:
         
         #sort routes by total time
         routes_list.sort(key=lambda x: x[1])   
-        print(routes_list)
       
         return routes_list
 
