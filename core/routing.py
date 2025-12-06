@@ -255,10 +255,14 @@ class RouteService:
             for i in range(len(seg_stops)-1):
                 try:
                     idx = full_stop_ids.index(seg_stops[i])
-                    # delta between i and i+1 is indexed by i in full_deltas
-                    if idx < len(full_deltas):
+                    # Verify the next stop also matches to ensure we're on the right hop
+                    idx_next = full_stop_ids.index(seg_stops[i+1])
+                    # If they're consecutive in the full list, use the delta
+                    if idx_next == idx + 1 and idx < len(full_deltas):
                         seg_deltas.append(full_deltas[idx])
-                except Exception:
+                    else:
+                        seg_deltas.append(None)
+                except (ValueError, IndexError):
                     seg_deltas.append(None)
 
             # Frequency and time from graph edges
