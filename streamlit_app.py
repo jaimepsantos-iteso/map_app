@@ -126,13 +126,13 @@ with st.sidebar:
                 st.error("Selecciona puntos en el mapa o ingresa direcciones para origen y destino.")
             else:
                 # Call routing function that returns a folium map
-                df, total_time_list, folium_map, path_transit = st.session_state.route_service.route_combined(
+                df, total_time = st.session_state.route_service.route_combined(
                     st.session_state.start_point,
                     st.session_state.end_point
                 )
                 st.session_state.last_map = st.session_state.route_service.create_map(df)
                 st.session_state.route_df = df
-                total_time_min = sum(total_time_list) / 60
+                total_time_min = total_time / 60
                 st.success(f"Ruta encontrada. Tiempo total: {total_time_min:.0f} minutos.")
                 # After calculating the route, clear selection and disable radio via last_map
                 st.session_state.selected_target = None

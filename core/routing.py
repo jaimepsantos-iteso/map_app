@@ -184,34 +184,16 @@ class RouteService:
     
     def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = []) -> tuple[list[LineString], float, pd.DataFrame]:
         
+        #measure time
+        import time
+        start_time = time.time()
+        
+        # Run dijkstra algorithm to find optimal transit path
         path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges=start_walking_edges, heuristic=euclidean_heuristic)
-
-        dijkstra_path_stops = []
-        dijkstra_path_shapes = []
-
-        for stop, shape in path:
-            dijkstra_path_stops.append(stop)
-            if shape != 'walking' and shape not in dijkstra_path_shapes:
-                dijkstra_path_shapes.append(shape)
-
-       
-        subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
-
-
-        m = subset.explore(
-            name = "Transit Route",
-            column='route_long_name',
-            cmap='tab20',
-            legend=True,
-            tooltip=['route_long_name', 'route_short_name', 'trip_headsign'],
-            style_kwds={'weight': 6, 'opacity': 0.9}
-        )
-
-        path_gdf = self.stops_gdf[self.stops_gdf['stop_id'].isin(dijkstra_path_stops)]
-        m = path_gdf.explore(color='orange', m=m, name="Transit Stops")
-
-
-        return path, total_cost, m
+        
+        end_time = time.time()
+        print(f"Transit routing time: {end_time - start_time:.3f} seconds")
+        return path
 
     def get_transit_segments_df(self, path : tuple[str,str], start_point:Point, end_point:Point) -> pd.DataFrame:
         """Build a detailed segment DataFrame for a transit-only route.
@@ -406,66 +388,73 @@ class RouteService:
 
         return pd.DataFrame(segments)
 
+    def get_start_walking_edges(self, start: Point) -> list[tuple[str, int]]:
 
-    def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
+        max_walking_time = 5 * 60 # 5 minutes in seconds
+        walking_speed_mps = 5 / 3.6 # average walking speed 5 km/h in m/s
+        walking_distance_threshold = max_walking_time * walking_speed_mps  
 
-        def find_nearest_transit_and_walking_nodes(walking_point: Point) -> tuple[str, int, int]:
-            # Find nearest transit stops to start and end points
-            walking_node = ox.distance.nearest_nodes(self.graph_walk, walking_point.x, walking_point.y)
-            walking_node_point = Point(self.graph_walk.nodes[walking_node]['x'], self.graph_walk.nodes[walking_node]['y'])
-            nearest_stop_idx = self.stops_gdf.geometry.distance(walking_node_point).idxmin()
-            nearest_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
-            nearest_transit_node_pos = self.graph_transit.nodes[nearest_transit_node]['pos']
+        nearest_stop_idx = self.stops_gdf.geometry.distance(start).idxmin()
+        start_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
+        start_transit_node_pos = self.graph_transit.nodes[start_transit_node]['pos']
 
-            return nearest_transit_node, nearest_transit_node_pos
-        
-        start_transit_node, start_transit_node_pos = find_nearest_transit_and_walking_nodes(start)
-        end_transit_node, end_transit_node_pos = find_nearest_transit_and_walking_nodes(end)
         # Route walking from start to nearest transit stop
-        walk_to_transit_line, time_walking_start = self.route_walking(start, start_transit_node_pos)
-        # Route transit from start transit stop to end transit stop
-        #path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        walking_distance_start = start.distance(start_transit_node_pos) # walking distance in meters
+        time_walking_start = round(walking_distance_start / walking_speed_mps)  # walking time in seconds
+
+        # add the closet stop as default walking edge
         start_walking_edges = [(start_transit_node, time_walking_start)]
 
-        if start.distance(start_transit_node_pos) < 416.66: # Distance that can be walked in 5 minutes at 5 km/h
-            #find other nearby transit stops within walking distance
-            nearby_stops = self.stops_gdf[self.stops_gdf.geometry.distance(start) <= 416.66]
-            for idx, row in nearby_stops.iterrows():
-                stop_id = row['stop_id']
-                if stop_id != start_transit_node:
-                    stop_pos = self.graph_transit.nodes[stop_id]['pos']
-                    _, walk_time = self.route_walking(start, stop_pos)
-                    start_walking_edges.append((stop_id, walk_time))
-            print(f"{start_walking_edges}")
+        # only search for additional walking edges if within threshold
+        if walking_distance_start > walking_distance_threshold:
+            return start_walking_edges
+        
+        # Use spatial index to efficiently find nearby stops
+        sindex = self.stops_gdf.sindex
+
+        start_circle_walking = start.buffer(walking_distance_threshold)
+
+        # candidate indices whose geometries intersect the walking reach
+        nearby_stops_idx = sindex.query(start_circle_walking, predicate="intersects")
+
+        for nearby_stop_idx in nearby_stops_idx:            
+            nearby_stop = self.stops_gdf.iloc[nearby_stop_idx]
+            # we dont want to add start walking edge to the already added nearest stop
+            if nearby_stop['stop_id'] == start_transit_node:
+                continue
+            #calculate real distance in meters between the stop and start point
+            distance = start.distance(nearby_stop['geometry'])            
+            # walking time in seconds
+            walking_time = round(distance / walking_speed_mps) 
+            start_walking_edges.append((nearby_stop['stop_id'], walking_time))
+        
+        print(f"Found {start_walking_edges}")
+        
+        return start_walking_edges
+
+    def get_end_transit_node(self, end: Point) -> str:
+        nearest_stop_idx = self.stops_gdf.geometry.distance(end).idxmin()
+        end_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
+        return end_transit_node
+
+    def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
+       
+        start_walking_edges = self.get_start_walking_edges(start)
+
+        end_transit_node = self.get_end_transit_node(end)
 
         # Route transit from start transit stop to end transit stop
-        path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node, start_walking_edges)
-        # Route walking from nearest transit stop to end
-        walk_from_transit_line, time_walking_end = self.route_walking(end_transit_node_pos, end)
-
-
-        # Combine all geometries
-        # Create a GeoSeries to hold all parts of the route
-        route_parts_walking = [walk_to_transit_line, walk_from_transit_line]
+        path_transit = self.route_transit("Real_Start", end_transit_node, start_walking_edges)
 
         path_transit.append(('Real_End', 'walking'))  # Entry to indicate walking at the end
 
+        #from the transit path, build a detailed segments dataframe inclding real walking segments
         route_df = self.get_transit_segments_df(path_transit, start, end)
 
-        total_time = [time_walking_start, time_transit, time_walking_end]
+        total_time = route_df['segment_time_seconds'].sum()
 
-        route_gdf = gpd.GeoDataFrame(geometry=route_parts_walking, crs="EPSG:3857")
-        m = route_gdf.explore(m=m, color='blue', style_kwds={'weight': 3, 'opacity': 0.8}, name='Walking Route')
 
-        #add start point and end point - they are already in EPSG:3857
-        start_gdf = gpd.GeoDataFrame(geometry=[start], crs="EPSG:3857")   
-        end_gdf = gpd.GeoDataFrame(geometry=[end], crs="EPSG:3857")   
-
-        # Add markers with better visibility
-        m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 10}, name='Start Point')
-        m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 10}, name='End Point')
-
-        return route_df, total_time , m, path_transit
+        return route_df, total_time
 
 
     def create_map(self, segments_df):
