@@ -167,7 +167,7 @@ class RouteService:
        
         return line, time_walking
     
-    def route_transit(self, start_transit_node: str, end_transit_node: str) -> tuple[list[LineString], float]:
+    def route_transit(self, start_transit_node: str, end_transit_node: str) -> tuple[list[LineString], float, pd.DataFrame]:
         
         path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, heuristic=euclidean_heuristic)
 
@@ -182,11 +182,9 @@ class RouteService:
        
         subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
 
-        #trimmed_shapes = trim_route_shapes(path, self.transit_gdf, self.stops_gdf)
+        df = self.get_transit_segments_df(path)
 
-        #trimmed_gdf = gpd.GeoDataFrame(trimmed_shapes, crs='EPSG:4326')
-
-        print(subset)
+        print(df)
 
 
 
@@ -203,7 +201,188 @@ class RouteService:
         m = path_gdf.explore(color='orange', m=m, name="Transit Stops")
 
 
-        return subset, total_cost, m
+        return df, total_cost, m
+
+    def get_transit_segments_df(self, path : tuple[str,str]) -> pd.DataFrame:
+        """Build a detailed segment DataFrame for a transit-only route.
+
+        Each row represents a contiguous segment by mode. For transit, the
+        segment is a sequence of stops on the same `shape_id`. If any 'walking'
+        steps appear in the path, they are included as separate rows.
+
+        Columns:
+        - mode: 'transit' or 'walking'
+        - shape_id: shape identifier for transit segments, else None
+        - route_long_name, route_short_name, trip_headsign, route_type, route_color
+        - stops: list of stop_ids in segment order
+        - stop_names: list of stop names corresponding to `stops`
+        - stop_positions: list of dicts with lat/lon (EPSG:4326)
+        - stop_time_deltas: per-hop time deltas for this segment (seconds)
+        - frequency: median headway (seconds) across edges in the segment (if available)
+        - segment_time_seconds: sum of weights for the segment (seconds)
+        - segment_geometry: trimmed LineString geometry in EPSG:3857 for transit segments; for walking, a LineString via node positions if available
+        """
+        
+        if not path:
+            return pd.DataFrame(columns=[
+                'mode','shape_id','route_long_name','route_short_name','trip_headsign','route_type','route_color',
+                'stops','stop_names','stop_positions','stop_time_deltas','frequency','segment_time_seconds','segment_geometry'
+            ])
+
+        segments = []
+
+        # Helper to finalize a transit segment row
+        def finalize_transit_segment(shape_id: str, seg_stops: list[str]):
+            if not seg_stops:
+                return
+            shape_row = self.transit_gdf[self.transit_gdf['shape_id'] == shape_id]
+            if shape_row.empty:
+                return
+            shape_row = shape_row.iloc[0]
+            # Stop names and positions
+            stops_sub = self.stops_gdf[self.stops_gdf['stop_id'].isin(seg_stops)].copy()
+            # Preserve order of seg_stops
+            stops_sub['__order'] = stops_sub['stop_id'].apply(lambda s: seg_stops.index(s) if s in seg_stops else -1)
+            stops_sub.sort_values('__order', inplace=True)
+            stop_names = stops_sub['stop_name'].tolist() if 'stop_name' in stops_sub.columns else seg_stops
+            # Positions as lat/lon
+            to4326 = Transformer.from_crs(3857, 4326, always_xy=True)
+            stop_positions = []
+            for geom in stops_sub.geometry.tolist():
+                lon, lat = to4326.transform(geom.x, geom.y)
+                stop_positions.append({'lat': lat, 'lon': lon})
+
+            # Stop time deltas for just this segment
+            full_stop_ids = shape_row.get('stop_ids', [])
+            full_deltas = shape_row.get('stop_time_deltas', [])
+            # Build per-hop deltas within the segment by looking up indices in full list
+            seg_deltas = []
+            for i in range(len(seg_stops)-1):
+                try:
+                    idx = full_stop_ids.index(seg_stops[i])
+                    # delta between i and i+1 is indexed by i in full_deltas
+                    if idx < len(full_deltas):
+                        seg_deltas.append(full_deltas[idx])
+                except Exception:
+                    seg_deltas.append(None)
+
+            # Frequency and time from graph edges
+            freqs = []
+            weights = []
+            for i in range(len(seg_stops)-1):
+                u, v = seg_stops[i], seg_stops[i+1]
+                data = self.graph_transit.get_edge_data(u, v)
+                if not data:
+                    continue
+                # pick edge that matches shape_id if parallel edges exist
+                chosen = None
+                for _, attrs in data.items():
+                    if attrs.get('shape_id') == shape_id:
+                        chosen = attrs
+                        break
+                if chosen is None:
+                    # fallback to any
+                    _, chosen = next(iter(data.items()))
+                if chosen is not None:
+                    if 'frequency' in chosen:
+                        freqs.append(chosen['frequency'])
+                    if 'weight' in chosen:
+                        weights.append(chosen['weight'])
+            frequency = float(pd.Series(freqs).median()) if freqs else None
+            segment_time_seconds = float(pd.Series(weights).sum()) if weights else None
+
+            # Trim geometry to the portion actually used
+            full_geom = shape_row['shape_geometry']
+            try:
+                seg_geom = trim_shape_between_stops(full_geom, seg_stops, self.stops_gdf)
+            except Exception:
+                seg_geom = full_geom
+
+            segments.append({
+                'mode': 'transit',
+                'shape_id': shape_id,
+                'route_long_name': shape_row.get('route_long_name'),
+                'route_short_name': shape_row.get('route_short_name'),
+                'trip_headsign': shape_row.get('trip_headsign'),
+                'route_type': shape_row.get('route_type'),
+                'route_color': shape_row.get('route_color', '#7b1fa2'),
+                'stops': seg_stops,
+                'stop_names': stop_names,
+                'stop_positions': stop_positions,
+                'stop_time_deltas': seg_deltas,
+                'frequency': frequency,
+                'segment_time_seconds': segment_time_seconds,
+                'segment_geometry': seg_geom,
+            })
+
+        # Helper to finalize a walking segment row (if present in path)
+        def finalize_walking_segment(walk_stops: list[str]):
+            if len(walk_stops) < 2:
+                return
+            # Build a simple linestring using transit node positions (EPSG:3857)
+            coords = []
+            for sid in walk_stops:
+                pos = self.graph_transit.nodes[sid].get('pos')
+                if isinstance(pos, Point):
+                    coords.append((pos.x, pos.y))
+            geom = LineString(coords) if len(coords) >= 2 else None
+            # Names and positions
+            stops_sub = self.stops_gdf[self.stops_gdf['stop_id'].isin(walk_stops)].copy()
+            stops_sub['__order'] = stops_sub['stop_id'].apply(lambda s: walk_stops.index(s) if s in walk_stops else -1)
+            stops_sub.sort_values('__order', inplace=True)
+            stop_names = stops_sub['stop_name'].tolist() if 'stop_name' in stops_sub.columns else walk_stops
+            to4326 = Transformer.from_crs(3857, 4326, always_xy=True)
+            stop_positions = []
+            for g in stops_sub.geometry.tolist():
+                lon, lat = to4326.transform(g.x, g.y)
+                stop_positions.append({'lat': lat, 'lon': lon})
+            segments.append({
+                'mode': 'walking',
+                'shape_id': None,
+                'route_long_name': None,
+                'route_short_name': None,
+                'trip_headsign': None,
+                'route_type': 'walking',
+                'route_color': '#333333',
+                'stops': walk_stops,
+                'stop_names': stop_names,
+                'stop_positions': stop_positions,
+                'stop_time_deltas': None,
+                'frequency': None,
+                'segment_time_seconds': None,
+                'segment_geometry': geom,
+            })
+
+        # Group contiguous path entries by shape_id
+        current_shape = None
+        current_stops = []
+        for stop_id, shape_id in path:
+            if current_shape is None:
+                current_shape = shape_id
+                current_stops = [stop_id]
+                continue
+            if shape_id == current_shape:
+                current_stops.append(stop_id)
+            else:
+                # include the transfer stop as the last of the previous segment
+                current_stops.append(stop_id)
+                # finalize previous segment (now includes the shared stop)
+                if current_shape == 'walking':
+                    finalize_walking_segment(current_stops)
+                else:
+                    finalize_transit_segment(current_shape, current_stops)
+                # start new segment at the same transfer stop
+                current_shape = shape_id
+                current_stops = [stop_id]
+
+        # finalize last segment
+        if current_stops:
+            if current_shape == 'walking':
+                finalize_walking_segment(current_stops)
+            else:
+                finalize_transit_segment(current_shape, current_stops)
+
+        return pd.DataFrame(segments)
 
 
     def route_combined(self, start: Point, end: Point) -> tuple[list[LineString], float]:
@@ -224,7 +403,7 @@ class RouteService:
         # Route walking from start to nearest transit stop
         walk_to_transit_line, time_walking_start = self.route_walking(start_walking_node, start_nearest_walking_node)
         # Route transit from start transit stop to end transit stop
-        transit_line, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        route_df, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
         # Route walking from nearest transit stop to end
         walk_from_transit_line, time_walking_end = self.route_walking(end_nearest_walking_node, end_walking_node)
         # Combine all geometries
@@ -244,7 +423,7 @@ class RouteService:
         m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 10}, name='Start Point')
         m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 10}, name='End Point')
 
-        return total_time , m
+        return route_df, total_time , m
 
 
 
