@@ -424,7 +424,10 @@ class RouteService:
         # Route walking from start to nearest transit stop
         walk_to_transit_line, time_walking_start = self.route_walking(start, start_transit_node_pos)
         # Route transit from start transit stop to end transit stop
-        path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        #path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        start_walking_edges = [(start_transit_node, time_walking_start)]
+        # Route transit from start transit stop to end transit stop
+        path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node, start_walking_edges)
         # Route walking from nearest transit stop to end
         walk_from_transit_line, time_walking_end = self.route_walking(end_transit_node_pos, end)
 
@@ -433,7 +436,7 @@ class RouteService:
         # Create a GeoSeries to hold all parts of the route
         route_parts_walking = [walk_to_transit_line, walk_from_transit_line]
 
-        path_transit.append(('Real_End', 'walking'))  # dummy entry to indicate walking at the end
+        path_transit.append(('Real_End', 'walking'))  # Entry to indicate walking at the end
 
         route_df = self.get_transit_segments_df(path_transit, start, end)
 
