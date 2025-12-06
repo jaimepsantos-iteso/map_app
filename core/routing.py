@@ -7,6 +7,8 @@ from shapely.geometry import Point, LineString
 import random as rd
 from geopy.geocoders import Nominatim
 from pyproj import Transformer
+import folium
+
 
 
 def point_from_text(address: str) -> Point:
@@ -150,12 +152,10 @@ class RouteService:
     def route_walking(self, start_walking_node:int, end_walking_node: int) -> tuple[LineString, int]:
 
         if nx.has_path(self.graph_walk, start_walking_node, end_walking_node) == False or start_walking_node == end_walking_node:
-            print("No walking path found between the two points.")
             start = Point(self.graph_walk.nodes[start_walking_node]['x'], self.graph_walk.nodes[start_walking_node]['y'])
             end = Point(self.graph_walk.nodes[end_walking_node]['x'], self.graph_walk.nodes[end_walking_node]['y'])
             return LineString([start, end]), round(start.distance(end) / (5 / 3.6))
         
-        # Shortest path, to use my own Dijkstra implementation, replace this line
         route_nodes = nx.shortest_path(self.graph_walk, start_walking_node, end_walking_node)
         # get time walking
         distance = nx.shortest_path_length(self.graph_walk, start_walking_node, end_walking_node, weight='length')
@@ -182,11 +182,6 @@ class RouteService:
        
         subset = self.transit_gdf[self.transit_gdf['shape_id'].isin(dijkstra_path_shapes)]
 
-        df = self.get_transit_segments_df(path)
-
-        print(df)
-
-
 
         m = subset.explore(
             name = "Transit Route",
@@ -201,7 +196,7 @@ class RouteService:
         m = path_gdf.explore(color='orange', m=m, name="Transit Stops")
 
 
-        return df, total_cost, m
+        return path, total_cost, m
 
     def get_transit_segments_df(self, path : tuple[str,str]) -> pd.DataFrame:
         """Build a detailed segment DataFrame for a transit-only route.
@@ -354,26 +349,25 @@ class RouteService:
             })
 
         # Group contiguous path entries by shape_id
-        current_shape = None
-        current_stops = []
-        for stop_id, shape_id in path:
-            if current_shape is None:
-                current_shape = shape_id
-                current_stops = [stop_id]
-                continue
+        
+        current_shape = path[0][1]  # initial shape_id, looks into the second element of the tuple
+        current_stops = [path[0][0]] # initial stop_id
+
+        #look for all stops and shapes in path except the first one
+        for stop_id, shape_id in path[1:]:
             if shape_id == current_shape:
                 current_stops.append(stop_id)
             else:
-                # include the transfer stop as the last of the previous segment
-                current_stops.append(stop_id)
-                # finalize previous segment (now includes the shared stop)
+                # Shape change (transfer). Always include the transfer stop
+                # as the last stop of the outgoing segment
+                
                 if current_shape == 'walking':
                     finalize_walking_segment(current_stops)
                 else:
                     finalize_transit_segment(current_shape, current_stops)
-                # start new segment at the same transfer stop
+                # Start new segment. Include transfer stop as first stop
                 current_shape = shape_id
-                current_stops = [stop_id]
+                current_stops = [current_stops[-1], stop_id]
 
         # finalize last segment
         if current_stops:
@@ -403,12 +397,14 @@ class RouteService:
         # Route walking from start to nearest transit stop
         walk_to_transit_line, time_walking_start = self.route_walking(start_walking_node, start_nearest_walking_node)
         # Route transit from start transit stop to end transit stop
-        route_df, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
+        path_transit, time_transit, m = self.route_transit(start_transit_node, end_transit_node)
         # Route walking from nearest transit stop to end
         walk_from_transit_line, time_walking_end = self.route_walking(end_nearest_walking_node, end_walking_node)
         # Combine all geometries
         # Create a GeoSeries to hold all parts of the route
         route_parts_walking = [walk_to_transit_line, walk_from_transit_line]
+
+        route_df = self.get_transit_segments_df(path_transit)
 
         total_time = [time_walking_start, time_transit, time_walking_end]
 
@@ -423,10 +419,99 @@ class RouteService:
         m = start_gdf.explore(m=m, color='green', marker_kwds={'radius': 10}, name='Start Point')
         m = end_gdf.explore(m=m, color='red', marker_kwds={'radius': 10}, name='End Point')
 
-        return route_df, total_time , m
+        return route_df, total_time , m, path_transit
 
 
+    def create_map(self, segments_df):
+        # Add route segments to the map one by one with styling and stop markers
 
+        #create empty map 
+        m = folium.Map(location=[20.6597, -103.3496], zoom_start=12)  # Example location (Guadalajara)
+
+        # Ensure transformer to 4326 for folium
+        _to4326 = Transformer.from_crs(3857, 4326, always_xy=True)
+
+        # Helper to compute weight from route_type
+        # Walking -> thinnest; then types 3,2,1; type 0 is thickest
+        # If route_type is None for walking, set minimal
+        def weight_for_route_type(route_type):
+            if route_type == 'walking' or route_type is None:
+                return 3
+            # Numeric mapping: bigger width for smaller type value
+            mapping = {0: 12, 1: 9, 2: 7, 3: 5}
+            return mapping.get(route_type, 6)
+
+        # Iterate rows in df and add to map
+        for _, row in segments_df.iterrows():
+            mode = row.get('mode')
+            color = row.get('route_color', '#3366cc')
+            seg_geom = row.get('segment_geometry')
+            route_type = row.get('route_type')
+            long_name = row.get('route_long_name')
+            short_name = row.get('route_short_name')
+            headsign = row.get('trip_headsign')
+            seconds = row.get('segment_time_seconds')
+
+            # Build tooltip text
+            tooltip_txt = []
+            tooltip_txt.append(f"Modo: {mode}")
+            if long_name or short_name:
+                tooltip_txt.append(f"Ruta: {long_name or ''} {('('+short_name+')') if short_name else ''}")
+            if seconds is not None and not pd.isna(seconds):
+                tooltip_txt.append(f"Tiempo segmento: {int(seconds)} s")
+            if headsign:
+                tooltip_txt.append(f"Dirección: {headsign}")
+            tooltip_html = "<br>".join(tooltip_txt)
+
+            # Draw line if geometry exists
+            if isinstance(seg_geom, LineString):
+                coords3857 = list(seg_geom.coords)
+                coords4326 = []
+                for (x, y) in coords3857:
+                    lon, lat = _to4326.transform(x, y)
+                    coords4326.append([lat, lon])
+                folium.PolyLine(
+                    locations=coords4326,
+                    color=color,
+                    weight=weight_for_route_type(route_type),
+                    opacity=0.9,
+                    tooltip=tooltip_html
+                ).add_to(m)
+
+            # Add stop circles
+            stops = row.get('stops', [])
+            stop_names = row.get('stop_names', [])
+            stop_positions = row.get('stop_positions', [])
+            # Expect stop_positions as list of dicts with lat/lon in 4326
+            for i, pos in enumerate(stop_positions):
+                lat = pos.get('lat')
+                lon = pos.get('lon')
+                if lat is None or lon is None:
+                    continue
+                # Style: transit mode first/last are white fill with black border; others use route color
+                if mode == 'transit' and (i == 0 or i == len(stop_positions)-1):
+                    fill_color = 'white'
+                    line_color = 'black'
+                    radius = 8
+                else:
+                    fill_color = color
+                    line_color = color
+                    radius = 6
+                # Tooltip prefix: Estación for route_type 0 (Tren Ligero) or 1 (Macrobus), otherwise Parada
+                prefix = 'Estación' if route_type in [0, 1] else 'Parada'
+                folium.CircleMarker(
+                    location=[lat, lon],
+                    radius=radius,
+                    color=line_color,
+                    fill=True,
+                    fill_color=fill_color,
+                    fill_opacity=1.0,
+                    weight=2,
+                    tooltip=f"{prefix}: {stop_names[i] if i < len(stop_names) else ''}"
+                ).add_to(m)
+
+              
+        return m
 
 
 
@@ -573,67 +658,13 @@ class RouteService:
             return [], None
 
 
-        #recreate the path based on the previous going backwards but store it in forward 
+        # Recreate the path by following predecessors back from (dst, end_shape)
         current = (dst, end_shape)
-
         while current in previous:
             path.append(current)
             current = previous.get(current)
+        # add the src to the path, the shape is None since it's the starting point, the shape represents how we arrived to the node
+        path.append((src, None))
         path.reverse()
-        
-        return path, cost[(dst, end_shape)]
-    
-    def test_transit_routing(self, transit_df, stops_df):
 
-        path = []
-
-        while path == []:
-            start = rd.choice(list(self.graph_transit.nodes))
-            destination = rd.choice(list(self.graph_transit.nodes))
-
-            try:
-                path = nx.shortest_path(self.graph_transit, source=start, target=destination, weight='weight')
-            except nx.NetworkXNoPath:
-                path = []
-
-        dijkstra_path, dijkstra_cost = self.dijkstra_transit(start, destination, heuristic=euclidean_heuristic)
-        print("Shortest path from", start, "to", destination, ":", dijkstra_path)
-
-        print("Cost of the path:", dijkstra_cost/60)
-
-        transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326')
-
-        dijkstra_path_stops = []
-        dijkstra_path_shapes = []
-        prev_shape = None
-        for stop, shape in dijkstra_path:
-            dijkstra_path_stops.append(stop)
-            dijkstra_path_shapes.append(shape)
-            if prev_shape is None:
-                print("Walk to stop:", stop)
-            if shape == 'walking':
-                print("Walk to stop:", stop)
-            elif shape != prev_shape:
-                print("Take Bus:", shape, "from stop:", stop, " direction to:", transit_df[transit_df['shape_id'] == shape]['trip_headsign'].iloc[0])
-            prev_shape = shape
-
-
-        #show all the shapes in the path
-        #assign colors based on shape_id or randomly
-        shapes_in_path = sorted(set(dijkstra_path_shapes))
-        subset = transit_gdf[transit_gdf['shape_id'].isin(shapes_in_path)]
-        m = subset.explore(
-            column='route_long_name',
-            cmap='tab20',
-            legend=True,
-            tooltip=['route_long_name', 'route_short_name', 'trip_headsign'],
-            style_kwds={'weight': 6, 'opacity': 0.9}
-        )
-        print(set(shapes_in_path))
-
-        stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
-
-        path_gdf = stops_gdf[stops_gdf['stop_id'].isin(dijkstra_path_stops)]
-        m = path_gdf.explore(color='red', m=m)
-
-        openMap(m)
+        return path, cost[(dst, end_shape)]    
