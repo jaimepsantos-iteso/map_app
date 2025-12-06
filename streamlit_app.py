@@ -228,5 +228,5 @@ if st.session_state.get('route_df') is not None and not st.session_state.route_d
     st.subheader("Detalles de la Ruta")
     # Display the DataFrame with selected columns for readability
     display_df = st.session_state.route_df[['mode', 'route_long_name', 'route_short_name', 'trip_headsign', 'stops', 'stop_names', 'segment_time_seconds']].copy()
-    st.dataframe(display_df, use_container_width=True)
+    st.dataframe(display_df, width='stretch')
 
