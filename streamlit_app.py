@@ -217,12 +217,8 @@ if clicked and st.session_state.last_map is None:
     target = st.session_state.selected_target
     if target == "Origen":
         st.session_state.start_point = dpt
-        st.info("Origen movido al clic.")
         st.rerun()
-    elif target == "Destino":
+    else:#if target == "Destino":
         st.session_state.end_point = dpt
-        st.info("Destino movido al clic.")
         st.rerun()
-    else:
-        st.info("Selecciona Origen o Destino para mover con clic.")
 
