@@ -520,7 +520,7 @@ class RouteService:
                 if lat is None or lon is None:
                     continue
                 # Style: transit mode first/last are white fill with black border; others use route color
-                if mode == 'transit' and (i == 0 or i == len(stop_positions)-1):
+                if (i == 0 or i == len(stop_positions)-1):
                     fill_color = 'white'
                     line_color = 'black'
                     radius = 8
@@ -529,7 +529,20 @@ class RouteService:
                     line_color = color
                     radius = 6
                 # Tooltip prefix: Estación for route_type 0 (Tren Ligero) or 1 (Macrobus), otherwise Parada
-                prefix = 'Estación' if route_type in [0, 1] else 'Parada'
+                if i < len(stop_names) and (stop_names[i] == 'Origen' or stop_names[i] == 'Destino'):
+                    prefix = ''
+                    radius = 10
+                    if stop_names[i] == 'Origen':
+                        fill_color = '#72AF26'
+                        line_color = 'darkgreen'
+                    else:
+                        fill_color = '#D53E2A'
+                        line_color = 'darkred'
+                elif route_type in [0, 1]:
+                    prefix = 'Estación: '
+                else:
+                    prefix = 'Parada: '
+                
                 folium.CircleMarker(
                     location=[lat, lon],
                     radius=radius,
@@ -538,7 +551,7 @@ class RouteService:
                     fill_color=fill_color,
                     fill_opacity=1.0,
                     weight=2,
-                    tooltip=f"{prefix}: {stop_names[i] if i < len(stop_names) else ''}"
+                    tooltip=f"{prefix}{stop_names[i] if i < len(stop_names) else ''}"
                 ).add_to(m)
 
               
