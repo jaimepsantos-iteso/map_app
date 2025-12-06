@@ -270,7 +270,7 @@ if st.session_state.get('route_df') is not None and not st.session_state.route_d
             # Walking segment
             origin_stop = stop_names[0] if len(stop_names) > 0 else 'Desconocido'
             dest_stop = stop_names[-1] if len(stop_names) > 0 else 'Desconocido'
-            walking_minutes = int(segment_time / 60) if segment_time else 0
+            walking_minutes = math.ceil(segment_time / 60.0) if segment_time else 0
             
             with st.container():
                 st.markdown(f"""
@@ -279,7 +279,7 @@ if st.session_state.get('route_df') is not None and not st.session_state.route_d
                         🚶 <strong>Caminar</strong> desde <strong>{origin_stop}</strong> hacia <strong>{dest_stop}</strong>
                     </p>
                     <p class="secondary">
-                        ⏱️ Tiempo estimado: <strong>{walking_minutes} min</strong> ({segment_time:.0f} seg)
+                        ⏱️ Tiempo estimado: <strong>{walking_minutes} min</strong>
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
@@ -287,8 +287,8 @@ if st.session_state.get('route_df') is not None and not st.session_state.route_d
             # Transit segment
             first_stop = stop_names[0] if len(stop_names) > 0 else 'Desconocido'
             last_stop = stop_names[-1] if len(stop_names) > 0 else 'Desconocido'
-            transit_minutes = int(segment_time / 60) if segment_time else 0
-            wait_minutes = int(frequency / 60) if frequency else 0
+            transit_minutes = math.ceil(segment_time / 60.0) if segment_time else 0
+            wait_minutes = math.ceil(frequency / 60.0) if frequency else 0
             
             route_label = route_short if route_short else route_long[:20] if route_long else 'Ruta'
             
@@ -306,7 +306,7 @@ if st.session_state.get('route_df') is not None and not st.session_state.route_d
                         🎯 Dirección: <em>{headsign}</em>
                     </p>
                     <p class="secondary">
-                        ⏱️ Viajar por <strong>{transit_minutes} min</strong> ({segment_time:.0f} seg)
+                        ⏱️ Viajar por <strong>{transit_minutes} min</strong>
                     </p>
                     <p class="secondary">
                         🚏 Bajarse en: <strong>{last_stop}</strong>
