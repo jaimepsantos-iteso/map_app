@@ -5,6 +5,7 @@ import folium
 from geopy.geocoders import Nominatim
 from shapely.geometry import Point
 from pyproj import Transformer
+import math
 
 
 from core.routing import RouteService
@@ -225,8 +226,93 @@ if clicked and st.session_state.last_map is None:
 
 # Show route segments DataFrame below the map if available
 if st.session_state.get('route_df') is not None and not st.session_state.route_df.empty and st.session_state.last_map is not None:
-    st.subheader("Detalles de la Ruta")
-    # Display the DataFrame with selected columns for readability
-    display_df = st.session_state.route_df[['mode', 'route_long_name', 'route_short_name', 'trip_headsign', 'stops', 'stop_names', 'segment_time_seconds']].copy()
-    st.dataframe(display_df, width='stretch')
+    st.subheader("📋 Instrucciones de la Ruta")
+    
+    # Use CSS variables that adapt to theme automatically
+    st.markdown("""
+    <style>
+    .route-card {
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        background-color: var(--background-color);
+        border-left-width: 4px;
+        border-left-style: solid;
+    }
+    .route-card p {
+        margin: 0;
+        color: var(--text-color);
+    }
+    .route-card .secondary {
+        margin-top: 5px;
+        opacity: 0.7;
+    }
+    .route-badge {
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    for idx, row in st.session_state.route_df.iterrows():
+        mode = row.get('mode')
+        route_color = row.get('route_color', '#3366cc')
+        route_short = row.get('route_short_name', '')
+        route_long = row.get('route_long_name', '')
+        headsign = row.get('trip_headsign', '')
+        stop_names = row.get('stop_names', [])
+        segment_time = row.get('segment_time_seconds', 0)
+        frequency = row.get('frequency', None)
+        
+        if mode == 'walking':
+            # Walking segment
+            origin_stop = stop_names[0] if len(stop_names) > 0 else 'Desconocido'
+            dest_stop = stop_names[-1] if len(stop_names) > 0 else 'Desconocido'
+            walking_minutes = int(segment_time / 60) if segment_time else 0
+            
+            with st.container():
+                st.markdown(f"""
+                <div class="route-card" style="border-left-color: #333333;">
+                    <p style="font-size: 16px;">
+                        🚶 <strong>Caminar</strong> desde <strong>{origin_stop}</strong> hacia <strong>{dest_stop}</strong>
+                    </p>
+                    <p class="secondary">
+                        ⏱️ Tiempo estimado: <strong>{walking_minutes} min</strong> ({segment_time:.0f} seg)
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            # Transit segment
+            first_stop = stop_names[0] if len(stop_names) > 0 else 'Desconocido'
+            last_stop = stop_names[-1] if len(stop_names) > 0 else 'Desconocido'
+            transit_minutes = int(segment_time / 60) if segment_time else 0
+            wait_minutes = int(frequency / 60) if frequency else 0
+            
+            route_label = route_short if route_short else route_long[:20] if route_long else 'Ruta'
+            
+            with st.container():
+                st.markdown(f"""
+                <div class="route-card" style="border-left-color: {route_color};">
+                    <p style="font-size: 16px;">
+                        🚌 <span class="route-badge" style="background-color: {route_color};">{route_label}</span>
+                        <strong>{route_long if route_long else ''}</strong>
+                    </p>
+                    <p class="secondary">
+                        📍 Esperar en: <strong>{first_stop}</strong> {f'(~{wait_minutes} min de espera)' if wait_minutes > 0 else ''}
+                    </p>
+                    <p class="secondary">
+                        🎯 Dirección: <em>{headsign}</em>
+                    </p>
+                    <p class="secondary">
+                        ⏱️ Viajar por <strong>{transit_minutes} min</strong> ({segment_time:.0f} seg)
+                    </p>
+                    <p class="secondary">
+                        🚏 Bajarse en: <strong>{last_stop}</strong>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
+
 

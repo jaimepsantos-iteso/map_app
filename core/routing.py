@@ -192,7 +192,7 @@ class RouteService:
         path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges=start_walking_edges, heuristic=euclidean_heuristic)
         
         end_time = time.time()
-        print(f"Transit routing time: {end_time - start_time:.3f} seconds")
+        print(f"Transit routing calculation time: {end_time - start_time:.3f} seconds")
         return path
 
     def get_transit_segments_df(self, path : tuple[str,str], start_point:Point, end_point:Point) -> pd.DataFrame:
@@ -427,8 +427,6 @@ class RouteService:
             # walking time in seconds
             walking_time = round(distance / walking_speed_mps) 
             start_walking_edges.append((nearby_stop['stop_id'], walking_time))
-        
-        print(f"Found {start_walking_edges}")
         
         return start_walking_edges
 
