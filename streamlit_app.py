@@ -167,7 +167,7 @@ if st.session_state.routes_list and len(st.session_state.routes_list) > 1 and st
         with cols[i]:
             time_min = math.ceil(time_route / 60.0)
             if st.button(
-                f"🚌 Ruta {i+1}\n{time_min} min",
+                f"🚌 Opción {i+1}: {time_min} min",
                 key=f"route_btn_{i}",
                 type="primary" if i == st.session_state.selected_route_index else "secondary",
                 use_container_width=True
