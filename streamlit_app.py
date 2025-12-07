@@ -24,6 +24,10 @@ st.set_page_config(
 # --- Session State: persistent app variables ---
 if 'route_service' not in st.session_state:
     st.session_state.route_service = None
+if 'max_walking_time' not in st.session_state:
+    st.session_state.max_walking_time = 5
+if 'heuristic_enable' not in st.session_state:
+    st.session_state.heuristic_enable = True
 if 'geolocator' not in st.session_state:
     st.session_state.geolocator = Nominatim(user_agent="map_app_gdl")
 if 'last_map' not in st.session_state:
@@ -48,7 +52,7 @@ if 'selected_route_index' not in st.session_state:
 # --- 2. Loading and logic functions ---
 
 @st.cache_resource
-def load_services():
+def load_services(max_walking_time_minutes, heuristic_enable):
     """Load heavy services (graphs, dataframes) and cache them."""
     
     gtfs_loader = GTFSLoader()
@@ -62,10 +66,11 @@ def load_services():
     # Create walking graph limited to the polygon
     graph_walk = graph_loader.create_graph_walk("data/graphs/ZMG_walk.pkl", "data/osm/ZMG_enclosure_2km.geojson")
     
-    # Create transit graph from GTFS data and stops with a max walking distance of 300 seconds
-    graph_transit = graph_loader.create_graph_transit("data/graphs/ZMG_transit.pkl", stops_df, 300)
+    # Create transit graph from GTFS data and stops with a max walking distance in seconds
+    max_walking_time_seconds = max_walking_time_minutes * 60
+    graph_transit = graph_loader.create_graph_transit("data/graphs/ZMG_transit.pkl", stops_df, max_walking_time_seconds)
     
-    return RouteService(graph_walk, graph_transit, stops_df, transit_df, heuristic_enable=True)
+    return RouteService(graph_walk, graph_transit, stops_df, transit_df, heuristic_enable=heuristic_enable)
 
 def geocode_address(address):
     """Convert a text address to coordinates (lat, lon)."""
@@ -83,18 +88,54 @@ def geocode_address(address):
 
 # --- 3. App initialization ---
 
+st.title("🗺️ Planeador de Rutas de Transporte Público - GDL")
+
+# Configuration sidebar at the top
+with st.sidebar:
+    st.header("⚙️ Configuración")
+    
+    max_walking_time = st.slider(
+        "Tiempo máximo de caminata (minutos)",
+        min_value=0,
+        max_value=10,
+        value=st.session_state.max_walking_time,
+        step=1,
+        help="Define qué tan lejos puedes caminar para llegar a una parada o hacer transferencias"
+    )
+    
+    heuristic_enable = st.toggle(
+        "Habilitar heurística A*",
+        value=st.session_state.heuristic_enable,
+        help="A* es más rápido que Dijkstra puro, pero usa más memoria"
+    )
+    
+    # Check if settings changed and need to reload
+    settings_changed = (max_walking_time != st.session_state.max_walking_time or 
+                       heuristic_enable != st.session_state.heuristic_enable)
+    
+    if settings_changed:
+        if st.button("🔄 Aplicar cambios", type="primary"):
+            st.session_state.max_walking_time = max_walking_time
+            st.session_state.heuristic_enable = heuristic_enable
+            st.session_state.route_service = None
+            st.rerun()
+        st.info("⚠️ Presiona 'Aplicar cambios' para recargar el grafo con la nueva configuración")
+    
+    st.divider()
+
 # Show a spinner while heavy data loads the first time
 with st.spinner('Cargando grafos y datos de rutas... Por favor, espera.'):
     if st.session_state.route_service is None:
-        st.session_state.route_service = load_services()
-
-st.title("🗺️ Planeador de Rutas de Transporte Público - GDL")
+        st.session_state.route_service = load_services(
+            st.session_state.max_walking_time,
+            st.session_state.heuristic_enable
+        )
 
 
 # --- 4. User interface (Sidebar and Map) ---
 
 with st.sidebar:
-    st.header("Puntos de la Ruta")
+    st.header("📍 Puntos de la Ruta")
     
     # Text inputs for origin and destination
     def _update_from_start_text():
