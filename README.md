@@ -161,7 +161,7 @@ map_app/
 
 ### Common Issues
 - **"No route found"**: Origin/destination may be too far from transit stops
-- **Slow loading**: First run loads and caches graphs (30-60 seconds)
+- **Slow loading**: First run loads and caches graphs (10-20 seconds)
 - **Map not updating**: Click "Reiniciar selección" to reset
 
 ### Performance Tips
@@ -173,7 +173,7 @@ map_app/
 This project is for academic use as part of Algorithm Design and Analysis coursework at ITESO.
 
 ## 👥 Contributors
-- Jaime Perez Santos
+- Jaime Ignacio Perez De Los Santos
 - ITESO - Maestría en Ciencias Computacionales
 
 ## 🔗 Related Resources
