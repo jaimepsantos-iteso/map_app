@@ -39,13 +39,40 @@ class GraphLoader:
         print(f"Walking graph saved to {graphfile_path}")
         return G
 
-    def create_graph_transit(self, graphfile_path, stops_df: pd.DataFrame, max_walking_time: int = 300) -> nx.MultiDiGraph:
+    def create_graph_transit(self, graphfile_path, stops_df: pd.DataFrame, max_walking_time: int = 300, force_rebuild: bool = False) -> nx.MultiDiGraph:
+        """
+        Creates or loads a transit graph with stops connected by transit routes and walking edges.
+        This method constructs a MultiDiGraph representing a transit network where nodes are stops
+        and edges represent either transit connections or walking paths between nearby stops. The 
+        graph is cached as a pickle file for efficient reloading.
+        Args:
+            graphfile_path (str): Path where the graph pickle file will be saved/loaded. The '.pkl' 
+                extension and max_walking_time suffix will be automatically added.
+            stops_df (pd.DataFrame): DataFrame containing stop information. Must include a 'geometry' 
+                column with point coordinates in EPSG:4326 (WGS84) projection.
+            max_walking_time (int, optional): Maximum walking time in seconds to consider when 
+                creating walking edges between stops. Defaults to 300 (5 minutes).
+            force_rebuild (bool, optional): If True, forces recreation of the graph even if a 
+                cached version exists. Defaults to False.
+        Returns:
+            nx.MultiDiGraph: A directed multigraph where:
+                - Nodes represent transit stops
+                - Edges represent transit routes or walking connections
+                - Graph metadata includes 'max_walking_time' attribute
+        Notes:
+            - The stops geometry is converted from EPSG:4326 to EPSG:3857 (Web Mercator) 
+              for accurate distance calculations in meters.
+            - The graph file is named with the max_walking_time parameter to allow caching 
+              different configurations.
+            - Uses helper functions add_adjacent_stops() and add_walking_edges() to populate 
+              the graph structure.
+        """
         
         graphfile_path = graphfile_path.rstrip(".pkl")
         graphfile_path = f"{graphfile_path}_{max_walking_time}.pkl"
 
         # if graph pkl exists, load and return it
-        if os.path.exists(graphfile_path):
+        if not force_rebuild and os.path.exists(graphfile_path):
             print(f"Loading transit graph from {graphfile_path}")
             with open(graphfile_path, "rb") as f:
                 G = pickle.load(f)
@@ -62,6 +89,8 @@ class GraphLoader:
 
         add_adjacent_stops(graph_transit, stops_gdf)
         add_walking_edges(graph_transit, stops_gdf, max_walking_time)
+
+        graph_transit.graph['max_walking_time'] = max_walking_time
 
         with open(graphfile_path, "wb") as f:
             pickle.dump(graph_transit, f)

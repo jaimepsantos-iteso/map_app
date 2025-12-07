@@ -129,12 +129,13 @@ class RouteService:
         - The mapping function provides rich visualization with segment and stop details.
     """
 
-    def __init__(self, graph_walk, graph_transit, stops_df, transit_df):
+    def __init__(self, graph_walk, graph_transit, stops_df, transit_df, heuristic_enable: bool = True):
         self.graph_walk = graph_walk
         self.graph_transit = graph_transit
         # Metric geopandas dataframes
         self.stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
         self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
+        self.heuristic = euclidean_heuristic if heuristic_enable else no_heuristic
 
    
     def route_walking(self, start_point:Point, end_point: Point) -> tuple[LineString, int]:
@@ -190,7 +191,7 @@ class RouteService:
         start_time = time.time()
         
         # Run dijkstra algorithm to find optimal transit path
-        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges, restricted_shapes, heuristic=euclidean_heuristic)
+        path, total_cost = self.dijkstra_transit(start_transit_node, end_transit_node, start_walking_edges, restricted_shapes, heuristic=self.heuristic)
         
         end_time = time.time()
         print(f"Transit routing calculation time: {end_time - start_time:.3f} seconds")
@@ -391,7 +392,7 @@ class RouteService:
 
     def get_start_walking_edges(self, start: Point) -> list[tuple[str, int]]:
 
-        max_walking_time = 5 * 60 # 5 minutes in seconds
+        max_walking_time = self.graph_transit.graph.get('max_walking_time', 5 * 60) # time in seconds, 5 minutes default
         walking_speed_mps = 5 / 3.6 # average walking speed 5 km/h in m/s
         walking_distance_threshold = max_walking_time * walking_speed_mps  
 
