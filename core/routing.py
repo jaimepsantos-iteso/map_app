@@ -94,39 +94,66 @@ def trim_shape_between_stops(shape_geometry, stops_on_route, stops_df):
 
 class RouteService:
     """
-    RouteService provides routing and mapping functionalities for multimodal transportation networks,
-    including walking and transit (bus/train) routes. It integrates geographic data, network graphs,
-    and transit schedules to compute optimal routes, segment details, and interactive maps.
-    Attributes:
-        graph_walk (networkx.Graph): Graph representing the walkable street network.
-        graph_transit (networkx.MultiDiGraph): Graph representing the transit network (bus/train).
-        stops_gdf (geopandas.GeoDataFrame): DataFrame of transit stops with geometry in EPSG:3857.
-        transit_gdf (geopandas.GeoDataFrame): DataFrame of transit shapes/routes with geometry in EPSG:3857.
-    Methods:
-        route_walking(start_point, end_point):
-            Computes the walking route and estimated time between two geographic points.
-        route_transit(start_transit_node, end_transit_node, start_walking_edges, restricted_shapes):
-            Finds the optimal transit route between two transit nodes, optionally including walking segments and restricted transit shapes.
-        get_transit_segments_df(path, start_point, end_point):
-            Builds a detailed DataFrame of route segments (walking and transit), including geometry, stop info, and timing.
-        get_start_walking_edges(start):
-            Identifies all transit stops reachable by walking from the origin within a time threshold.
-        get_end_transit_node(end):
-            Finds the nearest transit stop to the destination point.
-        route_combined(start, end):
-            Computes multimodal routes (walking + transit) from origin to destination, returning alternatives sorted by total time.
-        create_map(segments_df):
-            Generates an interactive Folium map visualizing the route segments and stops.
-        check_no_transfers(graph, src, dst, transit_df, stops_df):
-            Checks if a direct transit route exists between two stops (no transfers).
-        check_one_transfer(graph, src, dst, transit_df, stops_df):
-            Checks if a route with a single transfer exists between two stops.
-        dijkstra_transit(src, dst, start_walking_edges, restricted_shapes, heuristic):
-            Finds the shortest path in the transit network using a modified Dijkstra's algorithm, supporting walking transfers and restricted shapes.
-        - All geographic coordinates are handled in EPSG:3857 for routing and EPSG:4326 for mapping.
-        - Transit segments are grouped by shape_id (route/line), and walking segments are included where needed.
-        - The service supports alternative route generation by restricting previously used transit shapes.
-        - The mapping function provides rich visualization with segment and stop details.
+    RouteService provides comprehensive routing and mapping functionalities for multimodal transportation networks,
+    combining walking and public transit (bus/train) routes. It integrates geographic data, network graphs,
+    and transit schedules to compute optimal routes, detailed segment information, and interactive visualizations.
+    This service supports:
+    - Single-mode routing (walking-only or transit-only)
+    - Multimodal routing with automatic mode switching
+    - Alternative route generation with configurable restrictions
+    - Interactive map creation with rich visual styling
+    - Heuristic-based pathfinding for improved performance
+        graph_walk (networkx.Graph): 
+            Graph representing the walkable street network with nodes and edges containing geographic coordinates
+            and distance information.
+        graph_transit (networkx.MultiDiGraph): 
+            Multi-directed graph representing the transit network where nodes are stops and edges represent
+            transit connections. Supports parallel edges for multiple routes between the same stops.
+        stops_gdf (geopandas.GeoDataFrame): 
+            GeoDataFrame of transit stops with geometry in EPSG:3857 (metric projection). Contains stop_id,
+            stop_name, and spatial geometry for each transit stop.
+        transit_gdf (geopandas.GeoDataFrame): 
+            GeoDataFrame of transit routes/shapes with geometry in EPSG:3857. Includes shape_id, route information,
+            stop sequences, timing data, and LineString geometries for each transit line.
+        heuristic (callable):
+            Heuristic function used in pathfinding algorithm. Either euclidean_heuristic or no_heuristic based
+            on initialization parameter.
+        alternatives (int):
+            Number of alternative routes to generate in multimodal routing. Default is 3.
+            Computes the walking route and estimated time between two geographic points using the street network.
+            Returns a LineString geometry and time in seconds.
+            Finds the optimal transit route between two transit nodes using Dijkstra's algorithm.
+            Supports initial walking connections and shape restrictions for alternative routing.
+            Builds a detailed DataFrame of route segments (walking and transit) from a path result.
+            Includes geometry, stop information, timing data, frequencies, and route metadata.
+            Each row represents a contiguous segment of the same mode and transit line.
+            Identifies all transit stops reachable by walking from the origin within a configurable
+            time threshold. Returns list of (stop_id, walking_time) tuples.
+            Finds the nearest transit stop to the destination point using spatial indexing.
+            Computes complete multimodal routes from origin to destination, combining walking and transit.
+            Returns multiple alternatives sorted by total travel time, each as (segments_df, total_time).
+            Generates an interactive Folium map visualizing route segments, stops, and metadata.
+            Applies intelligent styling based on transit mode, route type, and stop characteristics.
+            [Currently unused] Checks if a direct transit route exists between two stops without transfers.
+            [Currently unused] Checks if a route with exactly one transfer exists between two stops.
+            Core pathfinding algorithm implementing modified Dijkstra's with support for:
+            - Transfer penalties based on route frequency
+            - Walking connections from virtual start node
+            - Shape restrictions for alternative route generation
+            - Heuristic-based priority queue optimization
+        - All internal routing calculations use EPSG:3857 (Web Mercator) for accurate distance measurements
+        - Map visualizations use EPSG:4326 (WGS84) for compatibility with Folium/Leaflet
+        - Transit segments are automatically grouped by shape_id (route/line identifier)
+        - Walking segments are inserted where needed between origin/transit and transit/destination
+        - Transfer penalties are applied when switching between different transit lines
+        - Default walking speed: 5 km/h on known paths, 3 km/h on unknown/direct paths
+        - Default maximum walking distance: 5 minutes at average walking speed
+        - Route alternatives are generated by iteratively restricting shapes used in previous solutions
+    Performance:
+        - Uses spatial indexing (R-tree) for efficient stop proximity queries
+        - Heuristic function reduces search space in transit network pathfinding
+        - Early exit optimization when destination is reached
+        - Visited set prevents redundant node expansion in Dijkstra's algorithm
     """
 
     def __init__(self, graph_walk, graph_transit, stops_df, transit_df, heuristic_enable: bool = True, alternatives: int = 3):
