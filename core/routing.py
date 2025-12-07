@@ -8,6 +8,7 @@ import random as rd
 from geopy.geocoders import Nominatim
 from pyproj import Transformer
 import folium
+import math
 
 
 
@@ -518,7 +519,7 @@ class RouteService:
             if long_name or short_name:
                 tooltip_txt.append(f"Ruta: {long_name or ''} {('('+short_name+')') if short_name else ''}")
             if seconds is not None and not pd.isna(seconds):
-                tooltip_txt.append(f"Tiempo segmento: {int(seconds)} s")
+                tooltip_txt.append(f"Tiempo segmento: {math.ceil(seconds/60)} min")
             if headsign:
                 tooltip_txt.append(f"Dirección: {headsign}")
             tooltip_html = "<br>".join(tooltip_txt)
