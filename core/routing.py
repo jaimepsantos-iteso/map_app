@@ -4,12 +4,12 @@ import pandas as pd
 import heapq
 import geopandas as gpd
 from shapely.geometry import Point, LineString
+from shapely.ops import substring
 import random as rd
 from geopy.geocoders import Nominatim
 from pyproj import Transformer
 import folium
 import math
-
 
 
 def point_from_text(address: str) -> Point:
@@ -28,11 +28,23 @@ def point_from_text(address: str) -> Point:
         return None
     
 
-#src and dst are Point in meters, crs EPSG:3857
-def euclidean_heuristic(src:Point, dst:Point) -> float:
+def euclidean_heuristic(src:Point, dst:Point) -> int:
+    """
+    Estimates the travel time in seconds between two points using the Euclidean distance and an average transit speed.
+
+    Args:
+        src (Point): The starting point in meters (EPSG:3857).
+        dst (Point): The destination point in meters (EPSG:3857).
+
+    Returns:
+        int: The estimated time to reach the destination from the source, in seconds, rounded to the nearest integer.
+
+    Notes:
+        - Assumes an average transit speed of 55 km/h.
+        - The distance is calculated using the Euclidean metric.
+    """
     # Time to reache the dst
-    transit_average_speed_kph = 55.0  # average transit max speed in km/h
-    transit_average_speed_mps = transit_average_speed_kph / 3.6  # convert to m/s
+    transit_average_speed_mps = 55.0 / 3.6  # average transit max speed from km/h to m/s
     distance_meters = src.distance(dst)
     time_to_reach = distance_meters / transit_average_speed_mps  #time in s
     return round(time_to_reach)
@@ -47,9 +59,6 @@ def openMap(m):
     import webbrowser
     webbrowser.open(html)
 
-# Function to trim a LineString shape between two stops
-from shapely.geometry import LineString, Point
-from shapely.ops import substring
 
 def trim_shape_between_stops(shape_geometry, stops_on_route, stops_df):
     """
@@ -83,74 +92,65 @@ def trim_shape_between_stops(shape_geometry, stops_on_route, stops_df):
     
     return trimmed
 
-
-# Example: Trim shapes based on actual stops used
-# Assuming you have a route result with stops grouped by shape_id
-
-# Let's say you have a path like: [(stop1, shape1), (stop2, shape1), (stop3, shape2), ...]
-# Group stops by shape_id
-from collections import defaultdict
-
-def trim_route_shapes(dijkstra_path, transit_df, stops_df):
-    """
-    Trim shapes to only show the portions actually traveled.
-    
-    Args:
-        dijkstra_path: List of (stop_id, shape_id) tuples from route
-        transit_df: DataFrame with shape geometries
-        stops_df: DataFrame with stop information
-    
-    Returns:
-        List of trimmed LineStrings with metadata
-    """
-    # Group stops by shape_id
-    shape_stops = defaultdict(list)
-    for stop_id, shape_id in dijkstra_path:
-        if shape_id != 'walking':  # Skip walking segments
-            shape_stops[shape_id].append(stop_id)
-    
-    trimmed_shapes = []
-    
-    for shape_id, stops_on_shape in shape_stops.items():
-        if len(stops_on_shape) < 2:
-            continue
-            
-        # Get the full shape geometry
-        shape_row = transit_df[transit_df['shape_id'] == shape_id].iloc[0]
-        full_geometry = shape_row['shape_geometry']
-        
-        # Trim to actual stops used
-        trimmed_geom = trim_shape_between_stops(full_geometry, stops_on_shape, stops_df)
-        
-        trimmed_shapes.append({
-            'geometry': trimmed_geom,
-            'shape_id': shape_id,
-            'route_long_name': shape_row['route_long_name'],
-            'route_short_name': shape_row['route_short_name'],
-            'route_type': shape_row['route_type'],
-            'trip_headsign': shape_row['trip_headsign'],
-            'route_color': shape_row.get('route_color', '#7b1fa2'),
-            'stops_used': stops_on_shape
-        })
-    
-    return trimmed_shapes
-
-
-# Usage example (uncomment when you have a dijkstra_path):
-# trimmed = trim_route_shapes(dijkstra_path, transit_df, stops_df)
-# trimmed_gdf = gpd.GeoDataFrame(trimmed, crs='EPSG:4326')
-# m = trimmed_gdf.explore(column='route_name', cmap='tab20')
-# openMap(m)
-
 class RouteService:
+    """
+    RouteService provides routing and mapping functionalities for multimodal transportation networks,
+    including walking and transit (bus/train) routes. It integrates geographic data, network graphs,
+    and transit schedules to compute optimal routes, segment details, and interactive maps.
+    Attributes:
+        graph_walk (networkx.Graph): Graph representing the walkable street network.
+        graph_transit (networkx.MultiDiGraph): Graph representing the transit network (bus/train).
+        stops_gdf (geopandas.GeoDataFrame): DataFrame of transit stops with geometry in EPSG:3857.
+        transit_gdf (geopandas.GeoDataFrame): DataFrame of transit shapes/routes with geometry in EPSG:3857.
+    Methods:
+        route_walking(start_point, end_point):
+            Computes the walking route and estimated time between two geographic points.
+        route_transit(start_transit_node, end_transit_node, start_walking_edges, restricted_shapes):
+            Finds the optimal transit route between two transit nodes, optionally including walking segments and restricted transit shapes.
+        get_transit_segments_df(path, start_point, end_point):
+            Builds a detailed DataFrame of route segments (walking and transit), including geometry, stop info, and timing.
+        get_start_walking_edges(start):
+            Identifies all transit stops reachable by walking from the origin within a time threshold.
+        get_end_transit_node(end):
+            Finds the nearest transit stop to the destination point.
+        route_combined(start, end):
+            Computes multimodal routes (walking + transit) from origin to destination, returning alternatives sorted by total time.
+        create_map(segments_df):
+            Generates an interactive Folium map visualizing the route segments and stops.
+        check_no_transfers(graph, src, dst, transit_df, stops_df):
+            Checks if a direct transit route exists between two stops (no transfers).
+        check_one_transfer(graph, src, dst, transit_df, stops_df):
+            Checks if a route with a single transfer exists between two stops.
+        dijkstra_transit(src, dst, start_walking_edges, restricted_shapes, heuristic):
+            Finds the shortest path in the transit network using a modified Dijkstra's algorithm, supporting walking transfers and restricted shapes.
+        - All geographic coordinates are handled in EPSG:3857 for routing and EPSG:4326 for mapping.
+        - Transit segments are grouped by shape_id (route/line), and walking segments are included where needed.
+        - The service supports alternative route generation by restricting previously used transit shapes.
+        - The mapping function provides rich visualization with segment and stop details.
+    """
+
     def __init__(self, graph_walk, graph_transit, stops_df, transit_df):
         self.graph_walk = graph_walk
         self.graph_transit = graph_transit
+        # Metric geopandas dataframes
         self.stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
         self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
 
    
     def route_walking(self, start_point:Point, end_point: Point) -> tuple[LineString, int]:
+        """
+        Computes the walking route between two geographic points using the walking graph.
+            start_point (Point): The starting point as a Shapely Point (in EPSG:3857).
+            end_point (Point): The ending point as a Shapely Point (in EPSG:3857).
+            tuple[LineString, int]:
+                - LineString: The geometry of the walking route as a Shapely LineString (in EPSG:3857).
+                - int: The estimated walking time in seconds.
+            - The function finds the nearest nodes in the walking graph to the start and end points.
+            - If a path exists between these nodes, it computes the shortest path and walking time using the graph's edge lengths.
+            - If no path exists, it estimates walking time using direct distance.
+            - The route includes segments from the actual start/end points to their nearest graph nodes.
+            - Walking speed is assumed to be 3 km/h for unknown paths and 5 km/h for graph paths.
+        """
 
         start_walking_node = ox.distance.nearest_nodes(self.graph_walk, start_point.x, start_point.y)
         end_walking_node = ox.distance.nearest_nodes(self.graph_walk, end_point.x, end_point.y)
@@ -183,7 +183,7 @@ class RouteService:
        
         return line, time_walking
     
-    def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = [], restricted_shapes : list[str] = []) -> tuple[list[LineString], float, pd.DataFrame]:
+    def route_transit(self, start_transit_node: str, end_transit_node: str, start_walking_edges: list[tuple[str, int]] = [], restricted_shapes : list[str] = []) -> tuple[list[str,str]]:
         
         #measure time
         import time
@@ -436,6 +436,7 @@ class RouteService:
         end_transit_node = self.stops_gdf.loc[nearest_stop_idx]['stop_id']
         return end_transit_node
 
+
     def route_combined(self, start: Point, end: Point) -> list[tuple[pd.DataFrame, int]]:
        
         start_walking_edges = self.get_start_walking_edges(start)
@@ -484,6 +485,30 @@ class RouteService:
 
 
     def create_map(self, segments_df):
+        """
+        Generates an interactive Folium map visualizing route segments and stops.
+        Args:
+            segments_df (pd.DataFrame): DataFrame containing route segment information. 
+                Expected columns include:
+                    - 'mode': Mode of transportation (e.g., walking, bus, train).
+                    - 'route_color': Hex color code for the route.
+                    - 'segment_geometry': Shapely LineString geometry in EPSG:3857.
+                    - 'route_type': Type of route (e.g., 0 for train, 1 for macrobus, etc.).
+                    - 'route_long_name': Long name of the route.
+                    - 'route_short_name': Short name of the route.
+                    - 'trip_headsign': Direction or headsign of the trip.
+                    - 'segment_time_seconds': Duration of the segment in seconds.
+                    - 'stops': List of stop identifiers (optional).
+                    - 'stop_names': List of stop names (e.g., 'Origen', 'Destino', or stop names).
+                    - 'stop_positions': List of dictionaries with 'lat' and 'lon' keys (EPSG:4326).
+        Returns:
+            folium.Map: Folium map object with route segments and stop markers styled and annotated.
+        Notes:
+            - Route segments are drawn with color and width based on route type.
+            - Stop markers are styled differently for first/last stops and for origin/destination.
+            - Tooltips provide segment and stop information.
+            - The map is centered on Guadalajara by default.
+        """
         # Add route segments to the map one by one with styling and stop markers
 
         #create empty map 
@@ -587,13 +612,7 @@ class RouteService:
               
         return m
 
-
-
-
-
-
-
-
+    #Not used currently
     def check_no_transfers(graph:nx.MultiDiGraph, src, dst, transit_df, stops_df):
 
 
@@ -623,7 +642,7 @@ class RouteService:
         return [], None
     
 
-
+    # Not used currently
     def check_one_transfer(graph:nx.MultiDiGraph, src:str, dst:str, transit_df: pd.DataFrame, stops_df: pd.DataFrame):
     
         #verif if src and dst shapes share a stop, only one transfer is needed
@@ -660,6 +679,23 @@ class RouteService:
 
 
     def dijkstra_transit(self, src:str, dst:str, start_walking_edges: list[tuple[str, int]] = [], restricted_shapes : list[str] = [], heuristic=euclidean_heuristic) -> tuple[list[tuple[str, str]], float]:
+        """
+        Finds the shortest path in a transit network from a source node to a destination node using a modified Dijkstra's algorithm with support for walking transfers, restricted transit shapes, and heuristic-based prioritization.
+        Args:
+            src (str): The source node identifier.
+            dst (str): The destination node identifier.
+            start_walking_edges (list[tuple[str, int]], optional): List of tuples representing possible starting walking edges from the real origin. Each tuple contains (first_transit_stop, walking_time). Defaults to [].
+            restricted_shapes (list[str], optional): List of shape IDs (e.g., transit lines or modes) to exclude from the search. Defaults to [].
+            heuristic (callable, optional): Heuristic function to estimate the cost from a node to the destination. Defaults to euclidean_heuristic.
+        Returns:
+            tuple[list[tuple[str, str]], float]:
+                - path: List of tuples (node, shape_id) representing the path from src to dst, including the transit shape used to arrive at each node.
+                - total_cost: The accumulated cost of the shortest path. Returns ([], None) if no path is found.
+        Notes:
+            - The algorithm supports transfer penalties when switching between different transit shapes.
+            - If start_walking_edges is provided, the search begins from a virtual "Real_Start" node with walking connections to the transit network.
+            - The graph is expected to be a MultiDiGraph with edge attributes 'shape_id', 'weight', and 'frequency'.
+            """
 
         #accumulated cost for each node from the start, keys are (node, shape_id)
         cost = dict()
