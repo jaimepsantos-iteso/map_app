@@ -129,13 +129,14 @@ class RouteService:
         - The mapping function provides rich visualization with segment and stop details.
     """
 
-    def __init__(self, graph_walk, graph_transit, stops_df, transit_df, heuristic_enable: bool = True):
+    def __init__(self, graph_walk, graph_transit, stops_df, transit_df, heuristic_enable: bool = True, alternatives: int = 3):
         self.graph_walk = graph_walk
         self.graph_transit = graph_transit
         # Metric geopandas dataframes
         self.stops_gdf = gpd.GeoDataFrame(stops_df, geometry='geometry', crs="EPSG:4326").to_crs(epsg=3857)
         self.transit_gdf = gpd.GeoDataFrame(transit_df, geometry='shape_geometry', crs='EPSG:4326').to_crs(epsg=3857)
         self.heuristic = euclidean_heuristic if heuristic_enable else no_heuristic
+        self.alternatives = alternatives
 
    
     def route_walking(self, start_point:Point, end_point: Point) -> tuple[LineString, int]:
@@ -445,7 +446,7 @@ class RouteService:
         end_transit_node = self.get_end_transit_node(end)
 
         restricted_shapes = []
-        alternatives = 3
+        alternatives = self.alternatives
         routes_list = []
 
         while alternatives > 0:
@@ -459,7 +460,12 @@ class RouteService:
             route_df = self.get_transit_segments_df(path_transit, start, end)
             
             # calculate total time, segment times + waiting times
-            total_time = route_df['segment_time_seconds'].sum() + route_df['frequency'].sum(skipna=True)
+            segment_time = route_df['segment_time_seconds'].sum() if 'segment_time_seconds' in route_df.columns else 0
+            frequency_time = route_df['frequency'].sum(skipna=True) if 'frequency' in route_df.columns else 0
+            total_time = segment_time + frequency_time
+            
+            if total_time == 0:
+                break  # no valid route found
             
             routes_list.append((route_df, total_time))
     

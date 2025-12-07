@@ -65,7 +65,7 @@ def load_services():
     # Create transit graph from GTFS data and stops with a max walking distance of 300 seconds
     graph_transit = graph_loader.create_graph_transit("data/graphs/ZMG_transit.pkl", stops_df, 300)
     
-    return RouteService(graph_walk, graph_transit, stops_df, transit_df)
+    return RouteService(graph_walk, graph_transit, stops_df, transit_df, heuristic_enable=True)
 
 def geocode_address(address):
     """Convert a text address to coordinates (lat, lon)."""
