@@ -742,11 +742,19 @@ class RouteService:
         
 
         end_shape = None
+        visited = set()  # Track visited (node, shape) pairs to avoid reprocessing
 
         while queue:
 
             _, current, current_shape = heapq.heappop(queue)
 
+            # Skip if already visited this (node, shape) combination
+            if (current, current_shape) in visited:
+                continue
+            
+            visited.add((current, current_shape))
+
+            # Early exit when destination is reached
             if current == dst:
                 end_shape = current_shape
                 break
@@ -763,6 +771,11 @@ class RouteService:
                     next_shape = attrs.get('shape_id')
                     if next_shape in restricted_shapes:
                         continue
+                    
+                    # Skip if already visited
+                    if (neighbor, next_shape) in visited:
+                        continue
+                    
                     weight = attrs.get('weight', 1)
                     frequency = attrs.get('frequency', 600)
                     
@@ -777,7 +790,7 @@ class RouteService:
                     if (neighbor, next_shape) not in cost or tentative_cost < cost[(neighbor, next_shape)]:
                         cost[(neighbor, next_shape)] = tentative_cost                
                         previous[(neighbor, next_shape)] = (current, current_shape)
-                        heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos']) + 2*penalty
+                        heuristic_cost = heuristic(graph.nodes[neighbor]['pos'], graph.nodes[dst]['pos'])
                         priority_cost = tentative_cost + heuristic_cost
                         heapq.heappush(queue, (priority_cost, neighbor, next_shape))
             
